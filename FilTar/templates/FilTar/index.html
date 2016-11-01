@@ -1,0 +1,9 @@
+{% if all_species %}
+	<ul>
+		{% for species in all_species %}
+		<li><a href="/filtar/{{ species.id }}/">{{ species.common_name }}</a></li>
+		{% endfor %}
+	</ul>
+{% else %}
+	<h3>You don't have any albums</h3>
+{% endif %}
