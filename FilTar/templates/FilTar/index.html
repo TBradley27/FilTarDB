@@ -1,3 +1,16 @@
+{% load staticfiles %}
+<link rel="stylesheet" href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css>
+
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+
+		<div class="navbar-header">
+			<a class="navbar-brand" href="http://127.0.0.1:8000/filtar/">FilTar</a>
+		</div>
+
+	</div>
+</nav>
+
 {% if all_species %}
 	<ul>
 		{% for species in all_species %}
