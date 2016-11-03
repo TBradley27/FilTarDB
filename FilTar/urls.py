@@ -7,7 +7,9 @@ urlpatterns = [
 
     # /filtar/
 
-    url(r'^$', views.IndexView.as_view(), name='index'),
+     url(r'^getname$', views.getname, name='get_name'),
+
+     url(r'^$', views.IndexView.as_view(), name='index'),
     
     # /filtar/
     url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name="detail")

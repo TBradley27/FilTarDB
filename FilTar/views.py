@@ -1,10 +1,34 @@
 from django.views import generic
+# from django.views.generic.edit import CreateView
 from .models import Species
+from .models import Mirnas
+from .forms import SomeForm
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+# import pdb
+
+def getname(request):
+    if request.method == 'POST':
+        form = SomeForm(request.POST)
+        if form.is_valid():
+            # picked = form.cleaned_data.get('picked')
+            return HttpResponseRedirect('/thanks/')
+    else:
+        form = SomeForm()
+    return render(request, 'filtar/testing.html', {'form': form})
+
+    # return render_to_response('filtar/index.html', {'form':form },
+    #     context_instance=RequestContext(request))
+
+	# model = Mirnas
+    #
+	# template_name = 'filtar/index.html'
+	# success_url = 'filtar/index.html'
 
 class IndexView(generic.ListView):
 	template_name = 'filtar/index.html'
 
-	def get_queryset(selfself):
+	def get_queryset(self):
 		return Species.objects.all()
 
 class DetailView(generic.DetailView):
