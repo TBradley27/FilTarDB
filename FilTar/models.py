@@ -8,7 +8,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django import forms
+from django.forms import ModelForm
 
+# from django.core.urlresolvers import reverse
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
@@ -224,3 +227,8 @@ class Tissues(models.Model):
         managed = False
         db_table = 'tissues'
         verbose_name_plural = "Tissues"
+
+class MirnaForm(ModelForm):
+     class Meta:
+         model = Mirnas
+         fields = ['mirna_name']
