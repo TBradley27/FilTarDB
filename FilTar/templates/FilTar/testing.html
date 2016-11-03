@@ -9,7 +9,11 @@
 			<!--</form>-->
 			<form action="/dsffdfs/" method="post">
 				{% csrf_token %}
-				{{ formset }}
+				{{ form }} <br>
+				{{ formset }} <br>
+				{{ form_tissue }} <br>
+				{{ form_species }} <br>
+				<p></p>
 				<input type='submit' value='Submit' >
 			</form>
 		</ul>

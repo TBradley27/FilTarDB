@@ -5,6 +5,8 @@ from .models import Mirnas
 from .models import MirnaForm
 from .forms import SomeForm
 from .forms import MyForm
+from .forms import TissueForm
+from .forms import SpeciesForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
@@ -22,12 +24,17 @@ def getname(request):
 
     if request.method == 'POST':
         formset = MyForm(request.POST)
+        form = SomeForm(request.POST)
         if formset.is_valid():
             # picked = form.cleaned_data.get('picked')
             return HttpResponseRedirect('/thanks/')
     else:
+        form = SomeForm()
         formset = MyForm()
-    return render(request, 'filtar/testing.html', {'formset': formset})
+        form_tissue = TissueForm()
+        form_species = SpeciesForm()
+
+    return render(request, 'filtar/testing.html',{'formset': formset, 'form': form, 'form_tissue': form_tissue, 'form_species': form_species})
 
     # return render_to_response('filtar/index.html', {'form':form },
     #     context_instance=RequestContext(request))
