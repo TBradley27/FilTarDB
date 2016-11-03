@@ -2,9 +2,14 @@
 
 {% block body %}
 		<ul>
+			<!--<form action="/dsffdfs/" method="post">-->
+				<!--{% csrf_token %}-->
+				<!--{{ form }}-->
+				<!--<input type='submit' value='Submit' >-->
+			<!--</form>-->
 			<form action="/dsffdfs/" method="post">
 				{% csrf_token %}
-				{{ form }}
+				{{ formset }}
 				<input type='submit' value='Submit' >
 			</form>
 		</ul>

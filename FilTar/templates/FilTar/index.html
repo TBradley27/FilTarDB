@@ -2,18 +2,6 @@
 
 {% block body %}
 		<ul>
-
-			<form action="/your-name/" method="post">
-    			<label for="your_name">Testing: </label>
-    			<input id="your_name" type="text" name="your_name" value="{{ current_name }}">
-    			<input type="submit" value="OK">
-			</form>
-
-			<form action="/dsffdfs/" method="post">
-				{% csrf_token %}
-				{{ form }}
-				<input type='submit' value='Submit' >
-			</form>
 			<!--Get all species-->
 			{% for species in object_list %}
 			<!--Create a HTML link to details template-->

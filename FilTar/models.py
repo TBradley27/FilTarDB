@@ -229,6 +229,7 @@ class Tissues(models.Model):
         verbose_name_plural = "Tissues"
 
 class MirnaForm(ModelForm):
+     mirnas = forms.ModelChoiceField(queryset = Mirnas.objects.all(), to_field_name="mirna_name")
      class Meta:
-         model = Mirnas
-         fields = ['mirna_name']
+        model = Mirnas
+        fields = ['mirna_name']

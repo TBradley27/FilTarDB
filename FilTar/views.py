@@ -2,20 +2,32 @@ from django.views import generic
 # from django.views.generic.edit import CreateView
 from .models import Species
 from .models import Mirnas
+from .models import MirnaForm
 from .forms import SomeForm
+from .forms import MyForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-# import pdb
+from django.forms import ModelChoiceField
 
 def getname(request):
+
+    # if request.method == 'POST':
+    #     form = SomeForm(request.POST)
+    #     if form.is_valid():
+    #         # picked = form.cleaned_data.get('picked')
+    #         return HttpResponseRedirect('/thanks/')
+    # else:
+    #     form = SomeForm()
+    # # return render(request, 'filtar/testing.html', {'form': form})
+
     if request.method == 'POST':
-        form = SomeForm(request.POST)
-        if form.is_valid():
+        formset = MyForm(request.POST)
+        if formset.is_valid():
             # picked = form.cleaned_data.get('picked')
             return HttpResponseRedirect('/thanks/')
     else:
-        form = SomeForm()
-    return render(request, 'filtar/testing.html', {'form': form})
+        formset = MyForm()
+    return render(request, 'filtar/testing.html', {'formset': formset})
 
     # return render_to_response('filtar/index.html', {'form':form },
     #     context_instance=RequestContext(request))
