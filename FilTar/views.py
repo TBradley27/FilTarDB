@@ -12,6 +12,7 @@ from .forms import SpeciesForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
+from decimal import Decimal
 
 def getname(request):
 
@@ -27,12 +28,16 @@ def getname(request):
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
         form_species = SpeciesForm(request.POST)
-        if form_Mirnas.is_valid() and form_species.is_valid():
+        form_TPM = TPMForm(request.POST)
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirnas']
+             form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              scores = Contextpp.objects.filter(mirna_name=form_Mirnas
                                                ).filter(
-                 common_name=form_species)
+                 common_name=form_species).filter(
+                 tpm__range = [form_TPM,100]
+             )
 
         return render(request, 'filtar/contextpptable.html', {'scores': scores} )
 
