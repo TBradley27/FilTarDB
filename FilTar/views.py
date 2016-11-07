@@ -26,27 +26,27 @@ def getname(request):
 
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
-        # form_FPKM = FPKMForm(request.POST)
-        if form_Mirnas.is_valid():
-             # picked = form.cleaned_data.get('picked')
-             x = []
+        form_species = SpeciesForm(request.POST)
+        if form_Mirnas.is_valid() and form_species.is_valid():
+             form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirnas']
-             for entry in Contextpp.objects.filter(mirna_name=form_Mirnas):
-                 x.append(entry.taxonomic_id)
+             scores = Contextpp.objects.filter(mirna_name=form_Mirnas
+                                               ).filter(
+                 common_name=form_species)
 
-        return render(request, 'filtar/thanks.html', {'x': x} )
+        return render(request, 'filtar/contextpptable.html', {'scores': scores} )
 
     else:
         # form_FPKM = FPKMForm()
         form_Mirnas = MirnaForm()
         # form_tissue = TissueForm()
-        # form_species = SpeciesForm()
+        form_species = SpeciesForm()
 
-    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas})
+    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species})
 
 
                                                   # 'form_FPKM': form_FPKM,
-                                                  # 'form_tissue': form_tissue, 'form_species': form_species})
+                                                  # 'form_tissue': form_tissue, })
 
 def contextpp(request):
     scores = Contextpp.objects.all()
