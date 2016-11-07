@@ -82,7 +82,7 @@ class AuthUserUserPermissions(models.Model):
 class Contextpp(models.Model):
     mirna_name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=True)  # Field name made lowercase.
     transcript_id = models.CharField(db_column='transcript_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    common_name = models.CharField(db_column='common_name', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
     site_type = models.CharField(db_column='Site_Type', max_length=20, blank=True, null=True)  # Field name made lowercase.
