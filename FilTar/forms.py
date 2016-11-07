@@ -5,13 +5,13 @@ from .models import Species
 
 # from .models import MirnaForm
 
-class FPKMForm(forms.Form):
+class TPMForm(forms.Form):
     # your_name = forms.CharField(label='Your fdgfdgname', max_length=100) #FormField
     CHOICES = (('A','1 '),
                ('B','2'),
                ('C','3'),
                ('D','4'),)
-    FPKM_threshold = forms.ChoiceField(choices=CHOICES) #Variable name html - pretty weird
+    TPM_threshold = forms.ChoiceField(choices=CHOICES) #Variable name html - pretty weird
 
 class MirnaForm(forms.Form):
     # or with some filter applied
