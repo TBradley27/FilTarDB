@@ -5,7 +5,7 @@ from .models import Mirnas
 from .models import MirnaForm
 from .models import Contextpp
 from .models import Contextpp_Form
-from .forms import FPKMForm
+from .forms import TPMForm
 from .forms import MirnaForm
 from .forms import TissueForm
 from .forms import SpeciesForm
@@ -37,15 +37,15 @@ def getname(request):
         return render(request, 'filtar/contextpptable.html', {'scores': scores} )
 
     else:
-        # form_FPKM = FPKMForm()
+        form_TPM = TPMForm()
         form_Mirnas = MirnaForm()
         # form_tissue = TissueForm()
         form_species = SpeciesForm()
 
-    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species})
+    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM})
 
 
-                                                  # 'form_FPKM': form_FPKM,
+                                                  #
                                                   # 'form_tissue': form_tissue, })
 
 def contextpp(request):
