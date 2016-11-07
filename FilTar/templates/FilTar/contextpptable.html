@@ -12,6 +12,7 @@
         <th>UTR_End</th>
         <th>Site_Type</th>
         <th>Contextpp_score</th>
+        <th>TPM</th>
     </tr>
     {% for item in scores %}
     <tr>
@@ -23,6 +24,7 @@
         <td>{{ item.utr_end }}</td>
          <td>{{ item.site_type }}</td>
         <td>{{ item.contextpp_score }}</td>
+        <td>{{ item.tpm }}</td>
     </tr>
     {% endfor %}
 </table>
