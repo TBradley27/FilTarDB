@@ -7,10 +7,11 @@ from .models import Species
 
 class TPMForm(forms.Form):
     # your_name = forms.CharField(label='Your fdgfdgname', max_length=100) #FormField
-    CHOICES = (('A','1 '),
-               ('B','2'),
-               ('C','3'),
-               ('D','4'),)
+    CHOICES = ((0,'0'),
+               (1,'1'),
+               (2,'2'),
+               (3,'3'),
+               (4,'4'),)
     TPM_threshold = forms.ChoiceField(choices=CHOICES) #Variable name html - pretty weird
 
 class MirnaForm(forms.Form):
