@@ -233,3 +233,8 @@ class MirnaForm(ModelForm):
      class Meta:
         model = Mirnas
         fields = ['mirna_name']
+
+class Contextpp_Form(ModelForm):
+    class Meta:
+        model = Contextpp
+        fields = ['mirna_name', 'transcript_id']

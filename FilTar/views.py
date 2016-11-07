@@ -3,8 +3,10 @@ from django.views import generic
 from .models import Species
 from .models import Mirnas
 from .models import MirnaForm
-from .forms import SomeForm
-from .forms import MyForm
+from .models import Contextpp
+from .models import Contextpp_Form
+from .forms import FPKMForm
+from .forms import MirnaForm
 from .forms import TissueForm
 from .forms import SpeciesForm
 from django.shortcuts import render
@@ -23,18 +25,36 @@ def getname(request):
     # # return render(request, 'filtar/testing.html', {'form': form})
 
     if request.method == 'POST':
-        formset = MyForm(request.POST)
-        form = SomeForm(request.POST)
-        if formset.is_valid():
-            # picked = form.cleaned_data.get('picked')
-            return HttpResponseRedirect('/thanks/')
-    else:
-        form = SomeForm()
-        formset = MyForm()
-        form_tissue = TissueForm()
-        form_species = SpeciesForm()
+        form_Mirnas = MirnaForm(request.POST)
+        # form_FPKM = FPKMForm(request.POST)
+        if form_Mirnas.is_valid():
+             # picked = form.cleaned_data.get('picked')
+             x = []
+             form_Mirnas = form_Mirnas.cleaned_data['mirnas']
+             for entry in Contextpp.objects.filter(mirna_name=form_Mirnas):
+                 x.append(entry.taxonomic_id)
 
-    return render(request, 'filtar/testing.html',{'formset': formset, 'form': form, 'form_tissue': form_tissue, 'form_species': form_species})
+        return render(request, 'filtar/thanks.html', {'x': x} )
+
+    else:
+        # form_FPKM = FPKMForm()
+        form_Mirnas = MirnaForm()
+        # form_tissue = TissueForm()
+        # form_species = SpeciesForm()
+
+    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas})
+
+
+                                                  # 'form_FPKM': form_FPKM,
+                                                  # 'form_tissue': form_tissue, 'form_species': form_species})
+
+def contextpp(request):
+    scores = Contextpp.objects.all()
+    return render(request, 'filtar/contextpptable.html', {'scores': scores})
+
+# def contextpp_table(request):
+#     contextpp = Contextpp_Form()
+#     return render(request, 'filtar/contextpptable.html', {'contextpp': contextpp})
 
     # return render_to_response('filtar/index.html', {'form':form },
     #     context_instance=RequestContext(request))
@@ -53,10 +73,6 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
 	model = Species
 	template_name = 'filtar/detail.html'
-
-
-
-
 
 
 

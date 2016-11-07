@@ -9,3 +9,17 @@ body{
 .navbar-brand{
     font-family: 'Poiret One', cursive;
 }
+
+table {
+  border-collapse: separate;
+  border-spacing: 100px 0;
+}
+
+/*.column-id {*/
+    /*width: 10%;*/
+/*}*/
+
+ /*.my-listing td,*/
+ /*.my-listing th {*/
+      /*width: 10%;*/
+ /*}*/
