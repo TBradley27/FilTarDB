@@ -90,7 +90,7 @@ class Contextpp(models.Model):
     contextpp_score = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'contextpp'
 
 
@@ -144,16 +144,18 @@ class Experiments(models.Model):
     tissue_name = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'experiments'
-
 
 class ExpressionProfiles(models.Model):
     transcript_id = models.CharField(db_column='transcript_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)
+    experiments = models.ForeignKey('Experiments', null=True, on_delete=models.CASCADE)
+
+        # models.CharField(db_column='experiment_name', max_length=20, blank=True, null=True)# Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'expression_profiles'
 
 
