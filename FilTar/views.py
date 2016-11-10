@@ -5,6 +5,8 @@ from .models import Mirnas
 from .models import MirnaForm
 from .models import Contextpp
 from .models import Contextpp_Form
+from .models import Experiments
+from .models import ExpressionProfiles
 from .forms import TPMForm
 from .forms import MirnaForm
 from .forms import TissueForm
@@ -12,7 +14,8 @@ from .forms import SpeciesForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
-from decimal import Decimal
+from itertools import chain
+
 
 def getname(request):
 
@@ -29,29 +32,42 @@ def getname(request):
         form_Mirnas = MirnaForm(request.POST)
         form_species = SpeciesForm(request.POST)
         form_TPM = TPMForm(request.POST)
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid():
+        form_tissue = TissueForm(request.POST)
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirnas']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
+             form_tissue = form_tissue.cleaned_data['tissues']
+
              scores = Contextpp.objects.filter(mirna_name=form_Mirnas
                                                ).filter(
                  common_name=form_species).filter(
-                 tpm__range = [form_TPM,100]
-             )
+                 tpm__range = [form_TPM,100])
 
-        return render(request, 'filtar/contextpptable.html', {'scores': scores} )
+             experiments = Experiments.objects.filter(tissue_name=form_tissue).values()
+             experiment_ID = experiments[0]['experiment_name']
+
+             expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing
+
+             # expression = ExpressionProfiles.objects.filter(experiment_name=experiment_ID)
+
+             # scores_extra = scores.objects.filter()
+
+             # print(x)
+
+             #     filter experiment_names data by tissue
+             #     do a table join between experiments and expression profile table
+
+        return render(request, 'filtar/contextpptable.html', {'scores': scores}, {'expression': expression} )
 
     else:
         form_TPM = TPMForm()
         form_Mirnas = MirnaForm()
-        # form_tissue = TissueForm()
+        form_tissue = TissueForm()
         form_species = SpeciesForm()
 
-    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM})
-
-
-                                                  #
-                                                  # 'form_tissue': form_tissue, })
+    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
+                                                  'form_tissue': form_tissue})
 
 def contextpp(request):
     scores = Contextpp.objects.all()
