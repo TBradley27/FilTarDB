@@ -19,7 +19,7 @@ class MirnaForm(forms.Form):
     mirnas = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="mirna_name"
                                     , empty_label="Choose your miRNA")
 class TissueForm(forms.Form):
-    CHOICES = (('Liver', 'Liver'),)
+    # CHOICES = (('Liver', 'Liver'),)
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="tissue_name"
                                     , empty_label="Choose your tissue")
 class SpeciesForm(forms.Form):

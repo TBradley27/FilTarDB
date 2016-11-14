@@ -2,9 +2,7 @@ from django.views import generic
 # from django.views.generic.edit import CreateView
 from .models import Species
 from .models import Mirnas
-from .models import MirnaForm
 from .models import Contextpp
-from .models import Contextpp_Form
 from .models import Experiments
 from .models import ExpressionProfiles
 from .forms import TPMForm

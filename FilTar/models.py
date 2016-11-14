@@ -139,7 +139,7 @@ class DjangoSession(models.Model):
 
 
 class Experiments(models.Model):
-    experiment_name = models.CharField(max_length=20, blank=True, null=True)
+    experiment_name = models.CharField(max_length=20, blank=True, null=False, primary_key=True)
     taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
     tissue_name = models.CharField(max_length=20, blank=True, null=True)
 
@@ -148,7 +148,7 @@ class Experiments(models.Model):
         db_table = 'experiments'
 
 class ExpressionProfiles(models.Model):
-    transcript_id = models.CharField(db_column='transcript_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    transcript_id = models.CharField(db_column='transcript_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
     tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)
     experiments = models.ForeignKey('Experiments', null=True, on_delete=models.CASCADE)
 
@@ -160,84 +160,81 @@ class ExpressionProfiles(models.Model):
 
 
 class Mrnas(models.Model):
-    mrna_id = models.CharField(db_column='mRNA_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mrna_id = models.CharField(db_column='mRNA_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    genome_assembly = models.CharField(max_length=30, blank=True, null=True)
+    annotation = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
         return self.mrna_id
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'mRNAs'
         verbose_name_plural = 'mRNAs'
 
+class GenomeAssembly(models.Model):
+    genome_assembly = models.CharField(max_length=30, blank=True, null=False, primary_key=True)
+    common_name = models.CharField(max_length=30, blank=True, null=True)
+    submitter = models.CharField(max_length=30, blank=True, null=True)
+    assembly_level = models.CharField(max_length=30, blank=True, null=True)
+    syonyms = models.CharField(max_length=30, blank=True, null=True)
+
+
+    def __str__(self):
+        return self.genome_assembly
+
+    class Meta:
+        managed = True
+        db_table = 'GenomeAssembly'
+        verbose_name_plural = 'GenomeAssembly'
+
 
 class Mirnas(models.Model):
-    mirna_name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mirna_name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
 
     def __str__(self):
         return self.mirna_name
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'miRNAs'
         verbose_name_plural = ' miRNAs'
-
-
-class MusicAlbum(models.Model):
-    artist = models.CharField(max_length=250)
-    album_title = models.CharField(max_length=500)
-    genre = models.CharField(max_length=100)
-    album_logo = models.CharField(max_length=1000)
-
-    class Meta:
-        managed = False
-        db_table = 'music_album'
-
-
-class MusicSong(models.Model):
-    file_type = models.CharField(max_length=10)
-    song_title = models.CharField(max_length=250)
-    album = models.ForeignKey(MusicAlbum, models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'music_song'
 
 
 class Species(models.Model):
     taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
     species_name = models.CharField(max_length=20, blank=True, null=True)
     genome_build = models.CharField(max_length=20, blank=True, null=True)
-    common_name = models.CharField(max_length=50, blank=True, null=True)
+    common_name = models.CharField(max_length=50, blank=True, null=False, primary_key=True)
 #     id = models.IntegerField(default=11, null=False, primary_key=True) 
 	
     def __str__(self):
 	     return self.common_name
 	     
     class Meta:
-        managed = False
+        managed = True
         db_table = 'species'
         verbose_name_plural = "Species"
 
 
 class Tissues(models.Model):
-    tissue_name = models.CharField(max_length=50, blank=True, null=True)
+    tissue_name = models.CharField(max_length=50, null=False, primary_key=True)
 
     def __str__(self):
         return self.tissue_name
         
     class Meta:
-        managed = False
+        managed = True
         db_table = 'tissues'
         verbose_name_plural = "Tissues"
 
-class MirnaForm(ModelForm):
-     mirnas = forms.ModelChoiceField(queryset = Mirnas.objects.all(), to_field_name="mirna_name")
-     class Meta:
-        model = Mirnas
-        fields = ['mirna_name']
+# class MirnaForm(ModelForm):
+#      mirnas = forms.ModelChoiceField(queryset = Mirnas.objects.all(), to_field_name="mirna_name")
+#      class Meta:
+#         model = Mirnas
+#         fields = ['mirna_name']
 
-class Contextpp_Form(ModelForm):
-    class Meta:
-        model = Contextpp
-        fields = ['mirna_name', 'transcript_id']
+# class Contextpp_Form(ModelForm):
+#     class Meta:
+#         model = Contextpp
+#         fields = ['mirna_name', 'transcript_id']
