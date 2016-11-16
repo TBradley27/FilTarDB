@@ -4,7 +4,7 @@ from .models import Species
 from .models import Mirnas
 from .models import Contextpp
 from .models import Experiments
-from .models import ExpressionProfiles
+# from .models import ExpressionProfiles
 from .forms import TPMForm
 from .forms import MirnaForm
 from .forms import TissueForm

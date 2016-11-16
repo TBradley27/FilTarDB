@@ -140,28 +140,27 @@ class DjangoSession(models.Model):
 
 class Experiments(models.Model):
     experiment_name = models.CharField(max_length=20, blank=True, null=False, primary_key=True)
-    taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    tissue_name = models.CharField(max_length=20, blank=True, null=True)
+    species = models.ForeignKey('Species', max_length=30, blank=True, null=True) # Field name made lowercase.
+    tissue = models.ForeignKey('Tissues', max_length=30, blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = 'experiments'
 
 class ExpressionProfiles(models.Model):
-    transcript_id = models.CharField(db_column='transcript_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
-    tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)
-    experiments = models.ForeignKey('Experiments', null=True, on_delete=models.CASCADE)
-
+     mrnas = models.ForeignKey('Mrnas', max_length=20, blank=True, null=False)  # Field name made lowercase.
+     tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)
+     experiments = models.ForeignKey('Experiments', null=True, on_delete=models.CASCADE)
         # models.CharField(db_column='experiment_name', max_length=20, blank=True, null=True)# Field name made lowercase.
 
-    class Meta:
+     class Meta:
         managed = True
         db_table = 'expression_profiles'
 
 
 class Mrnas(models.Model):
-    mrna_id = models.CharField(db_column='mRNA_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
-    genome_assembly = models.CharField(max_length=30, blank=True, null=True)
+    id = models.CharField(db_column='mRNA_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    genome_assembly = models.ForeignKey('GenomeAssembly', max_length=30, blank=True, null=True)
     annotation = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
@@ -174,7 +173,7 @@ class Mrnas(models.Model):
 
 class GenomeAssembly(models.Model):
     genome_assembly = models.CharField(max_length=30, blank=True, null=False, primary_key=True)
-    common_name = models.CharField(max_length=30, blank=True, null=True)
+    species = models.ForeignKey('Species', max_length=30, blank=True, null=True)
     submitter = models.CharField(max_length=30, blank=True, null=True)
     assembly_level = models.CharField(max_length=30, blank=True, null=True)
     syonyms = models.CharField(max_length=30, blank=True, null=True)
@@ -190,7 +189,7 @@ class GenomeAssembly(models.Model):
 
 
 class Mirnas(models.Model):
-    mirna_name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
 
     def __str__(self):
         return self.mirna_name
@@ -218,7 +217,7 @@ class Species(models.Model):
 
 
 class Tissues(models.Model):
-    tissue_name = models.CharField(max_length=50, null=False, primary_key=True)
+    name = models.CharField(max_length=50, null=False, primary_key=True)
 
     def __str__(self):
         return self.tissue_name
