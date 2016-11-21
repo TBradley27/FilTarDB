@@ -85,7 +85,6 @@ class Contextpp(models.Model): # Target Prediction Output table
     species = models.ForeignKey('Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True) #Field name made lower case
     site_type = models.CharField(db_column='Site_Type', max_length=20, blank=True, null=True)  # Field name made lowercase.
     contextpp_score = models.CharField(max_length=20, blank=True, null=True)
 
