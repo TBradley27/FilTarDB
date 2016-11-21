@@ -25,9 +25,9 @@ class TissueForm(forms.Form):
 class SpeciesForm(forms.Form):
     CHOICES = (('Human','Human'),
                ("Mouse","Mouse"),)
-    Species  = forms.ChoiceField(choices=CHOICES)
-    # Species = forms.ModelChoiceField(queryset=Species.objects.all(), to_field_name="common_name"
-    #                                  , empty_label="Choose your Species")
+    # Species  = forms.ChoiceField(choices=CHOICES)
+    Species = forms.ModelChoiceField(queryset=Species.objects.all(), to_field_name="taxonomic_id"
+                                     , empty_label="Choose your Species")
 
 
 #widget=forms.CheckboxSelectMultiple()

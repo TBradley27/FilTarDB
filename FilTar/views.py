@@ -49,8 +49,7 @@ def getname(request):
 
              scores = Contextpp.objects.filter(mirna=form_Mirnas
                                                ).filter(
-                 species=form_species).filter(
-                 tpm__range = [form_TPM,100])
+                 species=form_species)
 
              experiments = Experiments.objects.filter(tissue=form_tissue).values()
              experiment_ID = experiments[0]['experiment_name']
