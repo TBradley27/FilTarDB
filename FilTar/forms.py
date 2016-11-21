@@ -23,9 +23,11 @@ class TissueForm(forms.Form):
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
                                     , empty_label="Choose your tissue")
 class SpeciesForm(forms.Form):
-    # or with some filter applied
-    Species = forms.ModelChoiceField(queryset=Species.objects.all(), to_field_name="common_name"
-                                     , empty_label="Choose your Species")
+    CHOICES = (('Human','Human'),
+               ("Mouse","Mouse"),)
+    Species  = forms.ChoiceField(choices=CHOICES)
+    # Species = forms.ModelChoiceField(queryset=Species.objects.all(), to_field_name="common_name"
+    #                                  , empty_label="Choose your Species")
 
 
 #widget=forms.CheckboxSelectMultiple()
