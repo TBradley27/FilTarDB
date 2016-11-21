@@ -4,7 +4,7 @@ from .models import Species
 from .models import Mirnas
 from .models import Contextpp
 from .models import Experiments
-# from .models import ExpressionProfiles
+from .models import ExpressionProfiles
 from .forms import TPMForm
 from .forms import MirnaForm
 from .forms import TissueForm
@@ -13,6 +13,16 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
 from itertools import chain
+from django.db import connection
+from collections import namedtuple
+import decimal
+
+
+def namedtuplefetchall(cursor):
+    "Return all rows from a cursor as a namedtuple"
+    desc = cursor.description
+    nt_result = namedtuple('Result', [col[0] for col in desc])
+    return [nt_result(*row) for row in cursor.fetchall()]
 
 
 def getname(request):
@@ -37,26 +47,52 @@ def getname(request):
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['tissues']
 
-             scores = Contextpp.objects.filter(mirna_name=form_Mirnas
+             scores = Contextpp.objects.filter(mirna=form_Mirnas
                                                ).filter(
-                 common_name=form_species).filter(
+                 species=form_species).filter(
                  tpm__range = [form_TPM,100])
 
-             experiments = Experiments.objects.filter(tissue_name=form_tissue).values()
+             experiments = Experiments.objects.filter(tissue=form_tissue).values()
              experiment_ID = experiments[0]['experiment_name']
 
              expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing
 
+             # def get_context_scores(self):
+             #     with connection.cursor() as cursor:
+             #
+             #         row = cursor.fetchone()
+             #
+             #     return row
+
+             cursor = connection.cursor()
+             cursor.execute('''SELECT e.TPM
+                              FROM contextpp c
+                              JOIN expression_profiles e
+                              ON c.mrna_id = e.mrnas_id
+                              AND c.mirna_id = %s
+                              AND c.species_id = %s
+                              AND e.TPM >= %s''', [form_Mirnas, form_species, form_TPM])
+             row = namedtuplefetchall(cursor)
+
+
+
              # expression = ExpressionProfiles.objects.filter(experiment_name=experiment_ID)
 
              # scores_extra = scores.objects.filter()
+        y =[]
+        test = []
+        for x in range (0,len(row)):
+            y.append(row[x].TPM)
+            test.append(str(y[x]))
 
-             # print(x)
+        x = zip(scores, test)
+
+        # print(z)
 
              #     filter experiment_names data by tissue
              #     do a table join between experiments and expression profile table
 
-        return render(request, 'filtar/contextpptable.html', {'scores': scores}, {'expression': expression} )
+        return render(request, 'filtar/contextpptable.html', {'scores': scores, 'test': test, 'x':x} )
 
     else:
         form_TPM = TPMForm()

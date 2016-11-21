@@ -2,19 +2,6 @@
 
 {% block body %}
 
-<!--<table class="my-listing">-->
-    <!--<tr>-->
-        <!--<th></th>-->
-
-        <!--<th>TPM</th>-->
-    <!--</tr>-->
-    <!--{% for items in expression %}-->
-    <!--<tr>-->
-        <!--<td>{{ items.tpm }}</td>-->
-    <!--</tr>-->
-    <!--{% endfor %}-->
-<!--</table>-->
-
 
 <table class="my-listing">
     <tr>
@@ -28,19 +15,27 @@
         <th>Contextpp_score</th>
         <th>TPM</th>
     </tr>
-    {% for item in scores %}
+
+
+    <!--<tr>-->
+        <!--<td>{{ x }}</td>-->
+    <!--</tr>-->
+
+    {% for item, y in x %}
+
     <tr>
         <td>{{ item.contextpp.id }}</td>
-        <td>{{ item.mirna_name }}</td>
-        <td>{{ item.transcript_id }}</td>
-        <td>{{ item.common_name }}</td>
+        <td>{{ item.mirna }}</td>
+        <td>{{ item.mrna }}</td>
+        <td>{{ item.species }}</td>
         <td>{{ item.utr_start }}</td>
         <td>{{ item.utr_end }}</td>
-         <td>{{ item.site_type }}</td>
+        <td>{{ item.site_type }}</td>
         <td>{{ item.contextpp_score }}</td>
-        <td>{{ item.tpm }}</td>
+        <td>{{ y }}</td>
     </tr>
     {% endfor %}
+
 </table>
 <p></p>
 

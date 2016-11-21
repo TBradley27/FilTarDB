@@ -79,10 +79,10 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user', 'permission'),)
 
 
-class Contextpp(models.Model):
-    mirna_name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    transcript_id = models.CharField(db_column='transcript_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    common_name = models.CharField(db_column='common_name', max_length=20, blank=True, null=True)  # Field name made lowercase.
+class Contextpp(models.Model): # Target Prediction Output table
+    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    species = models.ForeignKey('Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
     tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True) #Field name made lower case
@@ -164,7 +164,7 @@ class Mrnas(models.Model):
     annotation = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
-        return self.mrna_id
+        return self.id
 
     class Meta:
         managed = True
@@ -192,7 +192,7 @@ class Mirnas(models.Model):
     name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
 
     def __str__(self):
-        return self.mirna_name
+        return self.name
 
     class Meta:
         managed = True
@@ -220,7 +220,7 @@ class Tissues(models.Model):
     name = models.CharField(max_length=50, null=False, primary_key=True)
 
     def __str__(self):
-        return self.tissue_name
+        return self.name
         
     class Meta:
         managed = True
