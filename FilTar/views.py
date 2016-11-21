@@ -19,6 +19,15 @@ import decimal
 from dal import autocomplete
 
 
+class CountryAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+
+        qs = Mirnas.objects.all()
+
+        return qs
+
+
+
 def namedtuplefetchall(cursor):
     "Return all rows from a cursor as a namedtuple"
     desc = cursor.description
