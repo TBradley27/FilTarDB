@@ -16,6 +16,7 @@ from itertools import chain
 from django.db import connection
 from collections import namedtuple
 import decimal
+from dal import autocomplete
 
 
 def namedtuplefetchall(cursor):
@@ -45,7 +46,7 @@ def getname(request):
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirnas']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
-             form_tissue = form_tissue.cleaned_data['tissues']
+             form_tissue = form_tissue.cleaned_data['Tissues']
 
              scores = Contextpp.objects.filter(mirna=form_Mirnas
                                                ).filter(
@@ -55,13 +56,6 @@ def getname(request):
              experiment_ID = experiments[0]['experiment_name']
 
              expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing
-
-             # def get_context_scores(self):
-             #     with connection.cursor() as cursor:
-             #
-             #         row = cursor.fetchone()
-             #
-             #     return row
 
              cursor = connection.cursor()
              cursor.execute('''SELECT e.TPM
@@ -73,25 +67,17 @@ def getname(request):
                               AND e.TPM >= %s''', [form_Mirnas, form_species, form_TPM])
              row = namedtuplefetchall(cursor)
 
+             y =[]
+             test = []
+             for x in range (0,len(row)):
+                y.append(row[x].TPM)
+                test.append(str(y[x]))
 
+             x = zip(scores, test)
 
-             # expression = ExpressionProfiles.objects.filter(experiment_name=experiment_ID)
+            # print(z)
 
-             # scores_extra = scores.objects.filter()
-        y =[]
-        test = []
-        for x in range (0,len(row)):
-            y.append(row[x].TPM)
-            test.append(str(y[x]))
-
-        x = zip(scores, test)
-
-        # print(z)
-
-             #     filter experiment_names data by tissue
-             #     do a table join between experiments and expression profile table
-
-        return render(request, 'filtar/contextpptable.html', {'scores': scores, 'test': test, 'x':x} )
+             return render(request, 'filtar/contextpptable.html', {'scores': scores, 'test': test, 'x':x} )
 
     else:
         form_TPM = TPMForm()
