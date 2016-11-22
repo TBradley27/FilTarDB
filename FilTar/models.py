@@ -215,8 +215,6 @@ class Species(models.Model):
         verbose_name_plural = "Species"
 
 
-testing
-
 class Tissues(models.Model):
     name = models.CharField(max_length=50, null=False, primary_key=True)
 
