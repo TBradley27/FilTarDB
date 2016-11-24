@@ -62,7 +62,7 @@ def getname(request):
                               JOIN expression_profiles e
                               ON c.mrna_id = e.mrnas_id
                               AND c.mirna_id = %s
-                              AND c.species_id = %s
+                              AND c.species = %s
                               AND e.TPM >= %s''', [form_Mirnas, form_species, form_TPM])
              row = namedtuplefetchall(cursor)
 
