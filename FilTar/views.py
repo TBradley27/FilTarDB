@@ -62,7 +62,7 @@ def getname(request):
                               JOIN expression_profiles e
                               ON c.mrna_id = e.mrnas_id
                               AND c.mirna_id = %s
-                              AND c.species = %s
+                              AND c.species_id = %s
                               AND e.TPM >= %s''', [form_Mirnas, form_species, form_TPM])
              row = namedtuplefetchall(cursor)
 
@@ -74,7 +74,7 @@ def getname(request):
 
              x = zip(scores, test)
 
-            # print(z)
+             print(z)
 
              return render(request, 'filtar/contextpptable.html', {'scores': scores, 'test': test, 'x':x} )
 
