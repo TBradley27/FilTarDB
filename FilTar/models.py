@@ -200,10 +200,10 @@ class Mirnas(models.Model):
 
 
 class Species(models.Model):
-    taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
     species_name = models.CharField(max_length=20, blank=True, null=True)
     genome_build = models.CharField(max_length=20, blank=True, null=True)
-    common_name = models.CharField(max_length=50, blank=True, null=False, primary_key=True)
+    common_name = models.CharField(max_length=50, blank=True, null=True)
 #     id = models.IntegerField(default=11, null=False, primary_key=True) 
 	
     def __str__(self):
