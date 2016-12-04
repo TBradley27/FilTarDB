@@ -82,7 +82,7 @@ class AuthUserUserPermissions(models.Model):
 class Contextpp(models.Model): # Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
     mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    species = models.ForeignKey('Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
     utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
     site_type = models.CharField(db_column='Site_Type', max_length=20, blank=True, null=True)  # Field name made lowercase.
