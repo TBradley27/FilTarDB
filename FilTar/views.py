@@ -51,10 +51,10 @@ def getname(request):
                                                ).filter(
                  species=form_species)
 
-             experiments = Experiments.objects.filter(tissue=form_tissue).values()
-             experiment_ID = experiments[0]['experiment_name']
+             experiments = Experiments.objects.filter(species=form_species) #.filter(tissue=form_tissue).values()
+             experiment_ID = experiments[1]['experiment_name'] #Change this
 
-             expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing
+             # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
 
              cursor = connection.cursor()
              cursor.execute('''SELECT e.TPM
@@ -74,7 +74,7 @@ def getname(request):
 
              x = zip(scores, test)
 
-             # print(z)
+             print(z)
 
              return render(request, 'filtar/contextpptable.html', {'scores': scores, 'test': test, 'x':x} )
 
