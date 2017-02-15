@@ -139,7 +139,7 @@ class DjangoSession(models.Model):
 
 class Experiments(models.Model):
     experiment_name = models.CharField(max_length=20, blank=True, null=False, primary_key=True)
-    species = models.CharField(max_length=30, blank=True, null=True) # Field name made lowercase.
+    species = models.ForeignKey('Species', max_length=30, blank=True, null=True) # Field name made lowercase.
     tissue = models.ForeignKey('Tissues', max_length=30, blank=True, null=True)
 
     class Meta:
@@ -172,7 +172,7 @@ class Mrnas(models.Model):
 
 class GenomeAssembly(models.Model):
     genome_assembly = models.CharField(max_length=30, blank=True, null=False, primary_key=True)
-    species = models.CharField(max_length=30, blank=True, null=True)
+    species = models.ForeignKey('Species', max_length=30, blank=True, null=True)
     submitter = models.CharField(max_length=30, blank=True, null=True)
     assembly_level = models.CharField(max_length=30, blank=True, null=True)
     syonyms = models.CharField(max_length=30, blank=True, null=True)
