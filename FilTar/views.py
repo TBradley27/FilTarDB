@@ -51,14 +51,14 @@ def getname(request):
              form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
+             experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
+             experiment_ID = experiments[0]['experiment_name']  # Change this
+
              if form_algorithm == 'TargetScan7':
 
                  scores = Contextpp.objects.filter(mirna=form_Mirnas
                                                    ).filter(
                      species=form_species)
-
-                 experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-                 experiment_ID = experiments[0]['experiment_name'] #Change this
 
                  # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
 
@@ -98,6 +98,9 @@ def getname(request):
                  # print(j)
 
                  return render(request, 'filtar/contextpptable.html', {'scores': scores, 'x':x} )
+
+             elif form_algorithm == 'miRanda':
+                 pass
              else:
                  pass
 
