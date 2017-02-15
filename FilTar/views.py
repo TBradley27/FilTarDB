@@ -9,6 +9,7 @@ from .forms import TPMForm
 from .forms import MirnaForm
 from .forms import TissueForm
 from .forms import SpeciesForm
+from .forms import AlgorithmForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
@@ -41,6 +42,8 @@ def getname(request):
         form_species = SpeciesForm(request.POST)
         form_TPM = TPMForm(request.POST)
         form_tissue = TissueForm(request.POST)
+        form_algorithm = AlgorithmForm(request.POST)
+
         if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirnas']
@@ -98,9 +101,10 @@ def getname(request):
         form_Mirnas = MirnaForm()
         form_tissue = TissueForm()
         form_species = SpeciesForm()
+        form_algorithm = AlgorithmForm()
 
     return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
-                                                  'form_tissue': form_tissue})
+                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue})
 
 def contextpp(request):
     scores = Contextpp.objects.all()
