@@ -44,57 +44,62 @@ def getname(request):
         form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid():
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirna']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['Tissue']
+             form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
-             scores = Contextpp.objects.filter(mirna=form_Mirnas
-                                               ).filter(
-                 species=form_species)
+             if form_algorithm == 'TargetScan7':
 
-             experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-             experiment_ID = experiments[0]['experiment_name'] #Change this
+                 scores = Contextpp.objects.filter(mirna=form_Mirnas
+                                                   ).filter(
+                     species=form_species)
 
-             # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
+                 experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
+                 experiment_ID = experiments[0]['experiment_name'] #Change this
 
-             cursor = connection.cursor()
-             cursor.execute('''SELECT e.TPM, c.mirna_id, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
-                              FROM contextpp c
-                              JOIN expression_profiles e
-                              ON c.mrna_id = e.mrnas_id
-                              AND c.mirna_id = %s
-                              AND c.Species = %s
-                              AND e.experiments_id = %s
-                              AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
-             row = namedtuplefetchall(cursor)
+                 # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
 
-             tpm = []
-             mirna_id = []
-             mrna_id = []
-             contextpp_score = []
-             utr_start = []
-             utr_end = []
-             site_type = []
-             for x in range (0,len(row)):
-                # y.append(row[x].TPM)
-                tpm.append(str(row[x].TPM))
-                mirna_id.append((row[x].mirna_id))
-                mrna_id.append((row[x].mrna_id))
-                contextpp_score.append((row[x].contextpp_score))
-                utr_start.append((row[x].UTR_START))
-                utr_end.append((row[x].UTR_END))
-                site_type.append((row[x].Site_Type))
+                 cursor = connection.cursor()
+                 cursor.execute('''SELECT e.TPM, c.mirna_id, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                  FROM contextpp c
+                                  JOIN expression_profiles e
+                                  ON c.mrna_id = e.mrnas_id
+                                  AND c.mirna_id = %s
+                                  AND c.Species = %s
+                                  AND e.experiments_id = %s
+                                  AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
+                 row = namedtuplefetchall(cursor)
+
+                 tpm = []
+                 mirna_id = []
+                 mrna_id = []
+                 contextpp_score = []
+                 utr_start = []
+                 utr_end = []
+                 site_type = []
+                 for x in range (0,len(row)):
+                    # y.append(row[x].TPM)
+                    tpm.append(str(row[x].TPM))
+                    mirna_id.append((row[x].mirna_id))
+                    mrna_id.append((row[x].mrna_id))
+                    contextpp_score.append((row[x].contextpp_score))
+                    utr_start.append((row[x].UTR_START))
+                    utr_end.append((row[x].UTR_END))
+                    site_type.append((row[x].Site_Type))
 
 
-                # contextpp_id.append(('')) #Dummy column because of weird column shift in output - weird
+                    # contextpp_id.append(('')) #Dummy column because of weird column shift in output - weird
 
-             x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
+                 x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
 
-             # print(j)
+                 # print(j)
 
-             return render(request, 'filtar/contextpptable.html', {'scores': scores, 'x':x} )
+                 return render(request, 'filtar/contextpptable.html', {'scores': scores, 'x':x} )
+             else:
+                 pass
 
     else:
         form_TPM = TPMForm()
