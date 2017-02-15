@@ -5,32 +5,29 @@
 
 <table class="my-listing">
     <tr>
-        <th></th>
         <th>miRNA</th>
         <th>Transcript_ID</th>
         <!--<th>Common_Name</th>-->
         <th>UTR_Start</th>
         <th>UTR_End</th>
         <th>Site_Type</th>
-        <th>Contextpp_score</th>
+        <th>TargetScan7</th>
         <th>TPM</th>
     </tr>
     <!--<tr>-->
         <!--<td>{{ x }}</td>-->
     <!--</tr>-->
 
-    {% for item, y in x %}
+    {% for mirna_id,mrna_id,utr_start,utr_end,site_type,contextpp_score,tpm in x %}
 
     <tr>
-        <td>{{ item.contextpp.id }}</td>
-        <td>{{ item.mirna }}</td>
-        <td>{{ item.mrna }}</td>
-        <!--<td>{{ item.species }}</td>-->
-        <td>{{ item.utr_start }}</td>
-        <td>{{ item.utr_end }}</td>
-        <td>{{ item.site_type }}</td>
-        <td>{{ item.contextpp_score }}</td>
-        <td>{{ y }}</td>
+        <td>{{ mirna_id }}</td>
+        <td>{{ mrna_id }}</td>
+        <td>{{ utr_start }}</td>
+        <td>{{ utr_end }}</td>
+        <td>{{ site_type }}</td>
+        <td>{{ contextpp_score }}</td>
+        <td>{{ tpm }}</td>
     </tr>
     {% endfor %}
 
