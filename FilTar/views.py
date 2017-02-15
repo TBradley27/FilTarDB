@@ -46,9 +46,9 @@ def getname(request):
 
         if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid():
              form_species = form_species.cleaned_data['Species']
-             form_Mirnas = form_Mirnas.cleaned_data['mirnas']
+             form_Mirnas = form_Mirnas.cleaned_data['mirna']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
-             form_tissue = form_tissue.cleaned_data['Tissues']
+             form_tissue = form_tissue.cleaned_data['Tissue']
 
              scores = Contextpp.objects.filter(mirna=form_Mirnas
                                                ).filter(
