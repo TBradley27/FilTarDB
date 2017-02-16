@@ -1,0 +1,35 @@
+{% extends 'FilTar/base.html' %}
+
+{% block body %}
+
+
+<table class="my-listing">
+    <tr>
+        <th>miRNA</th>
+        <th>Transcript_ID</th>
+        <!--<th>Common_Name</th>-->
+        <th>Start</th>
+        <th>End</th>
+        <th>miRanda_Score</th>
+        <th>TPM</th>
+    </tr>
+    <!--<tr>-->
+        <!--<td>{{ x }}</td>-->
+    <!--</tr>-->
+
+    {% for mirna_id,mrna_id,utr_start,utr_end,site_type,contextpp_score,tpm in x %}
+
+    <tr>
+        <td>{{ mirna_id }}</td>
+        <td>{{ mrna_id }}</td>
+        <td>{{ start }}</td>
+        <td>{{ end }}</td>
+        <td>{{ miranda_score }}</td>
+        <td>{{ tpm }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+<p></p>
+
+{% endblock %}
