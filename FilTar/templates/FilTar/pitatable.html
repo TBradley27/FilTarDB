@@ -2,25 +2,24 @@
 
 {% block body %}
 
-
 <table class="my-listing">
     <tr>
         <th>miRNA</th>
         <th>Transcript_ID</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>miRanda_Score</th>
+        <th>UTR_Start</th>
+        <th>UTR_End</th>
+        <th>PITA_Score</th>
         <th>TPM</th>
     </tr>
 
-    {% for mirna_id,mrna_id,utr_start,utr_end,site_type,contextpp_score,tpm in x %}
+    {% for Mirnas,Mrnas,start,end,PITA_score,tpm in x %}
 
     <tr>
-        <td>{{ mirna_id }}</td>
-        <td>{{ mrna_id }}</td>
+        <td>{{ Mirnas }}</td>
+        <td>{{ Mrnas }}</td>
         <td>{{ start }}</td>
         <td>{{ end }}</td>
-        <td>{{ miranda_score }}</td>
+        <td>{{ PITA_score }}</td>
         <td>{{ tpm }}</td>
     </tr>
     {% endfor %}

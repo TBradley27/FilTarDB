@@ -92,6 +92,19 @@ class Contextpp(models.Model): # Target Prediction Output table
         managed = True
         db_table = 'contextpp'
 
+class PITA(models.Model): # Target Prediction Output table
+    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    pita_score = models.CharField(db_column="PITA_score", max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pita'
+
+
 class MiRanda(models.Model): # miRanda Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
     mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.

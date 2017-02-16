@@ -5,6 +5,7 @@ from .models import Mirnas
 from .models import Contextpp
 from .models import MiRanda
 from .models import Experiments
+from .models import PITA
 from .models import ExpressionProfiles
 from .forms import TPMForm
 from .forms import MirnaForm
@@ -106,8 +107,6 @@ def getname(request):
                                                    ).filter(
                      species=form_species)
 
-                 # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
-
                  cursor = connection.cursor()
                  cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miranda_score, m.Start_pos, m.End_pos
                                                    FROM miRanda m
@@ -121,31 +120,59 @@ def getname(request):
                  row = namedtuplefetchall(cursor)
 
                  tpm = []
-                 mirna_id = []
-                 mrna_id = []
+                 Mirnas = []
+                 Mrnas = []
                  miranda_score = []
                  start = []
                  end = []
                  for x in range(0, len(row)):
                      tpm.append(str(row[x].TPM))
-                     mirna_id.append((row[x].Mirnas))
-                     mrna_id.append((row[x].Mrnas))
+                     Mirnas.append((row[x].Mirnas))
+                     Mrnas.append((row[x].Mrnas))
                      miranda_score.append((row[x].miranda_score))
                      start.append((row[x].Start_pos))
                      end.append((row[x].End_pos))
 
-
-                     # contextpp_id.append(('')) #Dummy column because of weird column shift in output - weird
-
                  x = zip(mirna_id, mrna_id, start, end, miranda_score, tpm)
-
-                 # print(j)
 
                  return render(request, 'filtar/mirandatable.html', {'scores': scores, 'x': x})
 
 
              else:
-                 pass
+
+                 scores = PITA.objects.filter(mirna=form_Mirnas
+                                                 ).filter(
+                     species=form_species)
+
+                 cursor = connection.cursor()
+                 cursor.execute('''SELECT e.TPM, p.Mrnas, p.Mirnas, p.PITA_score, p.UTR_START, p.UTR_END
+                                                                    FROM PITA p
+                                                                    JOIN expression_profiles e
+                                                                    ON p.Mrnas = e.mrnas_id
+                                                                    AND p.Mirnas = %s
+                                                                    AND p.Species = %s
+                                                                    AND e.experiments_id = %s
+                                                                    AND e.TPM >= %s''',
+                                [form_Mirnas, form_species, experiment_ID, form_TPM])
+                 row = namedtuplefetchall(cursor)
+
+                 tpm = []
+                 Mirnas= []
+                 Mrnas = []
+                 PITA_score = []
+                 start = []
+                 end = []
+                 for x in range(0, len(row)):
+                     tpm.append(str(row[x].TPM))
+                     Mirnas.append((row[x].Mirnas))
+                     Mrnas.append((row[x].Mrnas))
+                     PITA_score.append((row[x].PITA_score))
+                     start.append((row[x].UTR_START))
+                     end.append((row[x].UTR_END))
+
+                 x = zip(Mirnas, Mrnas, start, end, PITA_score, tpm)
+
+                 return render(request, 'filtar/pitatable.html', {'scores': scores, 'x': x})
 
     else:
         form_TPM = TPMForm()
