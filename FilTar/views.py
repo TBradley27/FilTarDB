@@ -136,7 +136,7 @@ def getname(request):
 
                      # contextpp_id.append(('')) #Dummy column because of weird column shift in output - weird
 
-                 x = zip(mirna_id, mrna_id, utr_start, utr_end, miranda_score, tpm)
+                 x = zip(mirna_id, mrna_id, start, end, miranda_score, tpm)
 
                  # print(j)
 
