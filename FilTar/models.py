@@ -98,7 +98,7 @@ class MiRanda(models.Model): # miRanda Target Prediction Output table
     species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
     start = models.CharField(db_column='Start_pos', max_length=20, blank=True, null=True)  # Field name made lowercase.
     end = models.CharField(db_column='End_pos', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    miranda_score = models.CharField(db_column="miRanda_score', max_length=20, blank=True, null=True)
+    miranda_score = models.CharField(db_column="miRanda_score", max_length=20, blank=True, null=True)
 
     class Meta:
         managed = False

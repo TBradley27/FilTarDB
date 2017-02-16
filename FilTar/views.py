@@ -3,6 +3,7 @@ from django.views import generic
 from .models import Species
 from .models import Mirnas
 from .models import Contextpp
+from .models import MiRanda
 from .models import Experiments
 from .models import ExpressionProfiles
 from .forms import TPMForm
@@ -108,11 +109,11 @@ def getname(request):
                  # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
 
                  cursor = connection.cursor()
-                 cursor.execute('''SELECT e.TPM, m.mirna_id, m.mrna_id, m.miranda_score, m.Start_pos, m.End_pos
+                 cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miranda_score, m.Start_pos, m.End_pos
                                                    FROM miRanda m
                                                    JOIN expression_profiles e
-                                                   ON m.mrna_id = e.mrnas_id
-                                                   AND m.mirna_id = %s
+                                                   ON m.Mrnas = e.mrnas_id
+                                                   AND m.Mirnas = %s
                                                    AND m.Species = %s
                                                    AND e.experiments_id = %s
                                                    AND e.TPM >= %s''',
@@ -127,8 +128,8 @@ def getname(request):
                  end = []
                  for x in range(0, len(row)):
                      tpm.append(str(row[x].TPM))
-                     mirna_id.append((row[x].mirna_id))
-                     mrna_id.append((row[x].mrna_id))
+                     mirna_id.append((row[x].Mirnas))
+                     mrna_id.append((row[x].Mrnas))
                      miranda_score.append((row[x].miranda_score))
                      start.append((row[x].Start_pos))
                      end.append((row[x].End_pos))
