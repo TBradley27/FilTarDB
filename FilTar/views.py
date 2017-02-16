@@ -100,7 +100,49 @@ def getname(request):
                  return render(request, 'filtar/contextpptable.html', {'scores': scores, 'x':x} )
 
              elif form_algorithm == 'miRanda':
-                 pass
+
+                 scores = MiRanda.objects.filter(mirna=form_Mirnas
+                                                   ).filter(
+                     species=form_species)
+
+                 # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
+
+                 cursor = connection.cursor()
+                 cursor.execute('''SELECT e.TPM, m.mirna_id, m.mrna_id, m.miranda_score, m.Start_pos, m.End_pos
+                                                   FROM miRanda m
+                                                   JOIN expression_profiles e
+                                                   ON m.mrna_id = e.mrnas_id
+                                                   AND m.mirna_id = %s
+                                                   AND m.Species = %s
+                                                   AND e.experiments_id = %s
+                                                   AND e.TPM >= %s''',
+                                [form_Mirnas, form_species, experiment_ID, form_TPM])
+                 row = namedtuplefetchall(cursor)
+
+                 tpm = []
+                 mirna_id = []
+                 mrna_id = []
+                 miranda_score = []
+                 start = []
+                 end = []
+                 for x in range(0, len(row)):
+                     tpm.append(str(row[x].TPM))
+                     mirna_id.append((row[x].mirna_id))
+                     mrna_id.append((row[x].mrna_id))
+                     miranda_score.append((row[x].miranda_score))
+                     start.append((row[x].Start_pos))
+                     end.append((row[x].End_pos))
+
+
+                     # contextpp_id.append(('')) #Dummy column because of weird column shift in output - weird
+
+                 x = zip(mirna_id, mrna_id, utr_start, utr_end, miranda_score, tpm)
+
+                 # print(j)
+
+                 return render(request, 'filtar/mirandatable.html', {'scores': scores, 'x': x})
+
+
              else:
                  pass
 
