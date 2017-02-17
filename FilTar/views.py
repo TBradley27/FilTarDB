@@ -103,12 +103,12 @@ def getname(request):
 
              elif form_algorithm == 'miRanda':
 
-                 scores = MiRanda.objects.filter(mirna=form_Mirnas
-                                                   ).filter(
-                     species=form_species)
+                 # scores = MiRanda.objects.filter(mirna=form_Mirnas
+                 #                                   ).filter(
+                 #     species=form_species)
 
                  cursor = connection.cursor()
-                 cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miranda_score, m.Start_pos, m.End_pos
+                 cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miranda_score, m.UTR_start, m.UTR_end, m.species
                                                    FROM miRanda m
                                                    JOIN expression_profiles e
                                                    ON m.Mrnas = e.mrnas_id
@@ -116,26 +116,29 @@ def getname(request):
                                                    AND m.Species = %s
                                                    AND e.experiments_id = %s
                                                    AND e.TPM >= %s''',
-                                [form_Mirnas, form_species, experiment_ID, form_TPM])
+                                [form_Mirnas, form_species, experiment_ID, form_TPM, ])
                  row = namedtuplefetchall(cursor)
 
                  tpm = []
                  Mirnas = []
+                 utr_start = []
+                 utr_end = []
                  Mrnas = []
                  miranda_score = []
-                 start = []
-                 end = []
+
                  for x in range(0, len(row)):
                      tpm.append(str(row[x].TPM))
                      Mirnas.append((row[x].Mirnas))
                      Mrnas.append((row[x].Mrnas))
+                     utr_start.append((row[x].UTR_start))
+                     utr_end.append((row[x].UTR_end))
                      miranda_score.append((row[x].miranda_score))
-                     start.append((row[x].Start_pos))
-                     end.append((row[x].End_pos))
 
-                 x = zip(mirna_id, mrna_id, start, end, miranda_score, tpm)
+                 x = zip(Mirnas, Mrnas, miranda_score, tpm, utr_start, utr_end)
 
-                 return render(request, 'filtar/mirandatable.html', {'scores': scores, 'x': x})
+                 #y
+
+                 return render(request, 'filtar/miRandatable.html', {'x': x})
 
 
              else:

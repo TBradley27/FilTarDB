@@ -7,19 +7,19 @@
     <tr>
         <th>miRNA</th>
         <th>Transcript_ID</th>
-        <th>Start</th>
-        <th>End</th>
+        <th>UTR_Start</th>
+        <th>UTR_End</th>
         <th>miRanda_Score</th>
         <th>TPM</th>
     </tr>
 
-    {% for mirna_id,mrna_id,utr_start,utr_end,site_type,contextpp_score,tpm in x %}
+    {% for Mirnas,Mrnas,miranda_score,tpm, utr_start, utr_end in x %}
 
     <tr>
-        <td>{{ mirna_id }}</td>
-        <td>{{ mrna_id }}</td>
-        <td>{{ start }}</td>
-        <td>{{ end }}</td>
+        <td>{{ Mirnas }}</td>
+        <td>{{ Mrnas }}</td>
+        <td>{{ utr_start }}</td>
+        <td>{{ utr_end }}</td>
         <td>{{ miranda_score }}</td>
         <td>{{ tpm }}</td>
     </tr>

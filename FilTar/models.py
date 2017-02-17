@@ -109,8 +109,8 @@ class MiRanda(models.Model): # miRanda Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
     mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
     species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    start = models.CharField(db_column='Start_pos', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    end = models.CharField(db_column='End_pos', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_start = models.CharField(db_column='UTR_start', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_end = models.CharField(db_column='UTR_end', max_length=20, blank=True, null=True)  # Field name made lowercase.
     miranda_score = models.CharField(db_column="miRanda_score", max_length=20, blank=True, null=True)
 
     class Meta:
