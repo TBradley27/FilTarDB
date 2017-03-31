@@ -58,9 +58,9 @@ def getname(request):
 
              if form_algorithm == 'TargetScan7':
 
-                 scores = Contextpp.objects.filter(mirna=form_Mirnas
-                                                   ).filter(
-                     species=form_species)
+                 #scores = Contextpp.objects.filter(mirna=form_Mirnas
+                  #                                 ).filter(
+                   #  species=form_species)
 
                  # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
 
@@ -74,6 +74,8 @@ def getname(request):
                                   AND e.experiments_id = %s
                                   AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
                  row = namedtuplefetchall(cursor)
+
+                 #y
 
                  tpm = []
                  mirna_id = []
@@ -99,7 +101,7 @@ def getname(request):
 
                  # print(j)
 
-                 return render(request, 'filtar/contextpptable.html', {'scores': scores, 'x':x} )
+                 return render(request, 'filtar/contextpptable.html', {'x':x} )
 
              elif form_algorithm == 'miRanda':
 
@@ -108,15 +110,14 @@ def getname(request):
                  #     species=form_species)
 
                  cursor = connection.cursor()
-                 cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miranda_score, m.UTR_start, m.UTR_end, m.species
+                 cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miRanda_score, m.UTR_start, m.UTR_end
                                                    FROM miRanda m
                                                    JOIN expression_profiles e
                                                    ON m.Mrnas = e.mrnas_id
                                                    AND m.Mirnas = %s
                                                    AND m.Species = %s
                                                    AND e.experiments_id = %s
-                                                   AND e.TPM >= %s''',
-                                [form_Mirnas, form_species, experiment_ID, form_TPM, ])
+                                                   AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
                  row = namedtuplefetchall(cursor)
 
                  tpm = []
@@ -132,11 +133,9 @@ def getname(request):
                      Mrnas.append((row[x].Mrnas))
                      utr_start.append((row[x].UTR_start))
                      utr_end.append((row[x].UTR_end))
-                     miranda_score.append((row[x].miranda_score))
+                     miranda_score.append((row[x].miRanda_score))
 
                  x = zip(Mirnas, Mrnas, miranda_score, tpm, utr_start, utr_end)
-
-                 #y
 
                  return render(request, 'filtar/miRandatable.html', {'x': x})
 
