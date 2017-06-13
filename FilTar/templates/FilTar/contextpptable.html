@@ -3,36 +3,59 @@
 {% block body %}
 
 
-<table class="my-listing">
+<table class="my-listing", id="myTable">
     <tr>
         <th>miRNA</th>
         <th>Transcript_ID</th>
-        <!--<th>Common_Name</th>-->
+        <th>Gene Name</th>
         <th>UTR_Start</th>
         <th>UTR_End</th>
         <th>Site_Type</th>
         <th>TargetScan7</th>
         <th>TPM</th>
     </tr>
-    <!--<tr>-->
-        <!--<td>{{ x }}</td>-->
-    <!--</tr>-->
 
-    {% for mirna_id,mrna_id,utr_start,utr_end,site_type,contextpp_score,tpm in x %}
+    <!-- mirna_id,mrna_id,utr_start,utr_end,site_type,contextpp_score,tpm in x %}-->
+    {% for row in rows %}
 
     <tr>
-        <td>{{ mirna_id }}</td>
-        <td>{{ mrna_id }}</td>
-        <td>{{ utr_start }}</td>
-        <td>{{ utr_end }}</td>
-        <td>{{ site_type }}</td>
-        <td>{{ contextpp_score }}</td>
-        <td>{{ tpm }}</td>
+        <td>{{ row.mirna_id }}</td>
+        <td>{{ row.mrna_id }}</td>
+        <td>{{ row.Gene_Name }}</td>
+        <td>{{ row.UTR_START }}</td>
+        <td>{{ row.UTR_END }}</td>
+        <td>{{ row.Site_Type }}</td>
+        <td>{{ row.contextpp_score }}</td>
+        <td>{{ row.TPM }}</td>
     </tr>
     {% endfor %}
 
 </table>
 <p></p>
+
+{% if rows.has_other_pages %}
+  <ul class="pagination">
+    {% if rows.has_previous %}
+      <li><a href="?page={{ rows.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in rows.paginator.page_range %}
+      {% if rows.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if rows.has_next %}
+      <li><a href="?page={{ rows.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
 
 {% endblock %}
 
