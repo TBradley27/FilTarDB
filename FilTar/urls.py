@@ -7,9 +7,9 @@ urlpatterns = [
 
     # /filtar/
 
-     url(r'^getname$', views.getname, name='get_name'),
+     url(r'^getname/', views.getname, name='get_name'),
 
-    url(r'^context$', views.contextpp, name='contextpp'),
+    url(r'^context$', views.getname, name='contextpp'),
 
      url(r'^$', views.IndexView.as_view(), name='index'),
     
