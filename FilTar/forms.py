@@ -21,7 +21,8 @@ class MirnaForm(forms.Form):
 class TissueForm(forms.Form):
     CHOICES = (('Liver', 'Liver'),
                ('Kidney', 'Kidney'),)
-    Tissue = forms.ChoiceField(choices=CHOICES)
+    Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
+                                    , empty_label="Choose your tissue or cell line")
     # tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
     #                                 , empty_label="Choose your tissue")
 class SpeciesForm(forms.Form):
@@ -36,6 +37,14 @@ class AlgorithmForm(forms.Form):
                ('miRanda','miRanda'),
                ('PITA','PITA'),)
     Algorithm = forms.ChoiceField(choices=CHOICES)
+
+class OrderForm(forms.Form):
+    CHOICES = ((5, '3UTR Start Position'),
+           (6, '3UTR End Position'),
+           (3, 'Prediction Score'),
+           (0, 'Expression Value'),)
+    Order = forms.ChoiceField(choices=CHOICES)
+
 
 
 
