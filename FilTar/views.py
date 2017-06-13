@@ -12,6 +12,7 @@ from .forms import MirnaForm
 from .forms import TissueForm
 from .forms import SpeciesForm
 from .forms import AlgorithmForm
+from .forms import OrderForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
@@ -19,7 +20,9 @@ from itertools import chain
 from django.db import connection
 from collections import namedtuple
 import decimal
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import redirect
+from operator import itemgetter
 
 def namedtuplefetchall(cursor):
     "Return all rows from a cursor as a namedtuple"
@@ -30,52 +33,45 @@ def namedtuplefetchall(cursor):
 
 def getname(request):
 
-    # if request.method == 'POST':
-    #     form = SomeForm(request.POST)
-    #     if form.is_valid():
-    #         # picked = form.cleaned_data.get('picked')
-    #         return HttpResponseRedirect('/thanks/')
-    # else:
-    #     form = SomeForm()
-    # # return render(request, 'filtar/testing.html', {'form': form})
-
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
         form_species = SpeciesForm(request.POST)
         form_TPM = TPMForm(request.POST)
         form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
+        form_order = OrderForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid():
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid() and form_order.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirna']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
+             form_order = form_order.cleaned_data['Order']
 
              experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-             experiment_ID = experiments[0]['experiment_name']  # Change this
+             experiment_ID = experiments[0]['experiment_name'] # Change this
 
              if form_algorithm == 'TargetScan7':
 
-                 #scores = Contextpp.objects.filter(mirna=form_Mirnas
-                  #                                 ).filter(
-                   #  species=form_species)
-
-                 # expression = ExpressionProfiles.objects.filter(experiments__experiment_name=experiment_ID) # This is very confusing - I don't think this line is doing anything at the moment
-
                  cursor = connection.cursor()
-                 cursor.execute('''SELECT e.TPM, c.mirna_id, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                 cursor.execute('''
+                                  SELECT e.TPM, c.mirna_id, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
                                   FROM contextpp c
                                   JOIN expression_profiles e
                                   ON c.mrna_id = e.mrnas_id
                                   AND c.mirna_id = %s
                                   AND c.Species = %s
                                   AND e.experiments_id = %s
-                                  AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
-                 row = namedtuplefetchall(cursor)
+                                  AND e.TPM >= %s
+                                  JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
+                                  ORDER BY %s DESC''', [form_Mirnas, form_species, experiment_ID, form_TPM, form_order ])
 
-                 #y
+                 # ORDER BY @ var1 DESC
+                 # JOIN mRNAs r ON c.mrna_id = r.mRNA_ID    (r.Gene_Name)
+
+                 row = namedtuplefetchall(cursor)
+                 row.sort(key=itemgetter(int(form_order)), reverse=True)
 
                  tpm = []
                  mirna_id = []
@@ -94,14 +90,19 @@ def getname(request):
                     utr_end.append((row[x].UTR_END))
                     site_type.append((row[x].Site_Type))
 
-
-                    # contextpp_id.append(('')) #Dummy column because of weird column shift in output - weird
-
                  x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
 
-                 # print(j)
+                 page = request.GET.get('page')
 
-                 return render(request, 'filtar/contextpptable.html', {'x':x} )
+                 paginator = Paginator(row, 30)
+                 try:
+                     rows = paginator.page(page)
+                 except PageNotAnInteger:
+                     rows = paginator.page(1)
+                 except EmptyPage:
+                     rows = paginator.page(paginator.num_pages)
+
+                 return render(request, 'filtar/contextpptable.html' , {'rows':rows} )
 
              elif form_algorithm == 'miRanda':
 
@@ -176,15 +177,16 @@ def getname(request):
 
                  return render(request, 'filtar/pitatable.html', {'scores': scores, 'x': x})
 
-    else:
+    elif request.method == 'GET':
         form_TPM = TPMForm()
         form_Mirnas = MirnaForm()
         form_tissue = TissueForm()
         form_species = SpeciesForm()
         form_algorithm = AlgorithmForm()
+        form_order = OrderForm()
 
     return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
-                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue})
+                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue, 'form_order' : form_order })
 
 def contextpp(request):
     scores = Contextpp.objects.all()
