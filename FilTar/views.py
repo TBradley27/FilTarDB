@@ -31,6 +31,72 @@ def namedtuplefetchall(cursor):
     return [nt_result(*row) for row in cursor.fetchall()]
 
 
+def nextview(request):
+
+    form_species = request.session.get('species')
+    form_Mirnas = request.session.get('mirna')
+    form_TPM = request.session.get('tpm')
+    form_algorithm = request.session.get('algorithm')
+    form_order = request.session.get('order')
+    form_tissue = request.session.get('tissue')
+
+    experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
+    experiment_ID = experiments[0]['experiment_name']  # Change this
+
+    if form_algorithm == 'TargetScan7':
+
+        cursor = connection.cursor()
+        cursor.execute('''
+                                      SELECT e.TPM, c.mirna_id, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                      FROM contextpp c
+                                      JOIN expression_profiles e
+                                      ON c.mrna_id = e.mrnas_id
+                                      AND c.mirna_id = %s
+                                      AND c.Species = %s
+                                      AND e.experiments_id = %s
+                                      AND e.TPM >= %s
+                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
+                                      ORDER BY %s DESC''',
+                       [form_Mirnas, form_species, experiment_ID, form_TPM, form_order])
+
+        # ORDER BY @ var1 DESC
+        # JOIN mRNAs r ON c.mrna_id = r.mRNA_ID    (r.Gene_Name)
+
+        row = namedtuplefetchall(cursor)
+        row.sort(key=itemgetter(int(form_order)), reverse=True)
+
+        tpm = []
+        mirna_id = []
+        mrna_id = []
+        contextpp_score = []
+        utr_start = []
+        utr_end = []
+        site_type = []
+        for x in range(0, len(row)):
+            # y.append(row[x].TPM)
+            tpm.append(str(row[x].TPM))
+            mirna_id.append((row[x].mirna_id))
+            mrna_id.append((row[x].mrna_id))
+            contextpp_score.append((row[x].contextpp_score))
+            utr_start.append((row[x].UTR_START))
+            utr_end.append((row[x].UTR_END))
+            site_type.append((row[x].Site_Type))
+
+        x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
+
+        page = request.GET.get('page')
+
+        paginator = Paginator(row, 30)
+        try:
+            rows = paginator.page(page)
+        except PageNotAnInteger:
+            rows = paginator.page(1)
+        except EmptyPage:
+            rows = paginator.page(paginator.num_pages)
+
+        return render(request, 'filtar/contextpptable.html', {'rows': rows})
+
+
 def getname(request):
 
     if request.method == 'POST':
@@ -49,133 +115,89 @@ def getname(request):
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
              form_order = form_order.cleaned_data['Order']
 
-             experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-             experiment_ID = experiments[0]['experiment_name'] # Change this
+             request.session['species'] = form_species
+             request.session['mirna'] = str(form_Mirnas)
+             request.session['tpm'] = form_TPM
+             request.session['tissue'] = str(form_tissue)
+             request.session['algorithm'] = form_algorithm
+             request.session['order'] = form_order
 
-             if form_algorithm == 'TargetScan7':
-
-                 cursor = connection.cursor()
-                 cursor.execute('''
-                                  SELECT e.TPM, c.mirna_id, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
-                                  FROM contextpp c
-                                  JOIN expression_profiles e
-                                  ON c.mrna_id = e.mrnas_id
-                                  AND c.mirna_id = %s
-                                  AND c.Species = %s
-                                  AND e.experiments_id = %s
-                                  AND e.TPM >= %s
-                                  JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
-                                  ORDER BY %s DESC''', [form_Mirnas, form_species, experiment_ID, form_TPM, form_order ])
-
-                 # ORDER BY @ var1 DESC
-                 # JOIN mRNAs r ON c.mrna_id = r.mRNA_ID    (r.Gene_Name)
-
-                 row = namedtuplefetchall(cursor)
-                 row.sort(key=itemgetter(int(form_order)), reverse=True)
-
-                 tpm = []
-                 mirna_id = []
-                 mrna_id = []
-                 contextpp_score = []
-                 utr_start = []
-                 utr_end = []
-                 site_type = []
-                 for x in range (0,len(row)):
-                    # y.append(row[x].TPM)
-                    tpm.append(str(row[x].TPM))
-                    mirna_id.append((row[x].mirna_id))
-                    mrna_id.append((row[x].mrna_id))
-                    contextpp_score.append((row[x].contextpp_score))
-                    utr_start.append((row[x].UTR_START))
-                    utr_end.append((row[x].UTR_END))
-                    site_type.append((row[x].Site_Type))
-
-                 x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
-
-                 page = request.GET.get('page')
-
-                 paginator = Paginator(row, 30)
-                 try:
-                     rows = paginator.page(page)
-                 except PageNotAnInteger:
-                     rows = paginator.page(1)
-                 except EmptyPage:
-                     rows = paginator.page(paginator.num_pages)
-
-                 return render(request, 'filtar/contextpptable.html' , {'rows':rows} )
-
-             elif form_algorithm == 'miRanda':
-
-                 # scores = MiRanda.objects.filter(mirna=form_Mirnas
-                 #                                   ).filter(
-                 #     species=form_species)
-
-                 cursor = connection.cursor()
-                 cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miRanda_score, m.UTR_start, m.UTR_end
-                                                   FROM miRanda m
-                                                   JOIN expression_profiles e
-                                                   ON m.Mrnas = e.mrnas_id
-                                                   AND m.Mirnas = %s
-                                                   AND m.Species = %s
-                                                   AND e.experiments_id = %s
-                                                   AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
-                 row = namedtuplefetchall(cursor)
-
-                 tpm = []
-                 Mirnas = []
-                 utr_start = []
-                 utr_end = []
-                 Mrnas = []
-                 miranda_score = []
-
-                 for x in range(0, len(row)):
-                     tpm.append(str(row[x].TPM))
-                     Mirnas.append((row[x].Mirnas))
-                     Mrnas.append((row[x].Mrnas))
-                     utr_start.append((row[x].UTR_start))
-                     utr_end.append((row[x].UTR_end))
-                     miranda_score.append((row[x].miRanda_score))
-
-                 x = zip(Mirnas, Mrnas, miranda_score, tpm, utr_start, utr_end)
-
-                 return render(request, 'filtar/miRandatable.html', {'x': x})
+             return HttpResponseRedirect('/filtar/nextview')
 
 
-             else:
 
-                 scores = PITA.objects.filter(mirna=form_Mirnas
-                                                 ).filter(
-                     species=form_species)
-
-                 cursor = connection.cursor()
-                 cursor.execute('''SELECT e.TPM, p.Mrnas, p.Mirnas, p.PITA_score, p.UTR_START, p.UTR_END
-                                                                    FROM PITA p
-                                                                    JOIN expression_profiles e
-                                                                    ON p.Mrnas = e.mrnas_id
-                                                                    AND p.Mirnas = %s
-                                                                    AND p.Species = %s
-                                                                    AND e.experiments_id = %s
-                                                                    AND e.TPM >= %s''',
-                                [form_Mirnas, form_species, experiment_ID, form_TPM])
-                 row = namedtuplefetchall(cursor)
-
-                 tpm = []
-                 Mirnas= []
-                 Mrnas = []
-                 PITA_score = []
-                 start = []
-                 end = []
-                 for x in range(0, len(row)):
-                     tpm.append(str(row[x].TPM))
-                     Mirnas.append((row[x].Mirnas))
-                     Mrnas.append((row[x].Mrnas))
-                     PITA_score.append((row[x].PITA_score))
-                     start.append((row[x].UTR_START))
-                     end.append((row[x].UTR_END))
-
-                 x = zip(Mirnas, Mrnas, start, end, PITA_score, tpm)
-
-                 return render(request, 'filtar/pitatable.html', {'scores': scores, 'x': x})
+             # elif form_algorithm == 'miRanda':
+             #
+             #     # scores = MiRanda.objects.filter(mirna=form_Mirnas
+             #     #                                   ).filter(
+             #     #     species=form_species)
+             #
+             #     cursor = connection.cursor()
+             #     cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miRanda_score, m.UTR_start, m.UTR_end
+             #                                       FROM miRanda m
+             #                                       JOIN expression_profiles e
+             #                                       ON m.Mrnas = e.mrnas_id
+             #                                       AND m.Mirnas = %s
+             #                                       AND m.Species = %s
+             #                                       AND e.experiments_id = %s
+             #                                       AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
+             #     row = namedtuplefetchall(cursor)
+             #
+             #     tpm = []
+             #     Mirnas = []
+             #     utr_start = []
+             #     utr_end = []
+             #     Mrnas = []
+             #     miranda_score = []
+             #
+             #     for x in range(0, len(row)):
+             #         tpm.append(str(row[x].TPM))
+             #         Mirnas.append((row[x].Mirnas))
+             #         Mrnas.append((row[x].Mrnas))
+             #         utr_start.append((row[x].UTR_start))
+             #         utr_end.append((row[x].UTR_end))
+             #         miranda_score.append((row[x].miRanda_score))
+             #
+             #     x = zip(Mirnas, Mrnas, miranda_score, tpm, utr_start, utr_end)
+             #
+             #     return render(request, 'filtar/miRandatable.html', {'x': x})
+             #
+             #
+             # else:
+             #
+             #     scores = PITA.objects.filter(mirna=form_Mirnas
+             #                                     ).filter(
+             #         species=form_species)
+             #
+             #     cursor = connection.cursor()
+             #     cursor.execute('''SELECT e.TPM, p.Mrnas, p.Mirnas, p.PITA_score, p.UTR_START, p.UTR_END
+             #                                                        FROM PITA p
+             #                                                        JOIN expression_profiles e
+             #                                                        ON p.Mrnas = e.mrnas_id
+             #                                                        AND p.Mirnas = %s
+             #                                                        AND p.Species = %s
+             #                                                        AND e.experiments_id = %s
+             #                                                        AND e.TPM >= %s''',
+             #                    [form_Mirnas, form_species, experiment_ID, form_TPM])
+             #     row = namedtuplefetchall(cursor)
+             #
+             #     tpm = []
+             #     Mirnas= []
+             #     Mrnas = []
+             #     PITA_score = []
+             #     start = []
+             #     end = []
+             #     for x in range(0, len(row)):
+             #         tpm.append(str(row[x].TPM))
+             #         Mirnas.append((row[x].Mirnas))
+             #         Mrnas.append((row[x].Mrnas))
+             #         PITA_score.append((row[x].PITA_score))
+             #         start.append((row[x].UTR_START))
+             #         end.append((row[x].UTR_END))
+             #
+             #     x = zip(Mirnas, Mrnas, start, end, PITA_score, tpm)
+             #
+             #     return render(request, 'filtar/pitatable.html', {'scores': scores, 'x': x})
 
     elif request.method == 'GET':
         form_TPM = TPMForm()
