@@ -11,10 +11,11 @@
 
 {% block body %}
 
+miRNA: <b>{{ mirna }}</b>
+
 <table class="tablesorter-blue", id="myTable">
     <thead>
         <tr>
-            <th>miRNA</th>
             <th>Transcript_ID</th>
             <th>Gene Name</th>
             <th>UTR_Start</th>
@@ -32,7 +33,6 @@
 
 
         <tr>
-            <td>{{ row.mirna_id }}</td>
             <td>{{ row.mrna_id }}</td>
             <td>{{ row.Gene_Name }}</td>
             <td>{{ row.UTR_START }}</td>
@@ -41,26 +41,6 @@
             <td>{{ row.contextpp_score }}</td>
             <td>{{ row.TPM }}</td>
         </tr>
-        <!--<tr>-->
-            <!--<td>a</td>-->
-            <!--<td>b</td>-->
-            <!--<td>c</td>-->
-            <!--<td>d</td>-->
-            <!--<td>e</td>-->
-            <!--<td>f</td>-->
-            <!--<td>g</td>-->
-            <!--<td>h</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td>i</td>-->
-            <!--<td>j</td>-->
-            <!--<td>k</td>-->
-            <!--<td>l</td>-->
-            <!--<td>m</td>-->
-            <!--<td>n</td>-->
-            <!--<td>o</td>-->
-            <!--<td>p</td>-->
-        <!--</tr>-->
 
     {% endfor %}
     </tbody>
@@ -73,27 +53,27 @@
 
 <!--<p></p>-->
 
-<!--{% if rows.has_other_pages %}-->
-  <!--<ul class="pagination">-->
-    <!--{% if rows.has_previous %}-->
-      <!--<li><a href="?page={{ rows.previous_page_number }}">&laquo;</a></li>-->
-    <!--{% else %}-->
-      <!--<li class="disabled"><span>&laquo;</span></li>-->
-    <!--{% endif %}-->
-    <!--{% for i in rows.paginator.page_range %}-->
-      <!--{% if rows.number == i %}-->
-        <!--<li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>-->
-      <!--{% else %}-->
-        <!--<li><a href="?page={{ i }}">{{ i }}</a></li>-->
-      <!--{% endif %}-->
-    <!--{% endfor %}-->
-    <!--{% if rows.has_next %}-->
-      <!--<li><a href="?page={{ rows.next_page_number }}">&raquo;</a></li>-->
-    <!--{% else %}-->
-      <!--<li class="disabled"><span>&raquo;</span></li>-->
-    <!--{% endif %}-->
-  <!--</ul>-->
-<!--{% endif %}-->
+{% if rows.has_other_pages %}
+  <ul class="pagination">
+    {% if rows.has_previous %}
+      <li><a href="?page={{ rows.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in rows.paginator.page_range %}
+      {% if rows.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if rows.has_next %}
+      <li><a href="?page={{ rows.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
 
 
 

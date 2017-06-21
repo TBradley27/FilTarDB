@@ -47,7 +47,7 @@ def nextview(request):
 
         cursor = connection.cursor()
         cursor.execute('''
-                                      SELECT e.TPM, c.mirna_id, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                      SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
                                       FROM contextpp c
                                       JOIN expression_profiles e
                                       ON c.mrna_id = e.mrnas_id
@@ -65,24 +65,24 @@ def nextview(request):
         row = namedtuplefetchall(cursor)
         row.sort(key=itemgetter(int(form_order)), reverse=True)
 
-        tpm = []
-        mirna_id = []
-        mrna_id = []
-        contextpp_score = []
-        utr_start = []
-        utr_end = []
-        site_type = []
-        for x in range(0, len(row)):
-            # y.append(row[x].TPM)
-            tpm.append(str(row[x].TPM))
-            mirna_id.append((row[x].mirna_id))
-            mrna_id.append((row[x].mrna_id))
-            contextpp_score.append((row[x].contextpp_score))
-            utr_start.append((row[x].UTR_START))
-            utr_end.append((row[x].UTR_END))
-            site_type.append((row[x].Site_Type))
-
-        x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
+        # tpm = []
+        # mirna_id = []
+        # mrna_id = []
+        # contextpp_score = []
+        # utr_start = []
+        # utr_end = []
+        # site_type = []
+        # for x in range(0, len(row)):
+        #     # y.append(row[x].TPM)
+        #     tpm.append(str(row[x].TPM))
+        #     mirna_id.append((row[x].mirna_id))
+        #     mrna_id.append((row[x].mrna_id))
+        #     contextpp_score.append((row[x].contextpp_score))
+        #     utr_start.append((row[x].UTR_START))
+        #     utr_end.append((row[x].UTR_END))
+        #     site_type.append((row[x].Site_Type))
+        #
+        # x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
 
         page = request.GET.get('page')
 
@@ -94,7 +94,7 @@ def nextview(request):
         except EmptyPage:
             rows = paginator.page(paginator.num_pages)
 
-        return render(request, 'filtar/contextpptable.html', {'rows': rows})
+        return render(request, 'filtar/contextpptable.html', {'rows': rows, 'mirna': form_Mirnas})
 
 
 def getname(request):
