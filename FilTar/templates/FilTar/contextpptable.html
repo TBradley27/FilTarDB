@@ -76,6 +76,12 @@ miRNA: <b>{{ mirna }}</b>
 {% endif %}
 
 
+<form method='GET'>
+    <input type='hidden' name='format' value='csv'>
+    <input type='hidden' name='rows' value={{rows}}>
+    <input type='submit'>
+</form>
+
 
 {% endblock %}
 
