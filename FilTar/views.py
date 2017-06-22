@@ -35,7 +35,9 @@ def namedtuplefetchall(cursor):
 
 def nextview(request):
 
-    if request.GET:
+    form_Mirnas = request.session.get('mirna')
+
+    if request.GET.get('format') is not None:
         if request.GET['format'] == 'csv':
             response = HttpResponse('')
             response['Content-Disposition'] = 'attachment; filename=file.csv'
@@ -43,14 +45,12 @@ def nextview(request):
             writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
             return response
 
+
     form_species = request.session.get('species')
-    form_Mirnas = request.session.get('mirna')
     form_TPM = request.session.get('tpm')
     form_algorithm = request.session.get('algorithm')
     form_order = request.session.get('order')
     form_tissue = request.session.get('tissue')
-
-
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     experiment_ID = experiments[0]['experiment_name']  # Change this
