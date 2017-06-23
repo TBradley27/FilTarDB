@@ -11,12 +11,4 @@ urlpatterns = [
     url(r'^getname/$', views.getname, name='get_name'),
 
     url(r'^nextview/', views.nextview, name='nextview'),
-
-    url(r'^context/', views.getname, name='contextpp'),
-
-    url(r'^$', views.foo, name='foo'),
-
-    # /filtar/
-    url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name="detail")
-    
 ]

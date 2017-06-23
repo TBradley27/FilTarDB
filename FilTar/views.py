@@ -27,12 +27,11 @@ from django.http import HttpResponse
 import csv
 from django.http import StreamingHttpResponse
 
-# def namedtuplefetchall(cursor):
-#     "Return all rows from a cursor as a namedtuple"
-#     desc = cursor.description
-#     nt_result = namedtuple('Result', [col[0] for col in desc])
-#     return [nt_result(*row) for row in cursor.fetchall()]
-
+def namedtuplefetchall(cursor):
+    "Return all rows from a cursor as a namedtuple"
+    desc = cursor.description
+    nt_result = namedtuple('Result', [col[0] for col in desc])
+    return [nt_result(*row) for row in cursor.fetchall()]
 
 def nextview(request):
 
@@ -87,7 +86,6 @@ def nextview(request):
         #         return response
 
         return render(request, 'filtar/contextpptable.html', {'rows': rows, 'mirna': form_Mirnas})
-
 
 def getname(request):
 
@@ -201,73 +199,3 @@ def getname(request):
 
     return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
                                                   'form_algorithm': form_algorithm, 'form_tissue': form_tissue, 'form_order' : form_order })
-
-def contextpp(request):
-    scores = Contextpp.objects.all()
-    return render(request, 'filtar/contextpptable.html', {'scores': scores})
-
-# def contextpp_table(request):
-#     contextpp = Contextpp_Form()
-#     return render(request, 'filtar/contextpptable.html', {'contextpp': contextpp})
-
-    # return render_to_response('filtar/index.html', {'form':form },
-    #     context_instance=RequestContext(request))
-
-	# model = Mirnas
-    #
-	# template_name = 'filtar/index.html'
-	# success_url = 'filtar/index.html'
-
-class IndexView(generic.ListView):
-	template_name = 'filtar/index.html'
-
-	def get_queryset(self):
-		return Species.objects.all()
-
-class DetailView(generic.DetailView):
-	model = Species
-	template_name = 'filtar/detail.html'
-
-def foo(request):
-    return HttpResponse("Hello, world. You're at the FilTar index")
-
-
-
-
-
-
-
-# # from django.http import Http404
-#
-# from django.shortcuts import render, get_object_or_404
-# # from django.http import HttpResponse
-# from FilTar.models import Species
-#
-# def index(request):
-# 	 all_species = Species.objects.all()
-# 	 #template = loader.get_template('FilTar/index.html')
-# 	 context = {	'all_species' : all_species, }
-# 	 return render(request, 'filtar/index.html', context)
-# # 	html = ()
-# # 	for species in all_species:
-# # 	     url = '/filtar/' + str(species.id) + '/'
-# # 	     html += ('<a href="' + url + '">' + species.common_name + '</a><br>',)
-#
-#
-# def detail(request, species_id):
-# # 	try:
-# # 		species = Species.objects.get(pk=species_id)
-# # 	except Species.DoesNotExist:
-# # 		raise Http404("Species does not exist")
-# 	species = get_object_or_404(Species, pk=species_id)
-# 	return render(request, 'filtar/detail.html', ({'species': species}) )
-# # 	return HttpResponse("<h2>Details for Species id: " + str(species_id) + "</h2>")
-#
-#
-#
-# # 	return HttpResponse("<h2>Details for species: " + str(species_id) + "</h2>")
-#
-#
-#
-# # Create your views here.
-
