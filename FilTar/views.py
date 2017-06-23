@@ -25,6 +25,7 @@ from django.shortcuts import redirect
 from operator import itemgetter
 from django.http import HttpResponse
 import csv
+from django.http import StreamingHttpResponse
 
 def namedtuplefetchall(cursor):
     "Return all rows from a cursor as a namedtuple"
@@ -36,14 +37,6 @@ def namedtuplefetchall(cursor):
 def nextview(request):
 
     form_Mirnas = request.session.get('mirna')
-
-    if request.GET.get('format') is not None:
-        if request.GET['format'] == 'csv':
-            response = HttpResponse('')
-            response['Content-Disposition'] = 'attachment; filename=file.csv'
-            writer = csv.writer(response, dialect=csv.excel)
-            writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
-            return response
 
 
     form_species = request.session.get('species')
@@ -71,30 +64,8 @@ def nextview(request):
                                       ORDER BY %s DESC''',
                        [form_Mirnas, form_species, experiment_ID, form_TPM, form_order])
 
-        # ORDER BY @ var1 DESC
-        # JOIN mRNAs r ON c.mrna_id = r.mRNA_ID    (r.Gene_Name)
-
         row = namedtuplefetchall(cursor)
         row.sort(key=itemgetter(int(form_order)), reverse=True)
-
-        # tpm = []
-        # mirna_id = []
-        # mrna_id = []
-        # contextpp_score = []
-        # utr_start = []
-        # utr_end = []
-        # site_type = []
-        # for x in range(0, len(row)):
-        #     # y.append(row[x].TPM)
-        #     tpm.append(str(row[x].TPM))
-        #     mirna_id.append((row[x].mirna_id))
-        #     mrna_id.append((row[x].mrna_id))
-        #     contextpp_score.append((row[x].contextpp_score))
-        #     utr_start.append((row[x].UTR_START))
-        #     utr_end.append((row[x].UTR_END))
-        #     site_type.append((row[x].Site_Type))
-        #
-        # x = zip(mirna_id, mrna_id, utr_start, utr_end, site_type, contextpp_score, tpm)
 
         page = request.GET.get('page')
 
@@ -105,6 +76,16 @@ def nextview(request):
             rows = paginator.page(1)
         except EmptyPage:
             rows = paginator.page(paginator.num_pages)
+
+        if request.GET.get('format') is not None:
+            if request.GET['format'] == 'csv':
+                response = HttpResponse('')
+                response['Content-Disposition'] = 'attachment; filename={}.csv'.format(form_Mirnas)
+                writer = csv.writer(response, dialect=csv.excel)
+                # writer.writerow(['a','b'])
+                response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                                 content_type="text/csv")
+                return response
 
         return render(request, 'filtar/contextpptable.html', {'rows': rows, 'mirna': form_Mirnas})
 

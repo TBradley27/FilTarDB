@@ -13,6 +13,7 @@
 
 miRNA: <b>{{ mirna }}</b>
 
+
 <table class="tablesorter-blue", id="myTable">
     <thead>
         <tr>
@@ -47,6 +48,13 @@ miRNA: <b>{{ mirna }}</b>
 
 <!--<p></p>-->
 
+<form method='GET'>
+    <input type='hidden' name='format' value='csv'>
+    <input type='hidden' name='rows' value={{mirna}}>
+    <input type='submit' value="Download Table">
+</form>
+
+
 {% if rows.has_other_pages %}
   <ul class="pagination">
     {% if rows.has_previous %}
@@ -70,11 +78,6 @@ miRNA: <b>{{ mirna }}</b>
 {% endif %}
 
 
-<form method='GET'>
-    <input type='hidden' name='format' value='csv'>
-    <input type='hidden' name='rows' value={{rows}}>
-    <input type='submit'>
-</form>
 
 
 {% endblock %}
