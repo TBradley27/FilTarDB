@@ -170,5 +170,5 @@ def home(request):
         form_species = SpeciesForm()
         form_algorithm = AlgorithmForm()
 
-    return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
+    return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
                                                   'form_algorithm': form_algorithm, 'form_tissue': form_tissue,  })
