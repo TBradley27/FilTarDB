@@ -1,0 +1,21 @@
+{% extends 'FilTar/base.html' %}
+
+{% block body %}
+		<ul>
+			<!--<form action="/dsffdfs/" method="post">-->
+				<!--{% csrf_token %}-->
+				<!--{{ form }}-->
+				<!--<input type='submit' value='Submit' >-->
+			<!--</form>-->
+			<form method="post">
+				{% csrf_token %}
+				{{ form_TPM }} <br>
+				{{ form_Mirnas }} <br>
+				{{ form_species }} <br>
+                {{ form_tissue }} <br>
+				{{ form_algorithm }} <br>
+				<p></p>
+				<input type='submit' value='Submit' >
+			</form>
+		</ul>
+{% endblock %}
