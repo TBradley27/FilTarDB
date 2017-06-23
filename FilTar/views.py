@@ -12,7 +12,6 @@ from .forms import MirnaForm
 from .forms import TissueForm
 from .forms import SpeciesForm
 from .forms import AlgorithmForm
-from .forms import OrderForm
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
@@ -41,7 +40,6 @@ def nextview(request):
     form_species = request.session.get('species')
     form_TPM = request.session.get('tpm')
     form_algorithm = request.session.get('algorithm')
-    # form_order = request.session.get('order')
     form_tissue = request.session.get('tissue')
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
@@ -63,7 +61,6 @@ def nextview(request):
                        [form_Mirnas, form_species, experiment_ID, form_TPM])
 
         rows = namedtuplefetchall(cursor)
-        # rows.sort(key=itemgetter(int(form_order)), reverse=True)
 
         page = request.GET.get('page')
 
@@ -95,7 +92,6 @@ def getname(request):
         form_TPM = TPMForm(request.POST)
         form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
-        # form_order = OrderForm(request.POST)
 
         if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid():
              form_species = form_species.cleaned_data['Species']
@@ -103,14 +99,12 @@ def getname(request):
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
-             # form_order = form_order.cleaned_data['Order']
 
              request.session['species'] = form_species
              request.session['mirna'] = str(form_Mirnas)
              request.session['tpm'] = form_TPM
              request.session['tissue'] = str(form_tissue)
              request.session['algorithm'] = form_algorithm
-             # request.session['order'] = form_order
 
              return HttpResponseRedirect('/filtar/nextview')
 
@@ -195,7 +189,6 @@ def getname(request):
         form_tissue = TissueForm()
         form_species = SpeciesForm()
         form_algorithm = AlgorithmForm()
-        form_order = OrderForm()
 
     return render(request, 'filtar/testing.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
-                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue, 'form_order' : form_order })
+                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue,  })
