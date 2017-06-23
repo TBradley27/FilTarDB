@@ -8,7 +8,7 @@ urlpatterns = [
 
     # /filtar/
 
-    url(r'^getname/$', views.getname, name='get_name'),
+    url(r'^$', views.home, name='home'),
 
-    url(r'^nextview/', views.nextview, name='nextview'),
+    url(r'^results/$', views.results, name='results'),
 ]

@@ -32,7 +32,7 @@ def namedtuplefetchall(cursor):
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
 
-def nextview(request):
+def results(request):
 
     form_Mirnas = request.session.get('mirna')
 
@@ -84,7 +84,7 @@ def nextview(request):
 
         return render(request, 'filtar/contextpptable.html', {'rows': rows, 'mirna': form_Mirnas})
 
-def getname(request):
+def home(request):
 
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
@@ -106,7 +106,7 @@ def getname(request):
              request.session['tissue'] = str(form_tissue)
              request.session['algorithm'] = form_algorithm
 
-             return HttpResponseRedirect('/filtar/nextview')
+             return HttpResponseRedirect('/filtar/results')
 
 
 
