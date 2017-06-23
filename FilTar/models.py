@@ -78,45 +78,6 @@ class AuthUserUserPermissions(models.Model):
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
 
-
-class Contextpp(models.Model): # Target Prediction Output table
-    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    site_type = models.CharField(db_column='Site_Type', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    contextpp_score = models.CharField(max_length=20, blank=True, null=True)
-
-    class Meta:
-        managed = True
-        db_table = 'contextpp'
-
-class PITA(models.Model): # Target Prediction Output table
-    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    pita_score = models.CharField(db_column="PITA_score", max_length=20, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'pita'
-
-
-class MiRanda(models.Model): # miRanda Target Prediction Output table
-    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    utr_start = models.CharField(db_column='UTR_start', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    utr_end = models.CharField(db_column='UTR_end', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    miranda_score = models.CharField(db_column="miRanda_score", max_length=20, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'miRanda'
-
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
@@ -249,3 +210,41 @@ class Tissues(models.Model):
         managed = True
         db_table = 'tissues'
         verbose_name_plural = "Tissues"
+
+class Contextpp(models.Model): # Target Prediction Output table
+    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    site_type = models.CharField(db_column='Site_Type', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    contextpp_score = models.CharField(max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'contextpp'
+
+class PITA(models.Model): # Target Prediction Output table
+    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_start = models.CharField(db_column='UTR_Start', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_end = models.CharField(db_column='UTR_End', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    pita_score = models.CharField(db_column="PITA_score", max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pita'
+
+
+class MiRanda(models.Model): # miRanda Target Prediction Output table
+    mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    mrna = models.ForeignKey('Mrnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    species = models.CharField(db_column='Species', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_start = models.CharField(db_column='UTR_start', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    utr_end = models.CharField(db_column='UTR_end', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    miranda_score = models.CharField(db_column="miRanda_score", max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'miRanda'
