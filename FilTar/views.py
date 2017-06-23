@@ -21,8 +21,6 @@ def namedtuplefetchall(cursor):
 def results(request):
 
     form_Mirnas = request.session.get('mirna')
-
-
     form_species = request.session.get('species')
     form_TPM = request.session.get('tpm')
     form_algorithm = request.session.get('algorithm')
@@ -74,81 +72,6 @@ def home(request):
 
              return HttpResponseRedirect('/filtar/results')
 
-
-
-             # elif form_algorithm == 'miRanda':
-             #
-             #     # scores = MiRanda.objects.filter(mirna=form_Mirnas
-             #     #                                   ).filter(
-             #     #     species=form_species)
-             #
-             #     cursor = connection.cursor()
-             #     cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miRanda_score, m.UTR_start, m.UTR_end
-             #                                       FROM miRanda m
-             #                                       JOIN expression_profiles e
-             #                                       ON m.Mrnas = e.mrnas_id
-             #                                       AND m.Mirnas = %s
-             #                                       AND m.Species = %s
-             #                                       AND e.experiments_id = %s
-             #                                       AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
-             #     row = namedtuplefetchall(cursor)
-             #
-             #     tpm = []
-             #     Mirnas = []
-             #     utr_start = []
-             #     utr_end = []
-             #     Mrnas = []
-             #     miranda_score = []
-             #
-             #     for x in range(0, len(row)):
-             #         tpm.append(str(row[x].TPM))
-             #         Mirnas.append((row[x].Mirnas))
-             #         Mrnas.append((row[x].Mrnas))
-             #         utr_start.append((row[x].UTR_start))
-             #         utr_end.append((row[x].UTR_end))
-             #         miranda_score.append((row[x].miRanda_score))
-             #
-             #     x = zip(Mirnas, Mrnas, miranda_score, tpm, utr_start, utr_end)
-             #
-             #     return render(request, 'filtar/miRandatable.html', {'x': x})
-             #
-             #
-             # else:
-             #
-             #     scores = PITA.objects.filter(mirna=form_Mirnas
-             #                                     ).filter(
-             #         species=form_species)
-             #
-             #     cursor = connection.cursor()
-             #     cursor.execute('''SELECT e.TPM, p.Mrnas, p.Mirnas, p.PITA_score, p.UTR_START, p.UTR_END
-             #                                                        FROM PITA p
-             #                                                        JOIN expression_profiles e
-             #                                                        ON p.Mrnas = e.mrnas_id
-             #                                                        AND p.Mirnas = %s
-             #                                                        AND p.Species = %s
-             #                                                        AND e.experiments_id = %s
-             #                                                        AND e.TPM >= %s''',
-             #                    [form_Mirnas, form_species, experiment_ID, form_TPM])
-             #     row = namedtuplefetchall(cursor)
-             #
-             #     tpm = []
-             #     Mirnas= []
-             #     Mrnas = []
-             #     PITA_score = []
-             #     start = []
-             #     end = []
-             #     for x in range(0, len(row)):
-             #         tpm.append(str(row[x].TPM))
-             #         Mirnas.append((row[x].Mirnas))
-             #         Mrnas.append((row[x].Mrnas))
-             #         PITA_score.append((row[x].PITA_score))
-             #         start.append((row[x].UTR_START))
-             #         end.append((row[x].UTR_END))
-             #
-             #     x = zip(Mirnas, Mrnas, start, end, PITA_score, tpm)
-             #
-             #     return render(request, 'filtar/pitatable.html', {'scores': scores, 'x': x})
-
     elif request.method == 'GET':
         form_TPM = TPMForm()
         form_Mirnas = MirnaForm()
@@ -157,4 +80,77 @@ def home(request):
         form_algorithm = AlgorithmForm()
 
     return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
-                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue,  })
+                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue })
+
+    # elif form_algorithm == 'miRanda':
+    #
+    #     # scores = MiRanda.objects.filter(mirna=form_Mirnas
+    #     #                                   ).filter(
+    #     #     species=form_species)
+    #
+    #     cursor = connection.cursor()
+    #     cursor.execute('''SELECT e.TPM, m.Mrnas, m.Mirnas, m.miRanda_score, m.UTR_start, m.UTR_end
+    #                                       FROM miRanda m
+    #                                       JOIN expression_profiles e
+    #                                       ON m.Mrnas = e.mrnas_id
+    #                                       AND m.Mirnas = %s
+    #                                       AND m.Species = %s
+    #                                       AND e.experiments_id = %s
+    #                                       AND e.TPM >= %s''', [form_Mirnas, form_species, experiment_ID, form_TPM])
+    #     row = namedtuplefetchall(cursor)
+    #
+    #     tpm = []
+    #     Mirnas = []
+    #     utr_start = []
+    #     utr_end = []
+    #     Mrnas = []
+    #     miranda_score = []
+    #
+    #     for x in range(0, len(row)):
+    #         tpm.append(str(row[x].TPM))
+    #         Mirnas.append((row[x].Mirnas))
+    #         Mrnas.append((row[x].Mrnas))
+    #         utr_start.append((row[x].UTR_start))
+    #         utr_end.append((row[x].UTR_end))
+    #         miranda_score.append((row[x].miRanda_score))
+    #
+    #     x = zip(Mirnas, Mrnas, miranda_score, tpm, utr_start, utr_end)
+    #
+    #     return render(request, 'filtar/miRandatable.html', {'x': x})
+    #
+    #
+    # else:
+    #
+    #     scores = PITA.objects.filter(mirna=form_Mirnas
+    #                                     ).filter(
+    #         species=form_species)
+    #
+    #     cursor = connection.cursor()
+    #     cursor.execute('''SELECT e.TPM, p.Mrnas, p.Mirnas, p.PITA_score, p.UTR_START, p.UTR_END
+    #                                                        FROM PITA p
+    #                                                        JOIN expression_profiles e
+    #                                                        ON p.Mrnas = e.mrnas_id
+    #                                                        AND p.Mirnas = %s
+    #                                                        AND p.Species = %s
+    #                                                        AND e.experiments_id = %s
+    #                                                        AND e.TPM >= %s''',
+    #                    [form_Mirnas, form_species, experiment_ID, form_TPM])
+    #     row = namedtuplefetchall(cursor)
+    #
+    #     tpm = []
+    #     Mirnas= []
+    #     Mrnas = []
+    #     PITA_score = []
+    #     start = []
+    #     end = []
+    #     for x in range(0, len(row)):
+    #         tpm.append(str(row[x].TPM))
+    #         Mirnas.append((row[x].Mirnas))
+    #         Mrnas.append((row[x].Mrnas))
+    #         PITA_score.append((row[x].PITA_score))
+    #         start.append((row[x].UTR_START))
+    #         end.append((row[x].UTR_END))
+    #
+    #     x = zip(Mirnas, Mrnas, start, end, PITA_score, tpm)
+    #
+    #     return render(request, 'filtar/pitatable.html', {'scores': scores, 'x': x})
