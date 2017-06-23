@@ -42,7 +42,7 @@ def nextview(request):
     form_species = request.session.get('species')
     form_TPM = request.session.get('tpm')
     form_algorithm = request.session.get('algorithm')
-    form_order = request.session.get('order')
+    # form_order = request.session.get('order')
     form_tissue = request.session.get('tissue')
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
@@ -60,12 +60,11 @@ def nextview(request):
                                       AND c.Species = %s
                                       AND e.experiments_id = %s
                                       AND e.TPM >= %s
-                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
-                                      ORDER BY %s DESC''',
-                       [form_Mirnas, form_species, experiment_ID, form_TPM, form_order])
+                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID''',
+                       [form_Mirnas, form_species, experiment_ID, form_TPM])
 
         rows = namedtuplefetchall(cursor)
-        rows.sort(key=itemgetter(int(form_order)), reverse=True)
+        # rows.sort(key=itemgetter(int(form_order)), reverse=True)
 
         page = request.GET.get('page')
 
@@ -98,22 +97,22 @@ def getname(request):
         form_TPM = TPMForm(request.POST)
         form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
-        form_order = OrderForm(request.POST)
+        # form_order = OrderForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid() and form_order.is_valid():
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirna']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
-             form_order = form_order.cleaned_data['Order']
+             # form_order = form_order.cleaned_data['Order']
 
              request.session['species'] = form_species
              request.session['mirna'] = str(form_Mirnas)
              request.session['tpm'] = form_TPM
              request.session['tissue'] = str(form_tissue)
              request.session['algorithm'] = form_algorithm
-             request.session['order'] = form_order
+             # request.session['order'] = form_order
 
              return HttpResponseRedirect('/filtar/nextview')
 
