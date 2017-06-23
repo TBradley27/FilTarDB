@@ -228,6 +228,9 @@ class DetailView(generic.DetailView):
 	model = Species
 	template_name = 'filtar/detail.html'
 
+def foo(request):
+    return HttpResponse("Hello, world. You're at the FilTar index")
+
 
 
 
