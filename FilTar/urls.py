@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 from . import views
 from django.contrib import admin
 
@@ -8,7 +8,7 @@ urlpatterns = [
 
     # /filtar/
 
-    url(r'^getname/', views.getname, name='get_name'),
+    url(r'^getname/$', views.getname, name='get_name'),
 
     url(r'^nextview/', views.nextview, name='nextview'),
 
@@ -16,8 +16,6 @@ urlpatterns = [
 
     url(r'^$', views.foo, name='foo'),
 
-    url(r'^admin/', admin.site.urls),
-    
     # /filtar/
     url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name="detail")
     

@@ -20,3 +20,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^filtar/', include('FilTar.urls'))
 ]
+
+# The carat symbol specifies that the string must begin with 'filtar/' string
+# The $ symbol specifies that the string must end with the 'filtar/' string
