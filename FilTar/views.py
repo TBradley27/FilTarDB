@@ -64,18 +64,18 @@ def nextview(request):
                                       ORDER BY %s DESC''',
                        [form_Mirnas, form_species, experiment_ID, form_TPM, form_order])
 
-        row = namedtuplefetchall(cursor)
-        row.sort(key=itemgetter(int(form_order)), reverse=True)
+        rows = namedtuplefetchall(cursor)
+        rows.sort(key=itemgetter(int(form_order)), reverse=True)
 
         page = request.GET.get('page')
 
-        paginator = Paginator(row, 30)
-        try:
-            rows = paginator.page(page)
-        except PageNotAnInteger:
-            rows = paginator.page(1)
-        except EmptyPage:
-            rows = paginator.page(paginator.num_pages)
+        # paginator = Paginator(row, 30)
+        # try:
+        #     rows = paginator.page(page)
+        # except PageNotAnInteger:
+        #     rows = paginator.page(1)
+        # except EmptyPage:
+        #     rows = paginator.page(paginator.num_pages)
 
         if request.GET.get('format') is not None:
             if request.GET['format'] == 'csv':
