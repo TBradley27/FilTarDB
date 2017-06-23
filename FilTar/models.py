@@ -249,14 +249,3 @@ class Tissues(models.Model):
         managed = True
         db_table = 'tissues'
         verbose_name_plural = "Tissues"
-
-# class MirnaForm(ModelForm):
-#      mirnas = forms.ModelChoiceField(queryset = Mirnas.objects.all(), to_field_name="mirna_name")
-#      class Meta:
-#         model = Mirnas
-#         fields = ['mirna_name']
-
-# class Contextpp_Form(ModelForm):
-#     class Meta:
-#         model = Contextpp
-#         fields = ['mirna_name', 'transcript_id']
