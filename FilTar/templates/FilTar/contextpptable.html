@@ -22,7 +22,7 @@
 miRNA: <b>{{ mirna }}</b>
 
 
-<table class="tablesorter-blue", id="myTable">
+<table class="tablesorter-blue", id="myTable", data-page-length='25'>
     <thead>
         <tr>
             <th>Transcript_ID</th>
@@ -56,11 +56,11 @@ miRNA: <b>{{ mirna }}</b>
 
 <!--<p></p>-->
 
-<form method='GET'>
-    <input type='hidden' name='format' value='csv'>
-    <input type='hidden' name='rows' value={{mirna}}>
-    <input type='submit' value="Download Table">
-</form>
+<!--<form method='GET'>-->
+    <!--<input type='hidden' name='format' value='csv'>-->
+    <!--<input type='hidden' name='rows' value={{mirna}}>-->
+    <!--<input type='submit' value="Download Table">-->
+<!--</form>-->
 
 
 <!--{% if rows.has_other_pages %}-->
