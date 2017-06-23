@@ -62,26 +62,6 @@ def results(request):
 
         rows = namedtuplefetchall(cursor)
 
-        page = request.GET.get('page')
-
-        # paginator = Paginator(row, 30)
-        # try:
-        #     rows = paginator.page(page)
-        # except PageNotAnInteger:
-        #     rows = paginator.page(1)
-        # except EmptyPage:
-        #     rows = paginator.page(paginator.num_pages)
-        #
-        # if request.GET.get('format') is not None:
-        #     if request.GET['format'] == 'csv':
-        #         response = HttpResponse('')
-        #         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(form_Mirnas)
-        #         writer = csv.writer(response, dialect=csv.excel)
-        #         # writer.writerow(['a','b'])
-        #         response = StreamingHttpResponse((writer.writerow(row) for row in rows),
-        #                                          content_type="text/csv")
-        #         return response
-
         return render(request, 'filtar/contextpptable.html', {'rows': rows, 'mirna': form_Mirnas})
 
 def home(request):
