@@ -1,17 +1,6 @@
 from django.views import generic
-# from django.views.generic.edit import CreateView
-from .models import Species
-from .models import Mirnas
-from .models import Contextpp
-from .models import MiRanda
-from .models import Experiments
-from .models import PITA
-from .models import ExpressionProfiles
-from .forms import TPMForm
-from .forms import MirnaForm
-from .forms import TissueForm
-from .forms import SpeciesForm
-from .forms import AlgorithmForm
+from .models import *
+from .forms import *
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.forms import ModelChoiceField
@@ -19,12 +8,9 @@ from itertools import chain
 from django.db import connection
 from collections import namedtuple
 import decimal
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect
 from operator import itemgetter
 from django.http import HttpResponse
-import csv
-from django.http import StreamingHttpResponse
 
 def namedtuplefetchall(cursor):
     "Return all rows from a cursor as a namedtuple"

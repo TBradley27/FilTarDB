@@ -1,7 +1,5 @@
 from django import forms
-from .models import Mirnas
-from .models import Tissues
-from .models import Species
+from .models import *
 
 # from .models import MirnaForm
 
@@ -20,7 +18,6 @@ class TissueForm(forms.Form):
 
     Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
                                     , empty_label="Choose your tissue or cell line")
-
 class SpeciesForm(forms.Form):
     CHOICES = (('9606','Human'),
                ("10090","Mouse"),)
