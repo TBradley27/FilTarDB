@@ -13,7 +13,12 @@ class TPMForm(forms.Form):
 
 class MirnaForm(forms.Form):
     mirna = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="name"
-                                    , empty_label="Choose your miRNA")
+                                    , empty_label="Choose your miRNA (optional)", required=False)
+
+class MirnaForm(forms.Form):
+    mirna = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="name"
+                                    , empty_label="Choose your miRNA (optional)", required=False)
+
 class TissueForm(forms.Form):
 
     Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"

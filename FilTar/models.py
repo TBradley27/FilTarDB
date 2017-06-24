@@ -146,6 +146,7 @@ class Mrnas(models.Model):
     id = models.CharField(db_column='mRNA_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
     genome_assembly = models.ForeignKey('GenomeAssembly', max_length=30, blank=True, null=True)
     annotation = models.CharField(max_length=30, blank=True, null=True)
+    gene_name = models.CharField(db_column='Gene_Name', max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.id
