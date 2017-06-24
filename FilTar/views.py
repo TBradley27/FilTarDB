@@ -19,6 +19,7 @@ def namedtuplefetchall(cursor):
 def results(request):
 
     form_Mirnas = request.session.get('mirna')
+    form_Mrnas = request.session.get('mrna')
     form_species = request.session.get('species')
     form_TPM = request.session.get('tpm')
     form_algorithm = request.session.get('algorithm')
@@ -29,18 +30,59 @@ def results(request):
 
     if form_algorithm == 'TargetScan7':
 
-        cursor = connection.cursor()
-        cursor.execute('''
-                                      SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
-                                      FROM contextpp c
-                                      JOIN expression_profiles e
-                                      ON c.mrna_id = e.mrnas_id
-                                      AND c.mirna_id = %s
-                                      AND c.Species = %s
-                                      AND e.experiments_id = %s
-                                      AND e.TPM >= %s
-                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID''',
-                       [form_Mirnas, form_species, experiment_ID, form_TPM])
+        # random
+
+        if form_Mrnas != 'None' and form_Mirnas != 'None':
+
+            dog
+
+            cursor = connection.cursor()
+            cursor.execute('''
+                                          SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                          FROM contextpp c
+                                          JOIN expression_profiles e
+                                          ON c.mrna_id = e.mrnas_id
+                                          AND c.mirna_id = %s
+                                          AND c.Species = %s
+                                          AND e.experiments_id = %s
+                                          AND e.TPM >= %s
+                                          JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
+                                          AND r.Gene_Name = %s''',
+                           [form_Mirnas, form_species, experiment_ID, form_TPM, form_Mrnas])
+
+        elif form_Mirnas != "None":
+
+            # cat
+
+            cursor = connection.cursor()
+            cursor.execute('''
+                                          SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                          FROM contextpp c
+                                          JOIN expression_profiles e
+                                          ON c.mrna_id = e.mrnas_id
+                                          AND c.mirna_id = %s
+                                          AND c.Species = %s
+                                          AND e.experiments_id = %s
+                                          AND e.TPM >= %s
+                                          JOIN mRNAs r ON c.mrna_id = r.mRNA_ID''',
+                           [form_Mirnas, form_species, experiment_ID, form_TPM])
+
+        else:
+
+            mouse
+
+            cursor = connection.cursor()
+            cursor.execute('''
+                                          SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                          FROM contextpp c
+                                          JOIN expression_profiles e
+                                          ON c.mrna_id = e.mrnas_id
+                                          AND c.Species = %s
+                                          AND e.experiments_id = %s
+                                          AND e.TPM >= %s
+                                          JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
+                                          AND r.Gene_Name = %s''',
+                           [form_species, experiment_ID, form_TPM, form_Mrnas])
 
         rows = namedtuplefetchall(cursor)
 
@@ -50,20 +92,23 @@ def home(request):
 
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
+        form_Mrnas = MrnaForm(request.POST)
         form_species = SpeciesForm(request.POST)
         form_TPM = TPMForm(request.POST)
         form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid():
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid() and form_Mrnas.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirna']
+             form_Mrnas = form_Mrnas.cleaned_data['mrna']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
              request.session['species'] = form_species
              request.session['mirna'] = str(form_Mirnas)
+             request.session['mrna'] = str(form_Mrnas)
              request.session['tpm'] = form_TPM
              request.session['tissue'] = str(form_tissue)
              request.session['algorithm'] = form_algorithm

@@ -184,6 +184,16 @@ class Mirnas(models.Model):
         db_table = 'miRNAs'
         verbose_name_plural = ' miRNAs'
 
+class Gene(models.Model):
+    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=False)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = False
+        db_table = 'Gene'
+        verbose_name_plural = ' Genes'
 
 class Species(models.Model):
     taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
