@@ -82,6 +82,13 @@ def home(request):
     return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
                                                   'form_algorithm': form_algorithm, 'form_tissue': form_tissue })
 
+
+
+
+
+
+
+
     # elif form_algorithm == 'miRanda':
     #
     #     # scores = MiRanda.objects.filter(mirna=form_Mirnas
