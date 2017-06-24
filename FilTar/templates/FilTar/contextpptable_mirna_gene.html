@@ -1,9 +1,9 @@
 {% extends 'FilTar/base.html' %}
 
 {% block body %}
-
+miRNA: <b>{{ mirna }}</b> <br/>
 Gene: <b>{{ gene }}</b> <br/>
-Transcript ID: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ rows.0.mrna_id }}</a> </b> <br/>
+Transcript ID: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ rows.0.mrna_id}}</a> </b> <br/>
 TPM: <b>{{ rows.0.TPM }}</b>
 
 <br></br>
@@ -11,7 +11,6 @@ TPM: <b>{{ rows.0.TPM }}</b>
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
         <tr>
-            <th>miRNA</th>
             <th>UTR_Start</th>
             <th>UTR_End</th>
             <th>Site_Type</th>
@@ -23,7 +22,6 @@ TPM: <b>{{ rows.0.TPM }}</b>
     {% for row in rows %}
 
         <tr>
-            <td>{{ row.mirna_id }}</td>
             <td>{{ row.UTR_START }}</td>
             <td>{{ row.UTR_END }}</td>
             <td>{{ row.Site_Type }}</td>
