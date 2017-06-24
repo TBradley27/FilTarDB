@@ -15,8 +15,8 @@ class MirnaForm(forms.Form):
     mirna = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="name"
                                     , empty_label="Choose your miRNA (optional)", required=False)
 
-class MrnaForm(forms.Form):
-    mrna = forms.ModelChoiceField(queryset=Mrnas.objects.all(), to_field_name="gene_name"
+class GeneForm(forms.Form):
+    gene = forms.ModelChoiceField(queryset=Gene.objects.all(), to_field_name="name"
                                     , empty_label="Choose your gene (optional)", required=False, widget=forms.TextInput)
 
 class TissueForm(forms.Form):

@@ -19,7 +19,7 @@ def namedtuplefetchall(cursor):
 def results(request):
 
     form_Mirnas = request.session.get('mirna')
-    form_Mrnas = request.session.get('mrna')
+    form_genes = request.session.get('gene')
     form_species = request.session.get('species')
     form_TPM = request.session.get('tpm')
     form_algorithm = request.session.get('algorithm')
@@ -32,9 +32,9 @@ def results(request):
 
         # random
 
-        if form_Mrnas != 'None' and form_Mirnas != 'None':
+        if form_genes != 'None' and form_Mirnas != 'None':
 
-            dog
+            # User selects miRNA and gene
 
             cursor = connection.cursor()
             cursor.execute('''
@@ -48,11 +48,11 @@ def results(request):
                                           AND e.TPM >= %s
                                           JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
                                           AND r.Gene_Name = %s''',
-                           [form_Mirnas, form_species, experiment_ID, form_TPM, form_Mrnas])
+                           [form_Mirnas, form_species, experiment_ID, form_TPM, form_genes])
 
         elif form_Mirnas != "None":
 
-            # cat
+            # Users selects the miRNA only
 
             cursor = connection.cursor()
             cursor.execute('''
@@ -69,11 +69,11 @@ def results(request):
 
         else:
 
-            mouse
+            # User selects the gene only
 
             cursor = connection.cursor()
             cursor.execute('''
-                                          SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                          SELECT e.TPM, c.mirna_id, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
                                           FROM contextpp c
                                           JOIN expression_profiles e
                                           ON c.mrna_id = e.mrnas_id
@@ -82,7 +82,10 @@ def results(request):
                                           AND e.TPM >= %s
                                           JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
                                           AND r.Gene_Name = %s''',
-                           [form_species, experiment_ID, form_TPM, form_Mrnas])
+                           [form_species, experiment_ID, form_TPM, form_genes])
+
+            rows = namedtuplefetchall(cursor)
+            return render(request, 'filtar/contextpptable_gene.html', {'rows': rows, 'gene': form_genes})
 
         rows = namedtuplefetchall(cursor)
 
@@ -92,23 +95,23 @@ def home(request):
 
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
-        form_Mrnas = MrnaForm(request.POST)
+        form_genes = GeneForm(request.POST)
         form_species = SpeciesForm(request.POST)
         form_TPM = TPMForm(request.POST)
         form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid() and form_Mrnas.is_valid():
+        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and form_algorithm.is_valid() and form_genes.is_valid():
              form_species = form_species.cleaned_data['Species']
              form_Mirnas = form_Mirnas.cleaned_data['mirna']
-             form_Mrnas = form_Mrnas.cleaned_data['mrna']
+             form_genes = form_genes.cleaned_data['gene']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
              request.session['species'] = form_species
              request.session['mirna'] = str(form_Mirnas)
-             request.session['mrna'] = str(form_Mrnas)
+             request.session['gene'] = str(form_genes)
              request.session['tpm'] = form_TPM
              request.session['tissue'] = str(form_tissue)
              request.session['algorithm'] = form_algorithm
@@ -118,13 +121,13 @@ def home(request):
     elif request.method == 'GET':
         form_TPM = TPMForm()
         form_Mirnas = MirnaForm()
-        form_Mrnas = MrnaForm()
+        form_genes = GeneForm()
         form_tissue = TissueForm()
         form_species = SpeciesForm()
         form_algorithm = AlgorithmForm()
 
     return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species, 'form_TPM': form_TPM,
-                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue, 'form_Mrnas': form_Mrnas  })
+                                                  'form_algorithm': form_algorithm, 'form_tissue': form_tissue, 'form_genes': form_genes  })
 
 
 

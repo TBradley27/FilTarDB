@@ -185,7 +185,7 @@ class Mirnas(models.Model):
         verbose_name_plural = ' miRNAs'
 
 class Gene(models.Model):
-    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=False)  # Field name made lowercase.
+    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
 
     def __str__(self):
         return self.name
