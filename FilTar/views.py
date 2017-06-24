@@ -1,16 +1,14 @@
 from django.views import generic
 from .models import *
 from .forms import *
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.forms import ModelChoiceField
 from itertools import chain
 from django.db import connection
 from collections import namedtuple
 import decimal
-from django.shortcuts import redirect
 from operator import itemgetter
-from django.http import HttpResponse
 
 def namedtuplefetchall(cursor):
     "Return all rows from a cursor as a namedtuple"
