@@ -21,7 +21,7 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     if bool(form_genes) == True and bool(form_Mirnas) == True:
 
         cursor.execute('''
-                                  SELECT e.TPM, c.mrna_id, %s, c.UTR_START, c.UTR_END, c.Site_Type
+                                  SELECT e.TPM, c.mrna_id, c.%s, c.UTR_START, c.UTR_END, c.Site_Type
                                   FROM contextpp c
                                   JOIN expression_profiles e
                                   ON c.mrna_id = e.mrnas_id
@@ -35,22 +35,18 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
 
     elif bool(form_genes) == False and bool(form_Mirnas) == True:
 
-        cursor.execute('''
-                                      SELECT e.TPM, c.mrna_id, r.Gene_Name, %s, c.UTR_START, c.UTR_END, c.Site_Type
-                                      FROM contextpp c
-                                      JOIN expression_profiles e
-                                      ON c.mrna_id = e.mrnas_id
-                                      AND c.mirna_id = %s
-                                      AND c.Species = %s
-                                      AND e.experiments_id = %s
-                                      AND e.TPM >= %s
-                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID''',
-                       [form_algorithm, form_Mirnas, form_species, experiment_ID, form_TPM])
+        query = "SELECT e.TPM, c.mrna_id, r.Gene_Name, "
+        query += form_algorithm
+        query += ", c.UTR_START, c.UTR_END, c.Site_Type FROM contextpp c JOIN expression_profiles e " \
+                                                               "ON c.mrna_id = e.mrnas_id AND c.mirna_id = %s AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s " \
+                                                               "JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
+
+        cursor.execute(query, [form_Mirnas, form_species, experiment_ID, form_TPM])
 
     else:
 
         cursor.execute('''
-                                      SELECT e.TPM, c.mirna_id, c.mrna_id, %s, c.UTR_START, c.UTR_END, c.Site_Type
+                                      SELECT e.TPM, c.mirna_id, c.mrna_id, c.%s, c.UTR_START, c.UTR_END, c.Site_Type
                                       FROM contextpp c
                                       JOIN expression_profiles e
                                       ON c.mrna_id = e.mrnas_id
@@ -75,7 +71,6 @@ def results(request):
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     experiment_ID = experiments[0]['experiment_name']  # Change this
-
 
     if form_genes != 'None' and form_Mirnas != 'None':
 
