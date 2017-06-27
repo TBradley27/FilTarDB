@@ -16,6 +16,48 @@ def namedtuplefetchall(cursor):
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
 
+def query_database(gene, mirna):
+
+    cursor = connection.cursor()
+
+    if bool(gene) == True and bool(mirna) == True:
+
+        cursor.execute('''
+                                  SELECT e.TPM, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                  FROM contextpp c
+                                  JOIN expression_profiles e
+                                  ON c.mrna_id = e.mrnas_id
+                                  AND c.mirna_id = %s
+                                  AND c.Species = %s
+                                  AND e.experiments_id = %s
+                                  AND e.TPM >= %s
+                                  JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
+                                  AND r.Gene_Name = %s''',
+                   [form_Mirnas, form_species, experiment_ID, form_TPM, form_genes])
+
+
+    elif bool(mirna) == True:
+
+        cursor.execute('''
+                                      SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
+                                      FROM contextpp c
+                                      JOIN expression_profiles e
+                                      ON c.mrna_id = e.mrnas_id
+                                      AND c.mirna_id = %s
+                                      AND c.Species = %s
+                                      AND e.experiments_id = %s
+                                      AND e.TPM >= %s
+                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID''',
+                       [form_Mirnas, form_species, experiment_ID, form_TPM])
+    else:
+
+
+
+
+
+    rows = namedtuplefetchall(cursor)
+    return rows
+
 def results(request):
 
     form_Mirnas = request.session.get('mirna')
@@ -34,47 +76,20 @@ def results(request):
 
         if form_genes != 'None' and form_Mirnas != 'None':
 
-            # User selects miRNA and gene
-
-            cursor = connection.cursor()
-            cursor.execute('''
-                                          SELECT e.TPM, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
-                                          FROM contextpp c
-                                          JOIN expression_profiles e
-                                          ON c.mrna_id = e.mrnas_id
-                                          AND c.mirna_id = %s
-                                          AND c.Species = %s
-                                          AND e.experiments_id = %s
-                                          AND e.TPM >= %s
-                                          JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
-                                          AND r.Gene_Name = %s''',
-                           [form_Mirnas, form_species, experiment_ID, form_TPM, form_genes])
-            rows = namedtuplefetchall(cursor)
+            rows = query_database(gene=True, mirna=True)
 
             return render(request, 'filtar/contextpptable_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
         elif form_Mirnas != "None":
 
-            # Users selects the miRNA only
+            rows = query_database(gene=False, mirna=True)
 
-            cursor = connection.cursor()
-            cursor.execute('''
-                                          SELECT e.TPM, c.mrna_id, r.Gene_Name, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
-                                          FROM contextpp c
-                                          JOIN expression_profiles e
-                                          ON c.mrna_id = e.mrnas_id
-                                          AND c.mirna_id = %s
-                                          AND c.Species = %s
-                                          AND e.experiments_id = %s
-                                          AND e.TPM >= %s
-                                          JOIN mRNAs r ON c.mrna_id = r.mRNA_ID''',
-                           [form_Mirnas, form_species, experiment_ID, form_TPM])
+
 
         else:
 
             # User selects the gene only
 
-            cursor = connection.cursor()
             cursor.execute('''
                                           SELECT e.TPM, c.mirna_id, c.mrna_id, c.contextpp_score, c.UTR_START, c.UTR_END, c.Site_Type
                                           FROM contextpp c
@@ -87,7 +102,6 @@ def results(request):
                                           AND r.Gene_Name = %s''',
                            [form_species, experiment_ID, form_TPM, form_genes])
 
-            rows = namedtuplefetchall(cursor)
             return render(request, 'filtar/contextpptable_gene.html', {'rows': rows, 'gene': form_genes})
 
         rows = namedtuplefetchall(cursor)
