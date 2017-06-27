@@ -19,45 +19,31 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
 
     cursor = connection.cursor()
     if bool(form_genes) == True and bool(form_Mirnas) == True:
-
-        cursor.execute('''
-                                  SELECT e.TPM, c.mrna_id, c.%s, c.UTR_START, c.UTR_END, c.Site_Type
-                                  FROM contextpp c
-                                  JOIN expression_profiles e
-                                  ON c.mrna_id = e.mrnas_id
-                                  AND c.mirna_id = %s
-                                  AND c.Species = %s
-                                  AND e.experiments_id = %s
-                                  AND e.TPM >= %s
-                                  JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
-                                  AND r.Gene_Name = %s''',
-                   [form_algorithm, form_Mirnas, form_species, experiment_ID, form_TPM, form_genes])
+        mirna_column = ""
+        gene_column = ""
+        mirna_filter = "AND c.mirna_id = %s "
+        gene_filter = " AND r.Gene_Name = %s"
+        param = [form_Mirnas, form_species, experiment_ID, form_TPM, form_genes]
 
     elif bool(form_genes) == False and bool(form_Mirnas) == True:
-
-        gene_column = "r.Gene_Name"
-        mirna_filter = "c.mirna_id = %s "
-        gene_filter = ""     #AND r.Gene_Name = %s
-
-        query = "SELECT e.TPM, c.mrna_id, " + gene_column + ", c." + form_algorithm + "_score, c.UTR_START, c.UTR_END, c.Site_Type FROM " + form_algorithm
-        query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id AND " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
-        query += gene_filter
-
-        cursor.execute(query, [form_Mirnas, form_species, experiment_ID, form_TPM])
+        mirna_column = ""
+        gene_column = "r.Gene_Name, "
+        mirna_filter = "AND c.mirna_id = %s "
+        gene_filter = ""
+        param = [form_Mirnas, form_species, experiment_ID, form_TPM]
 
     else:
+        mirna_column = "c.mirna_id, "
+        gene_column = ""
+        mirna_filter = ""
+        gene_filter = " AND r.Gene_Name = %s"
+        param = [form_species, experiment_ID, form_TPM, form_genes]
 
-        cursor.execute('''
-                                      SELECT e.TPM, c.mirna_id, c.mrna_id, c.%s, c.UTR_START, c.UTR_END, c.Site_Type
-                                      FROM contextpp c
-                                      JOIN expression_profiles e
-                                      ON c.mrna_id = e.mrnas_id
-                                      AND c.Species = %s
-                                      AND e.experiments_id = %s
-                                      AND e.TPM >= %s
-                                      JOIN mRNAs r ON c.mrna_id = r.mRNA_ID
-                                      AND r.Gene_Name = %s''',
-                       [form_algorithm, form_species, experiment_ID, form_TPM, form_genes])
+    query = "SELECT e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c." + form_algorithm + "_score, c.UTR_START, c.UTR_END, c.Site_Type FROM " + form_algorithm
+    query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
+    query += gene_filter
+
+    cursor.execute(query, param)
 
     rows = namedtuplefetchall(cursor)
     return rows
@@ -86,7 +72,7 @@ def results(request):
 
     else:
 
-        rows = query_database(form_algorithm, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
+        rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
         return render(request, 'filtar/contextpptable_gene.html', {'rows': rows, 'gene': form_genes})
 
 def home(request):
