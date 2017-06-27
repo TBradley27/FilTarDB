@@ -29,7 +29,7 @@ class SpeciesForm(forms.Form):
     Species  = forms.ChoiceField(choices=CHOICES)
 
 class AlgorithmForm(forms.Form):
-    CHOICES = (('c.contextpp_score','TargetScan7'),
+    CHOICES = (('contextpp','TargetScan7'),
                ('miRanda','miRanda'),
                ('PITA','PITA'),)
     Algorithm = forms.ChoiceField(choices=CHOICES)

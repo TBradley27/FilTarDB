@@ -35,11 +35,13 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
 
     elif bool(form_genes) == False and bool(form_Mirnas) == True:
 
-        query = "SELECT e.TPM, c.mrna_id, r.Gene_Name, "
-        query += form_algorithm
-        query += ", c.UTR_START, c.UTR_END, c.Site_Type FROM contextpp c JOIN expression_profiles e " \
-                                                               "ON c.mrna_id = e.mrnas_id AND c.mirna_id = %s AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s " \
-                                                               "JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
+        gene_column = "r.Gene_Name"
+        mirna_filter = "c.mirna_id = %s "
+        gene_filter = ""     #AND r.Gene_Name = %s
+
+        query = "SELECT e.TPM, c.mrna_id, " + gene_column + ", c." + form_algorithm + "_score, c.UTR_START, c.UTR_END, c.Site_Type FROM " + form_algorithm
+        query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id AND " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
+        query += gene_filter
 
         cursor.execute(query, [form_Mirnas, form_species, experiment_ID, form_TPM])
 
