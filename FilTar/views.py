@@ -15,7 +15,7 @@ def namedtuplefetchall(cursor):     #"Return all rows from a cursor as a namedtu
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
 
-def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas):
+def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas, generic):
 
     cursor = connection.cursor()
     if bool(form_genes) == True and bool(form_Mirnas) == True:
@@ -39,7 +39,7 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
         gene_filter = " AND r.Gene_Name = %s"
         param = [form_species, experiment_ID, form_TPM, form_genes]
 
-    if form_algorithm == "contextpp":
+    if form_algorithm == "contextpp" and generic == False:
         site_type = ", c.Site_Type"
 
     else:
@@ -66,7 +66,14 @@ def results(request):
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     experiment_ID = experiments[0]['experiment_name']  # Change this
 
-    if form_algorithm[0] == "contextpp":
+    if len(form_algorithm) > 1:
+        row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False, generic=True)
+        row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False, generic=True)
+        rows = zip(row_one, row_two)
+        xxxxx
+        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+
+    elif form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
     else:
         template = 'filtar/miRandatable'

@@ -1,0 +1,38 @@
+{% extends 'FilTar/base.html' %}
+
+{% block body %}
+
+miRNA: <b>{{ mirna }}</b>
+<br></br>
+
+<table class="my-listing", id="myTable", data-page-length='25'>
+    <thead>
+        <tr>
+            <th>Transcript_ID</th>
+            <th>Gene Name</th>
+            <th>UTR_Start</th>
+            <th>UTR_End</th>
+            <th>Score</th>
+            <th>TPM</th>
+            <th>Algorithm</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for row in rows %}
+
+        <tr>
+            <td><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ row.mrna_id }}</a></td>
+            <td>{{ row.Gene_Name }}</td>
+            <td>{{ row.UTR_START }}</td>
+            <td>{{ row.UTR_END }}</td>
+            <td>{{ row.score }}</td>
+            <td>{{ row.TPM }}</td>
+            <td>{{ row.name }}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
