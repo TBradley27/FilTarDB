@@ -45,8 +45,6 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     else:
         site_type = ""
 
-    # query = "SELECT * FROM " + form_algorithm
-
     query = "SELECT e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
     query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
     query += gene_filter
@@ -68,18 +66,26 @@ def results(request):
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     experiment_ID = experiments[0]['experiment_name']  # Change this
 
+    if form_algorithm == "contextpp":
+        template = 'filtar/contextpptable'
+    else:
+        template = 'filtar/miRandatable'
+
     if form_genes != 'None' and form_Mirnas != 'None':
 
+        template += "_mirna_gene.html"
         rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=form_genes)
         return render(request, 'filtar/contextpptable_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
     elif form_Mirnas != "None":
 
+        template += ".html"
         rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
-        return render(request, 'filtar/contextpptable.html', {'rows': rows, 'mirna': form_Mirnas})
+        return render(request, template, {'rows': rows, 'mirna': form_Mirnas})
 
     else:
 
+        template += "_gene.html"
         rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
         return render(request, 'filtar/contextpptable_gene.html', {'rows': rows, 'gene': form_genes})
 
