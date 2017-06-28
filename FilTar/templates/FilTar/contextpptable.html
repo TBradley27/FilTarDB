@@ -15,6 +15,7 @@ miRNA: <b>{{ mirna }}</b>
             <th>Site_Type</th>
             <th>TargetScan7</th>
             <th>TPM</th>
+            <th>Algorithm</th>
         </tr>
     </thead>
 
@@ -29,6 +30,7 @@ miRNA: <b>{{ mirna }}</b>
             <td>{{ row.Site_Type }}</td>
             <td>{{ row.score }}</td>
             <td>{{ row.TPM }}</td>
+            <td>{{ row.name }}</td>
         </tr>
 
     {% endfor %}
