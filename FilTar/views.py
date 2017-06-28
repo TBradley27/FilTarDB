@@ -32,14 +32,22 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
         gene_filter = ""
         param = [form_Mirnas, form_species, experiment_ID, form_TPM]
 
-    else:
+    else:       # if gene form is selected but the mirna form isn't
         mirna_column = "c.mirna_id, "
         gene_column = ""
         mirna_filter = ""
         gene_filter = " AND r.Gene_Name = %s"
         param = [form_species, experiment_ID, form_TPM, form_genes]
 
-    query = "SELECT e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c." + form_algorithm + "_score, c.UTR_START, c.UTR_END, c.Site_Type FROM " + form_algorithm
+    if form_algorithm == "contextpp":
+        site_type = ", c.Site_Type"
+
+    else:
+        site_type = ""
+
+    # query = "SELECT * FROM " + form_algorithm
+
+    query = "SELECT e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
     query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
     query += gene_filter
 
