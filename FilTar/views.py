@@ -81,19 +81,19 @@ def results(request):
 
         template += "_mirna_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=form_genes)
-        return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+        return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes, 'algorithm': form_algorithm[0]})
 
     elif form_Mirnas != "None":
 
         template += ".html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
-        return render(request, template, {'rows': rows, 'mirna': form_Mirnas})
+        return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
 
     else:
 
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
-        return render(request, template, {'rows': rows, 'gene': form_genes})
+        return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0]})
 
 def home(request):
 
