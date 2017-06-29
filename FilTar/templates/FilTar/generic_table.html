@@ -12,8 +12,7 @@ miRNA: <b>{{ mirna }}</b>
             <th>Gene Name</th>
             <th>UTR_Start</th>
             <th>UTR_End</th>
-            <th>Site_Type</th>
-            <th>TargetScan7</th>
+            <th>Score</th>
             <th>TPM</th>
             <th>Algorithm</th>
         </tr>
@@ -27,7 +26,6 @@ miRNA: <b>{{ mirna }}</b>
             <td>{{ row.Gene_Name }}</td>
             <td>{{ row.UTR_START }}</td>
             <td>{{ row.UTR_END }}</td>
-            <td>{{ row.Site_Type }}</td>
             <td>{{ row.score }}</td>
             <td>{{ row.TPM }}</td>
             <td>{{ row.name }}</td>
@@ -38,4 +36,3 @@ miRNA: <b>{{ mirna }}</b>
 </table>
 
 {% endblock %}
-

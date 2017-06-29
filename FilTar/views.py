@@ -45,7 +45,7 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     else:
         site_type = ""
 
-    query = "SELECT e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
+    query = "SELECT '" + form_algorithm + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
     query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
     query += gene_filter
 
@@ -66,7 +66,13 @@ def results(request):
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     experiment_ID = experiments[0]['experiment_name']  # Change this
 
-    if form_algorithm == "contextpp":
+    if len(form_algorithm) > 1:
+        row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
+        row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
+        rows = row_one + row_two
+        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+
+    elif form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
     else:
         template = 'filtar/miRandatable'
@@ -80,7 +86,7 @@ def results(request):
     elif form_Mirnas != "None":
 
         template += ".html"
-        rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
+        rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas})
 
     else:
