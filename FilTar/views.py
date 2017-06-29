@@ -80,8 +80,8 @@ def results(request):
     if form_genes != 'None' and form_Mirnas != 'None':
 
         template += "_mirna_gene.html"
-        rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=form_genes)
-        return render(request, 'filtar/contextpptable_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+        rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=form_genes)
+        return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
     elif form_Mirnas != "None":
 
@@ -92,8 +92,8 @@ def results(request):
     else:
 
         template += "_gene.html"
-        rows = query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
-        return render(request, 'filtar/contextpptable_gene.html', {'rows': rows, 'gene': form_genes})
+        rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
+        return render(request, template, {'rows': rows, 'gene': form_genes})
 
 def home(request):
 
