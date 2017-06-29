@@ -1,0 +1,16 @@
+{% extends 'FilTar/base.html' %}
+
+{% block body %}
+
+    miRNA: <b>{{ mirna }}</b> <br/>
+    Gene: <b>{{ gene }}</b> <br/>
+    Transcript ID: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ rows.0.mrna_id}}</a> </b> <br/>
+    TPM: <b>{{ rows.0.TPM }}</b> <br/>
+    Algorithm: <b>{{ algorithm }}</b>
+
+    <br></br>
+
+    {% block table_info %}
+    {% endblock %}
+
+{% endblock %}

@@ -1,9 +1,6 @@
-{% extends 'FilTar/base.html' %}
+{% extends 'FilTar/table_mirna_meta.html' %}
 
-{% block body %}
-
-miRNA: <b>{{ mirna }}</b>
-<br></br>
+{% block table_info %}
 
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
@@ -15,7 +12,6 @@ miRNA: <b>{{ mirna }}</b>
             <th>Site_Type</th>
             <th>TargetScan7</th>
             <th>TPM</th>
-            <th>Algorithm</th>
         </tr>
     </thead>
 
@@ -30,7 +26,6 @@ miRNA: <b>{{ mirna }}</b>
             <td>{{ row.Site_Type }}</td>
             <td>{{ row.score }}</td>
             <td>{{ row.TPM }}</td>
-            <td>{{ row.name }}</td>
         </tr>
 
     {% endfor %}

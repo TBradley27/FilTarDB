@@ -1,12 +1,6 @@
-{% extends 'FilTar/base.html' %}
+{% extends 'FilTar/table_gene_meta.html' %}
 
-{% block body %}
-
-Gene: <b>{{ gene }}</b> <br/>
-Transcript ID: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ rows.0.mrna_id }}</a> </b> <br/>
-TPM: <b>{{ rows.0.TPM }}</b>
-
-<br></br>
+{% block table_info %}
 
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
