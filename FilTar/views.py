@@ -66,34 +66,53 @@ def results(request):
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     experiment_ID = experiments[0]['experiment_name']  # Change this
 
-    if len(form_algorithm) > 1:
-        row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
-        row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
-        rows = row_one + row_two
-        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
-
-    elif form_algorithm[0] == "contextpp":
+    if form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
     else:
         template = 'filtar/miRandatable'
 
-    if form_genes != 'None' and form_Mirnas != 'None':
+    if form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) == 1:
 
         template += "_mirna_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=form_genes)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes, 'algorithm': form_algorithm[0]})
 
-    elif form_Mirnas != "None":
+    elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
+        row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
+                                 form_genes=form_genes)
+        row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
+                                 form_genes=form_genes)
+        rows = row_one + row_two
+        return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+
+    elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm
 
         template += ".html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
 
-    else:
+    elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
+        row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
+                                 form_genes=False)
+        row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
+                                 form_genes=False)
+        rows = row_one + row_two
+        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+
+    elif form_genes != "None" and len(form_algorithm) == 1:
 
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False, form_genes=form_genes)
         return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0]})
+
+    else:
+        row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
+                                 form_genes=form_genes)
+        row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=False,
+                                 form_genes=form_genes)
+        rows = row_one + row_two
+        return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+
 
 def home(request):
 
