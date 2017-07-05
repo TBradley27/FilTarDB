@@ -2,6 +2,8 @@
 
 {% block table_info %}
 
+{{ rows.0.0.name }}
+
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
         <tr>
@@ -19,11 +21,11 @@
 
         <tr>
             <td><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ row.mrna_id }}</a></td>
-            <td>{{ row.Gene_Name }}</td>
-            <td>{{ row.UTR_START }}</td>
-            <td>{{ row.UTR_END }}</td>
-            <td>{{ row.score }}</td>
-            <td>{{ row.TPM }}</td>
+            <td>{{ row.0.Gene_Name }}</td>
+            <td>{{ row.0.UTR_START }}</td>
+            <td>{{ row.0.UTR_END }}</td>
+            <td>{{ row.0.score }}</td>
+            <td>{{ row.0.TPM }}</td>
         </tr>
 
     {% endfor %}

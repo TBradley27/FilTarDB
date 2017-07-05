@@ -10,10 +10,25 @@ from collections import namedtuple
 import decimal
 from operator import itemgetter
 
+miRanda_mean = decimal.Decimal(148.96)   #Hard-coded from MySQl operation
+miRanda_sd = decimal.Decimal(7.192304)
+targetscan_mean = decimal.Decimal(-0.6111913)
+targetscan_sd = decimal.Decimal(0.4527227)
+
+
 def namedtuplefetchall(cursor):     #"Return all rows from a cursor as a namedtuple"
     desc = cursor.description
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
+
+def get_normalised_scores(rows, mean_score,sd):
+    norm_scores = []
+    for row in rows:
+        distance =  abs(row.score) - abs(mean_score)  #We are taking the absolute value to account for the negative sign of the TargetScan score
+        z_score = distance / sd
+        norm_scores.append('{0:.2f}'.format(z_score))
+    merged_results = zip(rows, norm_scores)
+    return merged_results
 
 def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas):
 
@@ -85,20 +100,27 @@ def results(request):
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
         rows = row_one + row_two
+
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
     elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm
 
         template += ".html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas, form_genes=False)
+
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=False)
+        row_one = get_normalised_scores(row_one, targetscan_mean, targetscan_sd)    #TargetScan7
+
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=False)
-        rows = row_one + row_two
+        row_two = get_normalised_scores(row_two, miRanda_mean, miRanda_sd)
+
+        rows = list(row_one) + list(row_two)
+
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
     elif form_genes != "None" and len(form_algorithm) == 1:
