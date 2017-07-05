@@ -1,12 +1,6 @@
-{% extends 'FilTar/base.html' %}
+{% extends 'FilTar/table_mirna_gene_meta.html' %}
 
-{% block body %}
-miRNA: <b>{{ mirna }}</b> <br/>
-Gene: <b>{{ gene }}</b> <br/>
-Transcript ID: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.mrna_id }}" target="_blank">{{ rows.0.mrna_id}}</a> </b> <br/>
-TPM: <b>{{ rows.0.TPM }}</b>
-
-<br></br>
+{% block table_info %}
 
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
@@ -14,7 +8,7 @@ TPM: <b>{{ rows.0.TPM }}</b>
             <th>UTR_Start</th>
             <th>UTR_End</th>
             <th>Site_Type</th>
-            <th>TargetScan7</th>
+            <th>Score</th>
         </tr>
     </thead>
 
@@ -25,7 +19,7 @@ TPM: <b>{{ rows.0.TPM }}</b>
             <td>{{ row.UTR_START }}</td>
             <td>{{ row.UTR_END }}</td>
             <td>{{ row.Site_Type }}</td>
-            <td>{{ row.contextpp_score }}</td>
+            <td>{{ row.score }}</td>
         </tr>
 
     {% endfor %}

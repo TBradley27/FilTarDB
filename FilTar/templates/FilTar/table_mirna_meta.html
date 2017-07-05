@@ -1,0 +1,13 @@
+{% extends 'FilTar/base.html' %}
+
+{% block body %}
+
+    miRNA: <b>{{ mirna }}</b> <br/>
+    Algorithm: <b>{{ algorithm }}</b>
+
+    <br></br>
+
+    {% block table_info %}
+    {% endblock %}
+
+{% endblock %}
