@@ -40,12 +40,14 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
         param = [form_species, experiment_ID, form_TPM, form_genes]
 
     if form_algorithm == "contextpp":
+        algorithm_name = "TargetScan7"
         site_type = ", c.Site_Type"
 
     else:
         site_type = ""
+        algorithm_name = "miRanda"
 
-    query = "SELECT '" + form_algorithm + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
+    query = "SELECT '" + algorithm_name + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
     query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
     query += gene_filter
 
