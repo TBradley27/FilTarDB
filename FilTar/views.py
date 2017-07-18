@@ -15,10 +15,12 @@ miRanda_sd = decimal.Decimal(7.192304)
 targetscan_mean = decimal.Decimal(-0.6111913)
 targetscan_sd = decimal.Decimal(0.4527227)
 
+
 def namedtuplefetchall(cursor):     #"Return all rows from a cursor as a namedtuple"
     desc = cursor.description
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
+
 
 def get_normalised_scores(rows, mean_score,sd):
     norm_scores = []
@@ -28,6 +30,7 @@ def get_normalised_scores(rows, mean_score,sd):
         norm_scores.append('{0:.2f}'.format(z_score))
     merged_results = zip(rows, norm_scores)
     return merged_results
+
 
 def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas):
 
@@ -60,16 +63,24 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     else:
         site_type = ""
         algorithm_name = "miRanda"
-
+    # yyyy
     query = "SELECT '" + algorithm_name + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column \
-            + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
-    query += " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter\
-             + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID"
-    query += gene_filter
+            + "c.score, c.UTR_START, c.UTR_END" + site_type + " FROM " + form_algorithm + \
+            " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter\
+            + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID" + \
+            gene_filter
 
     cursor.execute(query, param)
 
     rows = namedtuplefetchall(cursor)
+    return rows
+
+def query_genes(form_genes):
+    cursor = connection.cursor()
+    query = "SELECT mRNA_ID FROM mRNAs WHERE Gene_Name = %s"
+    cursor.execute(query, [form_genes])
+    rows = namedtuplefetchall(cursor)
+
     return rows
 
 def results(request):
@@ -82,7 +93,12 @@ def results(request):
     form_tissue = request.session.get('tissue')
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-    experiment_ID = experiments[0]['experiment_name']  # Change this
+    experiment_ID = experiments[0]['experiment_name']
+
+    # experiment_ID = [] # Initialise list
+    #
+    # for i in range(0, len(experiments) ):
+    #     experiment_ID.append ( experiments[i]['experiment_name'] )  # Get the first experiment_name returned from many
 
     if form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
@@ -128,12 +144,13 @@ def results(request):
 
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
-    elif form_genes != "None" and len(form_algorithm) == 1: # Just genes, one algorithm
-
+    elif form_genes != "None" and len(form_algorithm) == 1:  # Just genes, one algorithm
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                               form_genes=form_genes)
-        return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0]})
+        transcripts = query_genes(form_genes)
+        return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0],
+                                          'transcripts': transcripts})
 
     else:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
