@@ -17,7 +17,7 @@ targetscan_sd = decimal.Decimal(0.4527227)
 
 
 def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of query results = 1 named tuple
-    desc = cursor.description
+    desc = cursor.description       # TODO: Consider working with a list of lists instead
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
 
@@ -99,7 +99,7 @@ def query_expression(transcripts, experiment_ID):
     tpm_list= []
     tpm_mean = []
     for tx in range(0, len(transcripts)):
-        tx_list.append(transcripts[tx][0]) # Index for labelled tuple element 'mRNA_ID'
+        tx_list.append(transcripts[tx]) # Index for labelled tuple element 'mRNA_ID'
         query = "SELECT TPM FROM expression_profiles WHERE mrnas_id IN %s AND experiments_id IN %s" #For some reason the AVG function does not work here
         cursor.execute(query, [tx_list, experiment_ID])
         rows = namedtuplefetchall(cursor)
@@ -136,6 +136,13 @@ def results(request):
         template += "_mirna_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM,
                               form_Mirnas=form_Mirnas, form_genes=form_genes)
+
+        result_transcripts = []        # This is specific to whether gene or form is selected
+        for result in rows:
+            result_transcripts.append(result[2])
+
+        rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
+
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                           'algorithm': form_algorithm[0]})
 
@@ -154,6 +161,12 @@ def results(request):
         template += ".html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                               form_genes=False)
+
+        result_transcripts = []        # This is specific to whether gene or form is selected
+        for result in rows:
+            result_transcripts.append(result[2])
+
+        rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
 
@@ -174,21 +187,13 @@ def results(request):
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                               form_genes=form_genes)
-        transcripts = query_genes(form_genes)
-        tpm_means = query_expression(transcripts, experiment_ID)
 
-        transcripts = list( map (lambda x: x[0], transcripts) ) # Convert from a named tuple to a list
+        result_transcripts = []        # This is specific to whether gene or form is selected
+        for result in rows:
+            result_transcripts.append(result[3])
+        rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
-        y = []
-        for x in rows:
-            y.append(x[3])
-
-        a = map_avg_tpms(y, transcripts, tpm_means)
-        rows = zip(rows, a)
-        rows = list(rows)
-        # yyyy
-        return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0],
-                                          'transcripts': transcripts})
+        return render(request, template, {'rows': rows, 'gene': form_genes})
 
     else:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
@@ -198,6 +203,19 @@ def results(request):
         rows = row_one + row_two
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes})
+
+def get_avg_tpms(result_transcripts, experiment_ID, rows):
+
+    transcripts = set(result_transcripts)  # Removes duplicate entries
+    transcripts = list(transcripts)  # Because set objects cannot be easily indexed
+
+    tpm_means = query_expression(transcripts, experiment_ID)
+
+    avg_tpms = map_avg_tpms(result_transcripts, transcripts, tpm_means)
+    rows = zip(rows, avg_tpms)
+    rows = list(rows)
+
+    return rows
 
 def home(request):
 
