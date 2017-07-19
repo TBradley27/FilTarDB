@@ -185,6 +185,8 @@ def results(request):
 
         a = map_avg_tpms(y, transcripts, tpm_means)
         rows = zip(rows, a)
+        rows = list(rows)
+        # yyyy
         return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0],
                                           'transcripts': transcripts})
 
