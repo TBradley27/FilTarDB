@@ -44,27 +44,26 @@ def map_avg_tpms(results_list, list_of_transcripts, list_of_TPMs):
 
 def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas):
 
-    cursor = connection.cursor()
     if bool(form_genes) == True and bool(form_Mirnas) == True:
         mirna_column = ""
         gene_column = ""
         mirna_filter = "AND c.mirna_id = %s "
         gene_filter = " AND r.Gene_Name = %s"
-        param = [form_Mirnas, form_species, experiment_ID, form_TPM, form_genes]
+        param = [form_Mirnas, form_species, experiment_ID[0], form_TPM, form_genes]
 
     elif bool(form_genes) == False and bool(form_Mirnas) == True:
         mirna_column = ""
         gene_column = "r.Gene_Name, "
         mirna_filter = "AND c.mirna_id = %s "
         gene_filter = ""
-        param = [form_Mirnas, form_species, experiment_ID, form_TPM]
+        param = [form_Mirnas, form_species, experiment_ID[0], form_TPM]
 
     else:       # if gene form is selected but the mirna form isn't
         mirna_column = "c.mirna_id, "
         gene_column = ""
         mirna_filter = ""
         gene_filter = " AND r.Gene_Name = %s"
-        param = [form_species, experiment_ID, form_TPM, form_genes]
+        param = [form_species, experiment_ID[0], form_TPM, form_genes]
 
     if form_algorithm == "contextpp":
         algorithm_name = "TargetScan7"
@@ -77,12 +76,15 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     query = "SELECT '" + algorithm_name + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column \
             + "c.score, c.UTR_START, c.UTR_END" + site_type + " FROM " + form_algorithm + \
             " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter\
-            + "AND c.Species = %s AND e.experiments_id IN %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID" + \
+            + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID" + \
             gene_filter
 
+    cursor = connection.cursor()
     cursor.execute(query, param)
 
     rows = namedtuplefetchall(cursor)
+    # a = len(rows)
+    # aaaa
     return rows
 
 def query_genes(form_genes):
@@ -200,7 +202,8 @@ def results(request):
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                               form_genes=form_genes)
-
+        # a = len(rows)
+        # aaaa
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[3])
