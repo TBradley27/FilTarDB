@@ -16,20 +16,30 @@ targetscan_mean = decimal.Decimal(-0.6111913)
 targetscan_sd = decimal.Decimal(0.4527227)
 
 
-def namedtuplefetchall(cursor):     #"Return all rows from a cursor as a namedtuple"
+def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of query results = 1 named tuple
     desc = cursor.description
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
 
-
 def get_normalised_scores(rows, mean_score,sd):
     norm_scores = []
     for row in rows:
-        distance =  abs(row.score) - abs(mean_score)  #Absolute value accounta for -ve sign of the TargetScan score
+        distance =  abs(row.score) - abs(mean_score)  # Absolute value accounts for -ve sign of the TargetScan score
         z_score = distance / sd
         norm_scores.append('{0:.2f}'.format(z_score))
     merged_results = zip(rows, norm_scores)
     return merged_results
+
+def map_avg_tpms(results_list, list_of_transcripts, list_of_TPMs):
+    dummy_list = []
+    for i in range(0, len(results_list)):
+        for j in range(0, len(list_of_transcripts)):
+            if results_list[i] == list_of_transcripts[j]:
+                dummy_list.append(list_of_TPMs[j])
+            else:
+                pass
+
+    return dummy_list
 
 
 def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas):
@@ -67,7 +77,7 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     query = "SELECT '" + algorithm_name + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column \
             + "c.score, c.UTR_START, c.UTR_END" + site_type + " FROM " + form_algorithm + \
             " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter\
-            + "AND c.Species = %s AND e.experiments_id = %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID" + \
+            + "AND c.Species = %s AND e.experiments_id IN %s AND e.TPM >= %s JOIN mRNAs r ON c.mrna_id = r.mRNA_ID" + \
             gene_filter
 
     cursor.execute(query, param)
@@ -77,11 +87,27 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
 
 def query_genes(form_genes):
     cursor = connection.cursor()
-    query = "SELECT mRNA_ID FROM mRNAs WHERE Gene_Name = %s"
+    query = "SELECT m.mRNA_ID FROM mRNAs m WHERE Gene_Name = %s"
     cursor.execute(query, [form_genes])
     rows = namedtuplefetchall(cursor)
 
     return rows
+
+def query_expression(transcripts, experiment_ID):
+    cursor = connection.cursor()
+    tx_list = []
+    tpm_list= []
+    tpm_mean = []
+    for tx in range(0, len(transcripts)):
+        tx_list.append(transcripts[tx][0]) # Index for labelled tuple element 'mRNA_ID'
+        query = "SELECT TPM FROM expression_profiles WHERE mrnas_id IN %s AND experiments_id IN %s" #For some reason the AVG function does not work here
+        cursor.execute(query, [tx_list, experiment_ID])
+        rows = namedtuplefetchall(cursor)
+        for i in range(0, len(rows)):
+            tpm_list.append(rows[i][0])
+        tpm_mean.append ( "%.3f" % ( sum(tpm_list) / len(tpm_list) ) )
+
+    return tpm_mean
 
 def results(request):
 
@@ -93,12 +119,12 @@ def results(request):
     form_tissue = request.session.get('tissue')
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-    experiment_ID = experiments[0]['experiment_name']
+    # experiment_ID = experiments[0]['experiment_name']
 
-    # experiment_ID = [] # Initialise list
-    #
-    # for i in range(0, len(experiments) ):
-    #     experiment_ID.append ( experiments[i]['experiment_name'] )  # Get the first experiment_name returned from many
+    experiment_ID = [] # Initialise list
+
+    for i in range(0, len(experiments) ):
+        experiment_ID.append ( experiments[i]['experiment_name'] )  # Get the first experiment_name returned from many
 
     if form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
@@ -149,6 +175,16 @@ def results(request):
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                               form_genes=form_genes)
         transcripts = query_genes(form_genes)
+        tpm_means = query_expression(transcripts, experiment_ID)
+
+        transcripts = list( map (lambda x: x[0], transcripts) ) # Convert from a named tuple to a list
+
+        y = []
+        for x in rows:
+            y.append(x[3])
+
+        a = map_avg_tpms(y, transcripts, tpm_means)
+        rows = zip(rows, a)
         return render(request, template, {'rows': rows, 'gene': form_genes, 'algorithm': form_algorithm[0],
                                           'transcripts': transcripts})
 
@@ -160,7 +196,6 @@ def results(request):
         rows = row_one + row_two
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes})
-
 
 def home(request):
 

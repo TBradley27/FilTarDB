@@ -2,11 +2,9 @@
 
 {% block body %}
 
-    Gene: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ transcripts.0.mRNA_ID }}" target="_blank">{{ gene }}</a></b> <br/>
-    Transcript IDs: <b> <a href="http://www.ensembl.org/Homo_sapiens/Transcript/Summary?t={{ transcripts.0.mRNA_ID }}" target="_blank">{{ transcripts.0.mRNA_ID}}</a> </b> and
-    <b> <a href="http://www.ensembl.org/Homo_sapiens/Transcript/Summary?t={{ transcripts.1.mRNA_ID }}" target="_blank">{{ transcripts.1.mRNA_ID}}</a> </b><br/>
-    TPM: <b>{{ rows.0.TPM }}</b> <br/>
-    Algorithm: <b>{{ algorithm }}</b>
+    Gene: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ transcripts.0.mRNA_ID }}"
+                 target="_blank">{{ gene }}</a></b> <br/>
+    Algorithm: <b>{{ algorithm}}</b>
 
     <br></br>
 
