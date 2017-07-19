@@ -3,7 +3,8 @@
 {% block body %}
 
     miRNA: <b>{{ mirna }}</b> <br/>
-    Gene: <b>{{ gene }}</b> <br/>
+    Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0.mrna_id }}"
+                 target="_blank">{{ gene }}</a></b> <br/>
     Algorithm: <b>{{ rows.0.0.name }}</b>
 
     <br></br>

@@ -149,9 +149,17 @@ def results(request):
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
+        row_one = get_normalised_scores(row_one, targetscan_mean, targetscan_sd)    #TargetScan7
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
-        rows = row_one + row_two
+        row_two = get_normalised_scores(row_two, miRanda_mean, miRanda_sd)
+
+        rows = list(row_one) + list(row_two)
+
+        result_transcripts = []        # This is specific to whether gene or form is selected
+        for result in rows:
+            result_transcripts.append(result[0][2])
+        rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                         'gene': form_genes})
@@ -181,6 +189,11 @@ def results(request):
 
         rows = list(row_one) + list(row_two)
 
+        result_transcripts = []        # This is specific to whether gene or form is selected
+        for result in rows:
+            result_transcripts.append(result[0][2])
+        rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
+
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
 
     elif form_genes != "None" and len(form_algorithm) == 1:  # Just genes, one algorithm
@@ -198,9 +211,19 @@ def results(request):
     else:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                                  form_genes=form_genes)
+        row_one = get_normalised_scores(row_one, targetscan_mean, targetscan_sd)
+
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                                  form_genes=form_genes)
-        rows = row_one + row_two
+        row_two = get_normalised_scores(row_two, miRanda_mean, miRanda_sd)
+
+        rows = list(row_one) + list(row_two)
+
+        result_transcripts = []        # This is specific to whether gene or form is selected
+        for result in rows:
+            result_transcripts.append(result[0][3])
+        rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
+
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes})
 
