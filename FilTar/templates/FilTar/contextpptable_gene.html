@@ -2,6 +2,7 @@
 
 {% block table_info %}
 
+
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
         <tr>
@@ -20,7 +21,7 @@
 
         <tr>
             <td>{{ row.0.mrna_id }}</td>
-            <td>{{ row.0.mirna_id }}</td>
+            <td><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ row.0.mirna_id }}&submit=Search" target="_blank">{{ row.0.mirna_id }}</a></td>
             <td>{{ row.0.UTR_START }}</td>
             <td>{{ row.0.UTR_END }}</td>
             <td>{{ row.0.Site_Type }}</td>
