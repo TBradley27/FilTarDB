@@ -202,14 +202,14 @@ def results(request):
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                               form_genes=form_genes)
-        # a = len(rows)
-        # aaaa
+
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[3])
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
-        return render(request, template, {'rows': rows, 'gene': form_genes})
+        return render(request, template, {'rows': rows, 'gene': form_genes, 'num_replicates': len(experiment_ID),
+                                          'replicates' : experiment_ID, 'sample': form_tissue})
 
     else:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
