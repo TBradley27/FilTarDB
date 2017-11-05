@@ -57,9 +57,13 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
         algorithm_name = "TargetScan7"
         site_type = ", c.Site_Type"
 
-    else:
+    elif form_algorithm == "miRanda":
         site_type = ""
         algorithm_name = "miRanda"
+
+    else:
+        site_type = ""
+        algorithm_name = "PITA"
 
     query = "SELECT '" + algorithm_name + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column \
             + "c.score, c.UTR_START, c.UTR_END" + site_type +  " FROM " + form_algorithm
@@ -86,8 +90,10 @@ def results(request):
 
     if form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
-    else:
+    elif form_algorithm[0] == "miRanda":
         template = 'filtar/miRandatable'
+    else:
+        template = "filtar/pitatable"
 
     if form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) == 1:
 
@@ -112,7 +118,6 @@ def results(request):
         template += ".html"
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                               form_genes=False)
-
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
