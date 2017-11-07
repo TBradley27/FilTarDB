@@ -153,10 +153,10 @@ def results(request):
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
-        row_one = get_normalised_scores(row_one, targetscan_mean, targetscan_sd)    #TargetScan7
+        row_one = get_normalised_scores(row_one, mean[form_algorithm[0]], sd[form_algorithm[0]])    #TargetScan7
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
-        row_two = get_normalised_scores(row_two, miRanda_mean, miRanda_sd)
+        row_two = get_normalised_scores(row_two, mean[form_algorithm[0]], sd[form_algorithm[0]])
 
         rows = list(row_one) + list(row_two)
 
@@ -217,11 +217,11 @@ def results(request):
     else:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                                  form_genes=form_genes)
-        row_one = get_normalised_scores(row_one, targetscan_mean, targetscan_sd)
+        row_one = get_normalised_scores(row_one, mean[form_algorithm[0]], sd[form_algorithm[0]])
 
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=False,
                                  form_genes=form_genes)
-        row_two = get_normalised_scores(row_two, miRanda_mean, miRanda_sd)
+        row_two = get_normalised_scores(row_two, mean[form_algorithm[0]], sd[form_algorithm[0]])
 
         rows = list(row_one) + list(row_two)
 
