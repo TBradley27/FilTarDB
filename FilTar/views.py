@@ -10,10 +10,8 @@ from collections import namedtuple
 import decimal
 from operator import itemgetter
 
-miRanda_mean = decimal.Decimal(148.96)   #Hard-coded from MySQl operation
-miRanda_sd = decimal.Decimal(7.192304)
-targetscan_mean = decimal.Decimal(-0.6111913)
-targetscan_sd = decimal.Decimal(0.4527227)
+mean = {'contextpp': decimal.Decimal(-0.6111913) ,'miRanda': decimal.Decimal(148.96),'PITA': decimal.Decimal(-2.610218) }
+sd = {'contextpp': decimal.Decimal(-0.4527227),'miRanda': decimal.Decimal(7.192304) ,'PITA': decimal.Decimal(-4.836237)} #Sign reflects whether more positive score is a good or bad thing
 
 
 def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of query results = 1 named tuple
@@ -24,7 +22,7 @@ def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of q
 def get_normalised_scores(rows, mean_score,sd):
     norm_scores = []
     for row in rows:
-        distance =  abs(row.score) - abs(mean_score)  # Absolute value accounts for -ve sign of the TargetScan score
+        distance = row.score - mean_score  #Absolute value accounta for -ve sign of the TargetScan score
         z_score = distance / sd
         norm_scores.append('{0:.2f}'.format(z_score))
     merged_results = zip(rows, norm_scores)
@@ -69,10 +67,14 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
         algorithm_name = "TargetScan7"
         site_type = ", c.Site_Type"
 
-    else:
+    elif form_algorithm == "miRanda":
         site_type = ""
         algorithm_name = "miRanda"
-    # yyyy
+
+    else:
+        site_type = ""
+        algorithm_name = "PITA"
+
     query = "SELECT '" + algorithm_name + "' as name, e.TPM, " + mirna_column + "c.mrna_id, " + gene_column \
             + "c.score, c.UTR_START, c.UTR_END" + site_type + " FROM " + form_algorithm + \
             " c JOIN expression_profiles e ON c.mrna_id = e.mrnas_id " + mirna_filter\
@@ -83,8 +85,6 @@ def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_g
     cursor.execute(query, param)
 
     rows = namedtuplefetchall(cursor)
-    # a = len(rows)
-    # aaaa
     return rows
 
 def query_genes(form_genes):
@@ -130,8 +130,10 @@ def results(request):
 
     if form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
-    else:
+    elif form_algorithm[0] == "miRanda":
         template = 'filtar/miRandatable'
+    else:
+        template = "filtar/pitatable"
 
     if form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) == 1:
 
@@ -181,13 +183,14 @@ def results(request):
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
+
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=False)
-        row_one = get_normalised_scores(row_one, targetscan_mean, targetscan_sd)    #TargetScan7
+        row_one = get_normalised_scores(row_one, mean[form_algorithm[0]], sd[form_algorithm[0]])
 
         row_two = query_database(form_algorithm[1], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=False)
-        row_two = get_normalised_scores(row_two, miRanda_mean, miRanda_sd)
+        row_two = get_normalised_scores(row_two, mean[form_algorithm[1]], sd[form_algorithm[1]])
 
         rows = list(row_one) + list(row_two)
 
