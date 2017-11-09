@@ -2,10 +2,17 @@
 
 {% block body %}
 
-    miRNA: <b>{{ mirna }}</b> <br/>
+    miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b> <br/>
     Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0.mrna_id }}"
                  target="_blank">{{ gene }}</a></b> <br/>
-    Algorithm: <b>{{ rows.0.0.name }}</b>
+    Algorithm: <b>{{ rows.0.0.name }}</b><br/>
+    Cell line/Tissue: <b>{{ sample }}</b><br/>
+    RNA-Seq replicates: <b>{{ num_replicates }}</b> -
+
+    {% for replicate in replicates %}
+        <b> <a href="http://www.ebi.ac.uk/ena/data/view/{{ replicate }}"
+                 target="_blank">{{ replicate }}</a></b>
+    {% endfor %}
 
     <br></br>
 

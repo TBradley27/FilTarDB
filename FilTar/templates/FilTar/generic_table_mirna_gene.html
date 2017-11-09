@@ -2,9 +2,16 @@
 
 {% block body %}
 
-miRNA: <b>{{ mirna }}</b> <br/>
-Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0.mrna_id }}"
-                 target="_blank">{{ gene }}</a></b> <br/> <br/>
+miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b> <br/>
+Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ gene }}"
+                 target="_blank">{{ gene }}</a></b> <br/>
+Cell line/Tissue: <b>{{ sample }}</b><br/>
+RNA-Seq replicates: <b>{{ num_replicates }}</b> -
+
+    {% for replicate in replicates %}
+        <b> <a href="http://www.ebi.ac.uk/ena/data/view/{{ replicate }}"
+                 target="_blank">{{ replicate }}</a></b>
+    {% endfor %}
 
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
@@ -22,7 +29,7 @@ Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0
     {% for row in rows %}
 
         <tr>
-            <td><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.0.0.mrna_id }}" target="_blank">{{ row.0.0.mrna_id }}</a></td>
+            <td>{{ row.0.0.mrna_id }}</td>
             <td>{{ row.0.0.UTR_START }}</td>
             <td>{{ row.0.0.UTR_END }}</td>
             <td>{{ row.0.1 }}</td>
@@ -33,7 +40,5 @@ Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0
     {% endfor %}
     </tbody>
 </table>
-
-exit
 
 {% endblock %}

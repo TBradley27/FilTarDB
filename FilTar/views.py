@@ -148,7 +148,8 @@ def results(request):
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
-                                          'algorithm': form_algorithm[0]})
+                                          'algorithm': form_algorithm[0], 'num_replicates': len(experiment_ID),
+                                          'replicates': experiment_ID, 'sample': form_tissue})
 
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
@@ -166,7 +167,8 @@ def results(request):
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas,
-                                                                        'gene': form_genes})
+                                                                        'gene': form_genes,'num_replicates': len(experiment_ID),
+                                                                        'replicates': experiment_ID,'sample': form_tissue})
 
     elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm
 
@@ -180,7 +182,9 @@ def results(request):
 
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
-        return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0]})
+        return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
+                                          'num_replicates': len(experiment_ID),'replicates': experiment_ID,
+                                          'sample': form_tissue})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
 
@@ -199,7 +203,9 @@ def results(request):
             result_transcripts.append(result[0][2])
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
-        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes})
+        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
+                                                             'num_replicates': len(experiment_ID),
+                                                             'replicates': experiment_ID, 'sample': form_tissue})
 
     elif form_genes != "None" and len(form_algorithm) == 1:  # Just genes, one algorithm
         template += "_gene.html"
@@ -231,7 +237,8 @@ def results(request):
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
-                                                                  'gene': form_genes})
+                                                                  'gene': form_genes, 'num_replicates': len(experiment_ID),
+                                                                  'replicates' : experiment_ID, 'sample': form_tissue})
 
 def get_avg_tpms(result_transcripts, experiment_ID, rows):
 

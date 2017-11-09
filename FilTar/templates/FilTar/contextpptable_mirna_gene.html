@@ -18,7 +18,7 @@
     {% for row in rows %}
 
         <tr>
-            <td><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.0.mrna_id }}" target="_blank">{{ row.0.mrna_id }}</a></td>
+            <td>{{ row.0.mrna_id }}</td>
             <td>{{ row.0.UTR_START }}</td>
             <td>{{ row.0.UTR_END }}</td>
             <td>{{ row.0.Site_Type }}</td>
