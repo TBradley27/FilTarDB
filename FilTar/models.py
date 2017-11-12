@@ -294,12 +294,6 @@ class MiRanda(models.Model): # miRanda Target Prediction Output table
 class TModel(models.Model):
     name = models.CharField(max_length=200)
 
-    test = models.ManyToManyField(
-        'self',
-        blank=True,
-        related_name='related_test_models'
-    )
-
     for_inline = models.ForeignKey(
         'self',
         null=True,
@@ -309,6 +303,3 @@ class TModel(models.Model):
 
     def __str__(self):
         return self.name
-
-    class meta:
-        db_table = 'tmodel'

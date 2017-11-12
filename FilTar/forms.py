@@ -51,9 +51,4 @@ class AlgorithmForm(forms.Form):
 class TForm(forms.ModelForm):
     class Meta:
         model = TModel
-        fields = ('name', 'test')
-        widgets = {
-            'test': autocomplete.ModelSelect2Multiple(
-                'select2_many_to_many_autocomplete'
-            )
-        }
+        fields = ('name',)

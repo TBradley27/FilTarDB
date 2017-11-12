@@ -2,18 +2,6 @@
 {% load static %}
 
 {% block body %}
-		<ul>
-			<form method="post">
-				{% csrf_token %}
-				{{ form_TPM }} <br>
-				{{ form_location.media.js }}
-    			{{ form_location.as_p }}
-				{{ form_genes }} <br>
-				{{ form_algorithm }} <br>
-				<p></p>
-				<input type='submit' value='Submit' >
-			</form>
-		</ul>
 
 		<div>
     		<form action="" method="post">
