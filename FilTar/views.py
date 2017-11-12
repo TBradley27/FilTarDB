@@ -39,7 +39,6 @@ def map_avg_tpms(results_list, list_of_transcripts, list_of_TPMs):
 
     return dummy_list
 
-
 def query_database(form_algorithm, form_species, experiment_ID, form_TPM, form_genes, form_Mirnas):
 
     if bool(form_genes) == True and bool(form_Mirnas) == True:
@@ -145,11 +144,16 @@ def results(request):
         for result in rows:
             result_transcripts.append(result[2])
 
+        if form_species == "9606":
+            species = "Homo_sapiens"
+        else:
+            species = "Mus_musculus"
+
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                           'algorithm': form_algorithm[0], 'num_replicates': len(experiment_ID),
-                                          'replicates': experiment_ID, 'sample': form_tissue})
+                                          'replicates': experiment_ID, 'sample': form_tissue, 'species': species})
 
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
@@ -166,9 +170,15 @@ def results(request):
             result_transcripts.append(result[0][2])
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
+        if form_species == "9606":
+            species = "Homo_sapiens"
+        else:
+            species = "Mus_musculus"
+
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                         'gene': form_genes,'num_replicates': len(experiment_ID),
-                                                                        'replicates': experiment_ID,'sample': form_tissue})
+                                                                        'replicates': experiment_ID,'sample': form_tissue,
+                                                                        'species': species})
 
     elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm
 
@@ -182,9 +192,14 @@ def results(request):
 
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
+        if form_species == "9606":
+            species = "Homo_sapiens"
+        else:
+            species = "Mus_musculus"
+
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
                                           'num_replicates': len(experiment_ID),'replicates': experiment_ID,
-                                          'sample': form_tissue})
+                                          'sample': form_tissue, 'species': species})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
 
@@ -203,9 +218,15 @@ def results(request):
             result_transcripts.append(result[0][2])
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
+        if form_species == "9606":
+            species = "Homo_sapiens"
+        else:
+            species = "Mus_musculus"
+
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                                              'num_replicates': len(experiment_ID),
-                                                             'replicates': experiment_ID, 'sample': form_tissue})
+                                                             'replicates': experiment_ID, 'sample': form_tissue,
+                                                             'species': species})
 
     elif form_genes != "None" and len(form_algorithm) == 1:  # Just genes, one algorithm
         template += "_gene.html"
@@ -217,8 +238,13 @@ def results(request):
             result_transcripts.append(result[3])
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
+        if form_species == "9606":
+            species = "Homo_sapiens"
+        else:
+            species = "Mus_musculus"
+
         return render(request, template, {'rows': rows, 'gene': form_genes, 'num_replicates': len(experiment_ID),
-                                          'replicates' : experiment_ID, 'sample': form_tissue})
+                                          'replicates' : experiment_ID, 'sample': form_tissue, 'species': species})
 
     else:
         row_one = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=False,
@@ -236,9 +262,15 @@ def results(request):
             result_transcripts.append(result[0][3])
         rows = get_avg_tpms(result_transcripts, experiment_ID, rows)
 
+        if form_species == "9606":
+            species = "Homo_sapiens"
+        else:
+            species = "Mus_musculus"
+
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes, 'num_replicates': len(experiment_ID),
-                                                                  'replicates' : experiment_ID, 'sample': form_tissue})
+                                                                  'replicates' : experiment_ID, 'sample': form_tissue,
+                                                                  'species': species})
 
 def get_avg_tpms(result_transcripts, experiment_ID, rows):
 

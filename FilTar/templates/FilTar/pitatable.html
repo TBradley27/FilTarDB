@@ -19,7 +19,7 @@
 
         <tr>
             <td>{{ row.0.mrna_id }}</a></td>
-            <td><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ row.0.Gene_Name }}" target="_blank">{{ row.0.Gene_Name }}</td>
+            <td><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ row.0.Gene_Name }}" target="_blank">{{ row.0.Gene_Name }}</td>
             <td>{{ row.0.UTR_START }}</td>
             <td>{{ row.0.UTR_END }}</td>
             <td>{{ row.0.score }}</td>

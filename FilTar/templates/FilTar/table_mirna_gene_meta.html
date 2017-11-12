@@ -3,7 +3,7 @@
 {% block body %}
 
     miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b> <br/>
-    Gene: <b><a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0.mrna_id }}"
+    Gene: <b><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ rows.0.0.mrna_id }}"
                  target="_blank">{{ gene }}</a></b> <br/>
     Algorithm: <b>{{ rows.0.0.name }}</b><br/>
     Cell line/Tissue: <b>{{ sample }}</b><br/>

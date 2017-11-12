@@ -2,7 +2,7 @@
 
 {% block body %}
 
-Gene: <b> <a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?t={{ rows.0.0.mrna_id }}"
+Gene: <b> <a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ rows.0.0.mrna_id }}"
                  target="_blank">{{ gene }}</a></b> <br/>
 Cell line/Tissue: <b>{{ sample }}</b><br/>
 RNA-Seq replicates: <b>{{ num_replicates }}</b> -
