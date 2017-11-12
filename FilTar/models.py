@@ -11,6 +11,7 @@ from django.db import models
 from django import forms
 from django.forms import ModelForm
 from smart_selects.db_fields import ChainedForeignKey
+from django.utils.encoding import python_2_unicode_compatible
 
 
 # from django.core.urlresolvers import reverse
@@ -289,3 +290,25 @@ class MiRanda(models.Model): # miRanda Target Prediction Output table
     class Meta:
         managed = False
         db_table = 'miRanda'
+
+class TModel(models.Model):
+    name = models.CharField(max_length=200)
+
+    test = models.ManyToManyField(
+        'self',
+        blank=True,
+        related_name='related_test_models'
+    )
+
+    for_inline = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='inline_test_models'
+    )
+
+    def __str__(self):
+        return self.name
+
+    class meta:
+        db_table = 'tmodel'

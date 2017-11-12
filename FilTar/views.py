@@ -10,6 +10,12 @@ from collections import namedtuple
 import decimal
 from operator import itemgetter
 
+try:
+    from django.urls import reverse_lazy
+except ImportError:
+    from django.core.urlresolvers import reverse_lazy
+
+
 mean = {'contextpp': decimal.Decimal(-0.6111913) ,'miRanda': decimal.Decimal(148.96),'PITA': decimal.Decimal(-2.610218) }
 sd = {'contextpp': decimal.Decimal(-0.4527227),'miRanda': decimal.Decimal(7.192304) ,'PITA': decimal.Decimal(-4.836237)} #Sign reflects whether more positive score is a good or bad thing
 
@@ -323,3 +329,12 @@ def home(request):
         form_algorithm = AlgorithmForm()
     return render(request, 'filtar/home.html',{'form_TPM': form_TPM, 'form_algorithm': form_algorithm,
                                                'form_genes': form_genes,'form_location': form_location})
+
+class UpdateView(generic.UpdateView):
+    model = TModel
+    form_class = TForm
+    template_name = 'home.html'
+    success_url = reverse_lazy('filtar')
+
+    def get_object(self):
+        return TModel.objects.first()

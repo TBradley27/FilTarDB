@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from dal import autocomplete
 
 # from .models import MirnaForm
 
@@ -47,3 +48,12 @@ class AlgorithmForm(forms.Form):
                ('PITA', 'PITA'))
     Algorithm = forms.MultipleChoiceField(choices=CHOICES)
 
+class TForm(forms.ModelForm):
+    class Meta:
+        model = TModel
+        fields = ('name', 'test')
+        widgets = {
+            'test': autocomplete.ModelSelect2Multiple(
+                'select2_many_to_many_autocomplete'
+            )
+        }
