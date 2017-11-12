@@ -23,6 +23,21 @@ class TissueForm(forms.Form):
 
     Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
                                     , empty_label="Choose your tissue or cell line")
+
+class LocationForm(forms.ModelForm):
+#     # Tissue = forms.ModelChoiceField(queryset=Location.objects.all(), to_field_name="tissue"
+#     #                                 , empty_label="Choose your tissue or cell line")
+        class Meta:
+            model = Location
+            fields = ['species','tissue']
+
+# class TissueForm(forms.Form):
+#     def __init__(self, tissue_choices, *args, **kwargs):
+#         super(TissueForm, self).__init__(*args, **kwargs)
+#         self.fields['TissueForm'].choices = tissue_choices
+#
+#     TissueForm = forms.ChoiceField(choices=(), required=True)
+
 class SpeciesForm(forms.Form):
     CHOICES = (('9606','Human'),
                ("10090","Mouse"),)

@@ -318,9 +318,21 @@ def home(request):
         form_Mirnas = MirnaForm()
         form_genes = GeneForm()
         form_tissue = TissueForm()
+        #
+        # request.session['mirna'] = str(form_Mirnas)
+        #
+        # mirnas = request.session['mirna']
+        # tissue_list = []
+        # for mirna in mirnas:
+        #     tissue_list.append(('gg','hh'))
+
+        # form_tissue = TissueForm(tissue_list)
+
+        # context = {mirna = None, tissues = Tissue.objects.all().order_by('name'}
+
         form_species = SpeciesForm()
         form_algorithm = AlgorithmForm()
-
+        form_location = LocationForm()
     return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species,
                                                'form_TPM': form_TPM, 'form_algorithm': form_algorithm,
-                                               'form_tissue': form_tissue, 'form_genes': form_genes  })
+                                               'form_tissue': form_tissue, 'form_genes': form_genes, 'form_location': form_location})

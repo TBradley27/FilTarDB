@@ -10,6 +10,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django import forms
 from django.forms import ModelForm
+from smart_selects.db_fields import ChainedForeignKey
+
 
 # from django.core.urlresolvers import reverse
 
@@ -203,7 +205,7 @@ class Species(models.Model):
 #     id = models.IntegerField(default=11, null=False, primary_key=True) 
 	
     def __str__(self):
-	     return self.common_name
+	     return self.taxonomic_id
 	     
     class Meta:
         managed = True
@@ -213,6 +215,7 @@ class Species(models.Model):
 
 class Tissues(models.Model):
     name = models.CharField(max_length=50, null=False, primary_key=True)
+    taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -221,6 +224,23 @@ class Tissues(models.Model):
         managed = True
         db_table = 'tissues'
         verbose_name_plural = "Tissues"
+
+class Location(models.Model):
+    species = models.ForeignKey(Species)
+    tissue = ChainedForeignKey(
+        Tissues,
+        chained_field="species",
+        chained_model_field="taxonomic_ID",
+        show_all=False,
+        auto_choose=True,
+        sort=True
+    )
+
+    def __unicode__(self):
+        return str(self.pk)
+
+    class Meta:
+        managed = False
 
 class Contextpp(models.Model): # Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
