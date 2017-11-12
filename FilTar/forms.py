@@ -25,8 +25,6 @@ class TissueForm(forms.Form):
                                     , empty_label="Choose your tissue or cell line")
 
 class LocationForm(forms.ModelForm):
-#     # Tissue = forms.ModelChoiceField(queryset=Location.objects.all(), to_field_name="tissue"
-#     #                                 , empty_label="Choose your tissue or cell line")
         class Meta:
             model = Location
             fields = ['species','tissue']

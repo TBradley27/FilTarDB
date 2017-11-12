@@ -119,6 +119,9 @@ def results(request):
     form_algorithm = request.session.get('algorithm')
     form_tissue = request.session.get('tissue')
 
+    species_dict = {'Mouse': '10090', 'Human' : '9606'} # Translate form input
+    form_species = species_dict[form_species]
+
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     # experiment_ID = experiments[0]['experiment_name']
 
@@ -290,49 +293,35 @@ def home(request):
     if request.method == 'POST':
         form_Mirnas = MirnaForm(request.POST)
         form_genes = GeneForm(request.POST)
-        form_species = SpeciesForm(request.POST)
         form_TPM = TPMForm(request.POST)
-        form_tissue = TissueForm(request.POST)
         form_algorithm = AlgorithmForm(request.POST)
+        form_location = LocationForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_species.is_valid() and form_TPM.is_valid() and form_tissue.is_valid() and \
-                form_algorithm.is_valid() and form_genes.is_valid():
-             form_species = form_species.cleaned_data['Species']
+        if form_Mirnas.is_valid() and form_TPM.is_valid() and \
+                form_algorithm.is_valid() and form_genes.is_valid() and form_location.is_valid():
              form_Mirnas = form_Mirnas.cleaned_data['mirna']
              form_genes = form_genes.cleaned_data['gene']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
-             form_tissue = form_tissue.cleaned_data['Tissue']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
-             request.session['species'] = form_species
+             form_tissue = form_location.cleaned_data['tissue']
+             form_species = form_location.cleaned_data['species']
+
              request.session['mirna'] = str(form_Mirnas)
              request.session['gene'] = str(form_genes)
              request.session['tpm'] = form_TPM
-             request.session['tissue'] = str(form_tissue)
              request.session['algorithm'] = form_algorithm
+             request.session['tissue'] = str(form_tissue)
+             request.session['species'] = str(form_species)
 
              return HttpResponseRedirect('/filtar/results')
 
     elif request.method == 'GET':
         form_TPM = TPMForm()
+        form_location = LocationForm()
         form_Mirnas = MirnaForm()
         form_genes = GeneForm()
-        form_tissue = TissueForm()
-        #
-        # request.session['mirna'] = str(form_Mirnas)
-        #
-        # mirnas = request.session['mirna']
-        # tissue_list = []
-        # for mirna in mirnas:
-        #     tissue_list.append(('gg','hh'))
-
-        # form_tissue = TissueForm(tissue_list)
-
-        # context = {mirna = None, tissues = Tissue.objects.all().order_by('name'}
-
-        form_species = SpeciesForm()
         form_algorithm = AlgorithmForm()
-        form_location = LocationForm()
-    return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_species': form_species,
-                                               'form_TPM': form_TPM, 'form_algorithm': form_algorithm,
-                                               'form_tissue': form_tissue, 'form_genes': form_genes, 'form_location': form_location})
+    return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_TPM': form_TPM,
+                                               'form_algorithm': form_algorithm, 'form_genes': form_genes,
+                                               'form_location': form_location})

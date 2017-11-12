@@ -205,7 +205,7 @@ class Species(models.Model):
 #     id = models.IntegerField(default=11, null=False, primary_key=True) 
 	
     def __str__(self):
-	     return self.taxonomic_id
+	     return self.common_name
 	     
     class Meta:
         managed = True
