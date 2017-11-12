@@ -27,7 +27,7 @@ class TissueForm(forms.Form):
 class LocationForm(forms.ModelForm):
         class Meta:
             model = Location
-            fields = ['species','tissue']
+            fields = ['species', 'miRNA', 'tissue']
 
 # class TissueForm(forms.Form):
 #     def __init__(self, tissue_choices, *args, **kwargs):

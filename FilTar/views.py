@@ -297,15 +297,15 @@ def home(request):
         form_algorithm = AlgorithmForm(request.POST)
         form_location = LocationForm(request.POST)
 
-        if form_Mirnas.is_valid() and form_TPM.is_valid() and \
+        if form_TPM.is_valid() and \
                 form_algorithm.is_valid() and form_genes.is_valid() and form_location.is_valid():
-             form_Mirnas = form_Mirnas.cleaned_data['mirna']
              form_genes = form_genes.cleaned_data['gene']
              form_TPM =  form_TPM.cleaned_data['TPM_threshold']
              form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
              form_tissue = form_location.cleaned_data['tissue']
              form_species = form_location.cleaned_data['species']
+             form_Mirnas = form_location.cleaned_data['miRNA']
 
              request.session['mirna'] = str(form_Mirnas)
              request.session['gene'] = str(form_genes)
@@ -319,9 +319,7 @@ def home(request):
     elif request.method == 'GET':
         form_TPM = TPMForm()
         form_location = LocationForm()
-        form_Mirnas = MirnaForm()
         form_genes = GeneForm()
         form_algorithm = AlgorithmForm()
-    return render(request, 'filtar/home.html',{'form_Mirnas': form_Mirnas, 'form_TPM': form_TPM,
-                                               'form_algorithm': form_algorithm, 'form_genes': form_genes,
-                                               'form_location': form_location})
+    return render(request, 'filtar/home.html',{'form_TPM': form_TPM, 'form_algorithm': form_algorithm,
+                                               'form_genes': form_genes,'form_location': form_location})

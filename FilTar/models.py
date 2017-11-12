@@ -177,6 +177,8 @@ class GenomeAssembly(models.Model):
 
 class Mirnas(models.Model):
     name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    Species = models.ForeignKey('Species', to_field="taxonomic_id", db_column="Species", max_length=20, blank=True, null=True)
+
 
     def __str__(self):
         return self.name
@@ -231,6 +233,14 @@ class Location(models.Model):
         Tissues,
         chained_field="species",
         chained_model_field="taxonomic_ID",
+        show_all=False,
+        auto_choose=True,
+        sort=True
+    )
+    miRNA = ChainedForeignKey(
+        Mirnas,
+        chained_field="species",
+        chained_model_field="Species",
         show_all=False,
         auto_choose=True,
         sort=True
