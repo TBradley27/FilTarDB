@@ -58,7 +58,7 @@ class ExampleForm(forms.ModelForm):
         model = Example
         fields = ('name','test')
         widgets = {
-            'test': autocomplete.ModelSelect2Multiple(
+            'test': autocomplete.ModelSelect2(
                     # url='filtar/ggg'
                 'filtar:select2_many_to_many_autocomplete'
             )
