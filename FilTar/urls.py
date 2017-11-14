@@ -3,6 +3,8 @@ from . import views
 from django.contrib import admin
 from smart_selects import urls as smart_selects_urls
 from .views import UpdateView
+from dal import autocomplete
+from .models import *
 
 app_name = 'filtar'
 
@@ -19,4 +21,13 @@ urlpatterns = [
         UpdateView.as_view(),
         name='filtar',
     ),
+    url(
+        'test-autocomplete/$',
+        autocomplete.Select2QuerySetView.as_view(
+            model=Example,
+            create_field='name',
+        ),
+        name='select2_many_to_many_autocomplete',
+    ),
+
 ]

@@ -134,6 +134,19 @@ class Experiments(models.Model):
         managed = True
         db_table = 'experiments'
 
+class Mirnas(models.Model):
+    name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    Species = models.ForeignKey('Species', to_field="taxonomic_id", db_column="Species", max_length=20, blank=True, null=True)
+
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = True
+        db_table = 'mirna_dummy'
+        verbose_name_plural = ' mirna_dummy'
+
 class ExpressionProfiles(models.Model):
      mrnas = models.ForeignKey('Mrnas', max_length=20, blank=True, null=False)  # Field name made lowercase.
      tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)
@@ -176,18 +189,52 @@ class GenomeAssembly(models.Model):
         verbose_name_plural = 'GenomeAssembly'
 
 
-class Mirnas(models.Model):
-    name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
-    Species = models.ForeignKey('Species', to_field="taxonomic_id", db_column="Species", max_length=20, blank=True, null=True)
+class TModel(models.Model):
+    name = models.CharField(max_length=200)
 
+    for_inline = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='inline_test_models'
+    )
+
+    test = models.ManyToManyField(
+        'self',
+        blank=True,
+        related_name='related_test_models'
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'tmodel'
+
+class Example(models.Model):
+    name = models.CharField(max_length=20)  # Field name made lowercase.
+    # Species = models.ForeignKey('Species', to_field="taxonomic_id", db_column="Species", max_length=20, blank=True, null=True)
+
+    for_inline = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='inline_test_models'
+    )
+
+    test = models.ManyToManyField(
+        'self',
+        blank=True,
+        related_name='related_test_models'
+    )
 
     def __str__(self):
         return self.name
 
     class Meta:
         managed = True
-        db_table = 'miRNAs'
-        verbose_name_plural = ' miRNAs'
+        db_table = 'example'
+        verbose_name_plural = 'example'
 
 class Gene(models.Model):
     name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
@@ -228,30 +275,30 @@ class Tissues(models.Model):
         db_table = 'tissues'
         verbose_name_plural = "Tissues"
 
-class Location(models.Model):
-    species = models.ForeignKey(Species)
-    tissue = ChainedForeignKey(
-        Tissues,
-        chained_field="species",
-        chained_model_field="taxonomic_ID",
-        show_all=False,
-        auto_choose=True,
-        sort=True
-    )
-    miRNA = ChainedForeignKey(
-        Mirnas,
-        chained_field="species",
-        chained_model_field="Species",
-        show_all=False,
-        auto_choose=True,
-        sort=True
-    )
-
-    def __unicode__(self):
-        return str(self.pk)
-
-    class Meta:
-        managed = False
+# class Location(models.Model):
+#     species = models.ForeignKey(Species)
+#     tissue = ChainedForeignKey(
+#         Tissues,
+#         chained_field="species",
+#         chained_model_field="taxonomic_ID",
+#         show_all=False,
+#         auto_choose=True,
+#         sort=True
+#     )
+#     miRNA = ChainedForeignKey(
+#         Mirnas,
+#         chained_field="species",
+#         chained_model_field="Species",
+#         show_all=False,
+#         auto_choose=True,
+#         sort=True
+#     )
+#
+#     def __unicode__(self):
+#         return str(self.pk)
+#
+#     class Meta:
+#         managed = False
 
 class Contextpp(models.Model): # Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.
@@ -291,15 +338,3 @@ class MiRanda(models.Model): # miRanda Target Prediction Output table
         managed = False
         db_table = 'miRanda'
 
-class TModel(models.Model):
-    name = models.CharField(max_length=200)
-
-    for_inline = models.ForeignKey(
-        'self',
-        null=True,
-        blank=True,
-        related_name='inline_test_models'
-    )
-
-    def __str__(self):
-        return self.name

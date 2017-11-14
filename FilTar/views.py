@@ -331,10 +331,13 @@ def get_avg_tpms(result_transcripts, experiment_ID, rows):
 #                                                'form_genes': form_genes,'form_location': form_location})
 
 class UpdateView(generic.UpdateView):
-    model = TModel
-    form_class = TForm
+    # model = TModel
+    # form_class = TForm
+    model = Example
+    form_class = ExampleForm
     template_name = 'filtar/home.html'
     success_url = reverse_lazy('filtar')
 
     def get_object(self):
-        return TModel.objects.first()
+        # return TModel.objects.first()
+        return Example.objects.first()

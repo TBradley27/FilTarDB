@@ -12,9 +12,9 @@ class TPMForm(forms.Form):
                (4,'4'),)
     TPM_threshold = forms.ChoiceField(choices=CHOICES) #Variable name html - pretty weird
 
-class MirnaForm(forms.Form):
-    mirna = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="name"
-                                    , empty_label="Choose your miRNA (optional)", required=False)
+# class MirnaForm(forms.Form):
+#     mirna = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="name"
+#                                     , empty_label="Choose your miRNA (optional)", required=False)
 
 class GeneForm(forms.Form):
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), to_field_name="name"
@@ -25,10 +25,10 @@ class TissueForm(forms.Form):
     Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
                                     , empty_label="Choose your tissue or cell line")
 
-class LocationForm(forms.ModelForm):
-        class Meta:
-            model = Location
-            fields = ['species', 'miRNA', 'tissue']
+# class LocationForm(forms.ModelForm):
+#         class Meta:
+#             model = Location
+#             fields = ['species', 'miRNA', 'tissue']
 
 # class TissueForm(forms.Form):
 #     def __init__(self, tissue_choices, *args, **kwargs):
@@ -51,4 +51,15 @@ class AlgorithmForm(forms.Form):
 class TForm(forms.ModelForm):
     class Meta:
         model = TModel
-        fields = ('name',)
+        fields = ('name','test')
+
+class ExampleForm(forms.ModelForm):
+    class Meta:
+        model = Example
+        fields = ('name','test')
+        widgets = {
+            'test': autocomplete.ModelSelect2Multiple(
+                    # url='filtar/ggg'
+                'filtar:select2_many_to_many_autocomplete'
+            )
+        }
