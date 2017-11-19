@@ -21,7 +21,7 @@ urlpatterns = [
     #     UpdateView.as_view(),
     #     name='filtar',
     # ),
-    url(r'^$', views.new, name='new'),
+    url(r'^$', views.home, name='home'),
     url(
         'test-autocomplete/$',
         autocomplete.Select2QuerySetView.as_view(

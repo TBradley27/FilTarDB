@@ -6,7 +6,14 @@
 <div>
 	<form action="" method="post">
 		{% csrf_token %}
-		{{ form.as_p }}
+
+		{{ form_auto.as_p }}
+        {{ form_TPM }} <br>
+        {{ form_location.media.js }}
+        {{ form_location.as_p }}
+        {{ form_genes }} <br>
+        {{ form_algorithm }}
+
 		<input type="submit" />
 	</form>
 </div>
@@ -16,5 +23,5 @@
 {% block footer %}
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 
-{{ form.media }}
+{{ form_auto.media }}
 {% endblock %}

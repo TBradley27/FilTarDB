@@ -25,10 +25,36 @@ class TissueForm(forms.Form):
     Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
                                     , empty_label="Choose your tissue or cell line")
 
-# class LocationForm(forms.ModelForm):
-#         class Meta:
-#             model = Location
-#             fields = ['species', 'miRNA', 'tissue']
+class LocationForm(forms.ModelForm):
+
+    species = forms.ModelChoiceField(Species.objects.all(), empty_label=None)
+
+    class Meta:
+        model = Location
+        fields = ['species', 'miRNA', 'tissue']
+        widgets = {
+            'miRNA': autocomplete.ModelSelect2(url='filtar:select2_fk',
+                                              attrs={
+                                                  'data-placeholder': 'Type a miRNA name',
+                                                  'data-minimum-input-length': 2
+                                              })
+        }
+
+    # def __init__(self, *args, **kwargs):
+    #     super(LocationForm, self).__init__(*args, **kwargs)
+    #     self.fields['tissue'].empty_label = "ggggg"
+    #     # following line needed to refresh widget copy of choice list
+    #     self.fields['tissue'].widget.choices = self.fields['tissue'].choices
+
+    # def __init__(self, *args, **kwargs):
+    #     super(ThingForm, self).__init__(*args, **kwargs)
+    #     self.fields['species'].empty_label = None
+
+        # widgets = {
+        #     'species': forms.Select(attrs=)
+        # }
+
+
 
 # class TissueForm(forms.Form):
 #     def __init__(self, tissue_choices, *args, **kwargs):
@@ -48,10 +74,10 @@ class AlgorithmForm(forms.Form):
                ('PITA', 'PITA'))
     Algorithm = forms.MultipleChoiceField(choices=CHOICES)
 
-class TForm(forms.ModelForm):
-    class Meta:
-        model = TModel
-        fields = ('name','test')
+# class TForm(forms.ModelForm):
+#     class Meta:
+#         model = TModel
+#         fields = ('name','test')
 
 # class ExampleForm(forms.ModelForm):
 #     class Meta:
