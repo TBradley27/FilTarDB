@@ -68,5 +68,9 @@ class ExampleFKForm(forms.ModelForm):
         model = ExampleFK
         fields = ('test',)
         widgets = {
-            'test': autocomplete.ModelSelect2(url='filtar:select2_fk')
+            'test': autocomplete.ModelSelect2(url='filtar:select2_fk',
+                                              attrs={
+                                                  'data-placeholder': 'Type a miRNA name',
+                                                  'data-minimum-input-length' : 2
+                                              })
         }
