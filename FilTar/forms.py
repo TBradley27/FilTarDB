@@ -53,13 +53,20 @@ class TForm(forms.ModelForm):
         model = TModel
         fields = ('name','test')
 
-class ExampleForm(forms.ModelForm):
+# class ExampleForm(forms.ModelForm):
+#     class Meta:
+#         model = Example
+#         fields = ('test',)
+#         widgets = {
+#             'test': autocomplete.ModelSelect2(
+#                 'filtar:select2_many_to_many_autocomplete'
+#             )
+#         }
+
+class ExampleFKForm(forms.ModelForm):
     class Meta:
-        model = Example
-        fields = ('name','test')
+        model = ExampleFK
+        fields = ('test',)
         widgets = {
-            'test': autocomplete.ModelSelect2(
-                    # url='filtar/ggg'
-                'filtar:select2_many_to_many_autocomplete'
-            )
+            'test': autocomplete.ModelSelect2(url='filtar:select2_fk')
         }

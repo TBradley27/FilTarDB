@@ -118,6 +118,7 @@ def query_expression(transcripts, experiment_ID):
 
 def results(request):
 
+    form_auto = request.session.get('auto')
     form_Mirnas = request.session.get('mirna')
     form_genes = request.session.get('gene')
     form_species = request.session.get('species')
@@ -330,14 +331,36 @@ def get_avg_tpms(result_transcripts, experiment_ID, rows):
 #     return render(request, 'filtar/home.html',{'form_TPM': form_TPM, 'form_algorithm': form_algorithm,
 #                                                'form_genes': form_genes,'form_location': form_location})
 
-class UpdateView(generic.UpdateView):
-    # model = TModel
-    # form_class = TForm
-    model = Example
-    form_class = ExampleForm
-    template_name = 'filtar/home.html'
-    success_url = reverse_lazy('filtar')
+# class UpdateView(generic.FormView):
+#     model = ExampleFK
+#     form_class = ExampleFKForm
+#     template_name = 'filtar/home.html'
+#     success_url = 'results/'
+#
+#     # def get_object(self):
+#     #     x
+#     #     return ExampleFK.objects.first()
+#
+#     def form_valid(self, form):
+#         y = form.cleaned_data['test']
+#         return (y)
+#         # return super(UpdateView, self).form_valid(form)
 
-    def get_object(self):
-        # return TModel.objects.first()
-        return Example.objects.first()
+def new(request):
+
+    if request.method == 'POST':
+        form_auto = ExampleFKForm(request.POST)
+
+        if form_auto.is_valid():
+            form_auto = form_auto.cleaned_data['test']
+
+            request.session['auto'] = str(form_auto)
+
+            return HttpResponseRedirect('/filtar/results')
+
+        return HttpResponseRedirect('/filtar/results')
+
+    elif request.method  == 'GET':
+
+        form_auto = ExampleFKForm()
+        return render(request, 'filtar/home.html',{'form': form_auto})

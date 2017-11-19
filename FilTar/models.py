@@ -211,9 +211,40 @@ class TModel(models.Model):
     class Meta:
         db_table = 'tmodel'
 
-class Example(models.Model):
-    name = models.CharField(max_length=20)  # Field name made lowercase.
-    # Species = models.ForeignKey('Species', to_field="taxonomic_id", db_column="Species", max_length=20, blank=True, null=True)
+# class Example(models.Model):
+#     name = models.CharField(max_length=20)  # Field name made lowercase.
+#     # Species = models.ForeignKey('Species', to_field="taxonomic_id", db_column="Species", max_length=20, blank=True, null=True)
+#
+#     for_inline = models.ForeignKey(
+#         'self',
+#         null=True,
+#         blank=True,
+#         related_name='inline_test_models'
+#     )
+#
+#     test = models.ManyToManyField(
+#         'self',
+#         blank=True,
+#         related_name='related_test_models'
+#     )
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         managed = True
+#         db_table = 'example'
+#         verbose_name_plural = 'example'
+
+class ExampleFK(models.Model):
+    name = models.CharField(max_length=200)
+
+    test = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='related_test_models'
+    )
 
     for_inline = models.ForeignKey(
         'self',
@@ -222,18 +253,12 @@ class Example(models.Model):
         related_name='inline_test_models'
     )
 
-    test = models.ManyToManyField(
-        'self',
-        blank=True,
-        related_name='related_test_models'
-    )
-
     def __str__(self):
         return self.name
 
     class Meta:
         managed = True
-        db_table = 'example'
+        db_table = 'ExampleFK'
         verbose_name_plural = 'example'
 
 class Gene(models.Model):
