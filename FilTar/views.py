@@ -327,6 +327,7 @@ def home(request):
              return HttpResponseRedirect('/filtar/results')
 
     elif request.method == 'GET':
+
         form_auto = ExampleFKForm()
         form_TPM = TPMForm()
         form_location = LocationForm()
@@ -368,3 +369,20 @@ def home(request):
 #
 #         form_auto = ExampleFKForm()
 #         return render(request, 'filtar/home.html',{'form_auto': form_auto})
+
+class CountryAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+
+        qs = ExampleFK.objects.all()
+
+        continent = self.forwarded.get('continent', None)
+
+        # x
+
+        if continent:
+            qs = qs.filter(species=continent)
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return (qs)

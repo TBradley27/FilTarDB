@@ -191,6 +191,38 @@ class GenomeAssembly(models.Model):
     class Meta:
         db_table = 'tmodel'
 
+
+class Species(models.Model):
+    taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=False,
+                                    primary_key=True)  # Field name made lowercase.
+    species_name = models.CharField(max_length=20, blank=True, null=True)
+    genome_build = models.CharField(max_length=20, blank=True, null=True)
+    common_name = models.CharField(max_length=50, blank=True, null=True)
+
+    #     id = models.IntegerField(default=11, null=False, primary_key=True)
+
+    def __str__(self):
+        return self.common_name
+
+    class Meta:
+        managed = True
+        db_table = 'species'
+        verbose_name_plural = "Species"
+
+
+class Tissues(models.Model):
+    name = models.CharField(max_length=50, null=False, primary_key=True)
+    taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20,
+                                     blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = True
+        db_table = 'tissues'
+        verbose_name_plural = "Tissues"
+
 class ExampleFK(models.Model):
     name = models.CharField(max_length=200)
 
@@ -214,7 +246,6 @@ class ExampleFK(models.Model):
                                 max_length=20, blank=True,
                                 null=True)
 
-
     def __str__(self):
         return self.name
 
@@ -223,46 +254,8 @@ class ExampleFK(models.Model):
         db_table = 'ExampleFK'
         verbose_name_plural = 'example'
 
-class Gene(models.Model):
-    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        managed = False
-        db_table = 'Gene'
-        verbose_name_plural = ' Genes'
-
-class Species(models.Model):
-    taxonomic_id = models.CharField(db_column='taxonomic_ID', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
-    species_name = models.CharField(max_length=20, blank=True, null=True)
-    genome_build = models.CharField(max_length=20, blank=True, null=True)
-    common_name = models.CharField(max_length=50, blank=True, null=True)
-#     id = models.IntegerField(default=11, null=False, primary_key=True) 
-	
-    def __str__(self):
-	     return self.common_name
-	     
-    class Meta:
-        managed = True
-        db_table = 'species'
-        verbose_name_plural = "Species"
-
-
-class Tissues(models.Model):
-    name = models.CharField(max_length=50, null=False, primary_key=True)
-    taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20, blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-        
-    class Meta:
-        managed = True
-        db_table = 'tissues'
-        verbose_name_plural = "Tissues"
-
 class Location(models.Model):
+    name = models.CharField(max_length=200)
     species = models.ForeignKey(Species)
     tissue = ChainedForeignKey(
         Tissues,
@@ -281,11 +274,23 @@ class Location(models.Model):
         sort=False
     )
 
+
     def __unicode__(self):
         return str(self.pk)
 
     class Meta:
         managed = False
+
+class Gene(models.Model):
+    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        managed = False
+        db_table = 'Gene'
+        verbose_name_plural = ' Genes'
 
 class Contextpp(models.Model): # Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.

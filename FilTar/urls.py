@@ -5,6 +5,7 @@ from smart_selects import urls as smart_selects_urls
 # from .views import UpdateView
 from dal import autocomplete
 from .models import *
+from .views import *
 
 app_name = 'filtar'
 
@@ -29,6 +30,12 @@ urlpatterns = [
             create_field='name',
         ),
         name='select2_fk',
+    ),
+
+    url(
+        r'^filtar/country-autocomplete/$',
+        CountryAutocomplete.as_view(model=ExampleFK),
+        name='country-autocomplete'
     ),
 
 ]

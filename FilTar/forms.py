@@ -89,14 +89,42 @@ class AlgorithmForm(forms.Form):
 #             )
 #         }
 
+# class ExampleFKForm(forms.ModelForm):
+#     CHOICES = (('contextpp','Apple'),
+#                ('miRanda','Banana'),
+#                ('PITA', 'Orange'))
+#     continent = forms.ChoiceField(choices=CHOICES)
+#
+#     class Meta:
+#         model = ExampleFK
+#         fields = ('test',)
+#         widgets = {
+#             'test': autocomplete.ModelSelect2(url='filtar:select2_fk',
+#                                               attrs={
+#                                                   'data-placeholder': 'Type a miRNA name',
+#                                                   'data-minimum-input-length' : 2
+#                                               }, forward=['continent'])
+#         }
+
 class ExampleFKForm(forms.ModelForm):
+
     class Meta:
         model = ExampleFK
         fields = ('test',)
         widgets = {
-            'test': autocomplete.ModelSelect2(url='filtar:select2_fk',
-                                              attrs={
-                                                  'data-placeholder': 'Type a miRNA name',
-                                                  'data-minimum-input-length' : 2
-                                              })
+            'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete', forward=['continent'])
         }
+
+    CHOICES = (('9606','9606'),
+               ('10090','10090'))
+    continent = forms.ChoiceField(choices=CHOICES)
+
+    class Media:
+        js = (
+            'linked_data.js',
+        )
+
+        # attrs = {
+        #     'data-placeholder': 'Type a miRNA name',
+        #     'data-minimum-input-length': 2
+        # }
