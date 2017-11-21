@@ -106,18 +106,20 @@ class AlgorithmForm(forms.Form):
 #                                               }, forward=['continent'])
 #         }
 
+CHOICES = (('9606', 'Human'),
+           ('10090', 'Mouse'))
+
+
 class ExampleFKForm(forms.ModelForm):
+
+    continent = forms.ChoiceField(choices=CHOICES)
 
     class Meta:
         model = ExampleFK
-        fields = ('test',)
+        fields = ('continent','test',)
         widgets = {
             'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete', forward=['continent'])
         }
-
-    CHOICES = (('9606','9606'),
-               ('10090','10090'))
-    continent = forms.ChoiceField(choices=CHOICES)
 
     class Media:
         js = (

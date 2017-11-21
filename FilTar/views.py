@@ -383,6 +383,6 @@ class CountryAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(species=continent)
 
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return (qs)
