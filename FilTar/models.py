@@ -211,9 +211,24 @@ class Species(models.Model):
 
 
 class Tissues(models.Model):
-    name = models.CharField(max_length=50, null=False, primary_key=True)
+    name = models.CharField(max_length=50)
     taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20,
                                      blank=True, null=True)
+
+    test = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='related_test_models'
+    )
+
+    for_inline = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='inline_test_models'
+    )
+
 
     def __str__(self):
         return self.name
@@ -255,7 +270,6 @@ class ExampleFK(models.Model):
         verbose_name_plural = 'example'
 
 class Location(models.Model):
-    name = models.CharField(max_length=200)
     species = models.ForeignKey(Species)
     tissue = ChainedForeignKey(
         Tissues,

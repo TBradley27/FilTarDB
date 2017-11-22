@@ -109,16 +109,40 @@ class AlgorithmForm(forms.Form):
 CHOICES = (('9606', 'Human'),
            ('10090', 'Mouse'))
 
+CHOICES2 = (('9606', 'Human'),
+           ('10090', 'Mouse'))
+
 
 class ExampleFKForm(forms.ModelForm):
 
     continent = forms.ChoiceField(choices=CHOICES)
 
+    # foo = forms.ChoiceField(choices=CHOICES)
+
+    tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), required=True, empty_label=None,
+                                     widget=autocomplete.ModelSelect2(url='filtar/tissues-autocomplete',
+                                                                      attrs={
+                                                                          'data-placeholder': 'Type a tissue name',
+                                                                      },
+                                                                      forward=['continent']))
+
     class Meta:
         model = ExampleFK
-        fields = ('continent','test',)
+        fields = ('continent','test','tissues')
         widgets = {
-            'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete', forward=['continent'])
+            'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete',
+            attrs = {
+                'data-placeholder': 'Type a miRNA name',
+                'data-minimum-input-length': 2
+            }
+            ,forward=['continent']),
+            #
+            # 'tissues': autocomplete.ModelSelect2(url='filtar/tissues-autocomplete',
+            # attrs={
+            #     # 'data-placeholder': 'Type a miRNA name',
+            #     # 'data-minimum-input-length': 2
+            # }
+            # ,forward=['foo'])
         }
 
     class Media:
@@ -126,7 +150,33 @@ class ExampleFKForm(forms.ModelForm):
             'linked_data.js',
         )
 
-        # attrs = {
-        #     'data-placeholder': 'Type a miRNA name',
-        #     'data-minimum-input-length': 2
-        # }
+# class TissuesFKForm(forms.ModelForm):
+#
+#     foo = forms.ChoiceField(choices=CHOICES2)
+#
+#     # tissues = forms.ModelChoiceField(Tissues.objects.all(), empty_label=None, to_field_name='name')
+#     #             # widget=autocomplete.ModelSelect2(url='filtar/tissues-autocomplete', forward=['continent']))
+#
+#     class Meta:
+#         model = Tissues
+#         fields = ('foo','test')
+#         widgets = {
+#             'test': autocomplete.ModelSelect2(url='filtar/tissues-autocomplete',
+#             attrs = {
+#                 # 'data-placeholder': 'Type a miRNA name',
+#                 # 'data-minimum-input-length': 2
+#             }
+#             ,forward=['foo']),
+#
+#             # 'tissues': autocomplete.ModelSelect2(url='filtar/tissues-autocomplete',
+#             # attrs={
+#             #     'data-placeholder': 'Type a miRNA name',
+#             #     'data-minimum-input-length': 2
+#             # }
+#             # ,forward=['continent'])
+#         }
+#
+#     class Media:
+#         js = (
+#             'linked_data.js',
+#         )

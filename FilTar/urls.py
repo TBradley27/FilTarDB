@@ -33,9 +33,24 @@ urlpatterns = [
     ),
 
     url(
+        'test2-autocomplete/$',
+        autocomplete.Select2QuerySetView.as_view(
+            model=Tissues,
+            create_field='name',
+        ),
+        name='select2_fk',
+    ),
+
+    url(
         r'^filtar/country-autocomplete/$',
         CountryAutocomplete.as_view(model=ExampleFK),
         name='country-autocomplete'
+    ),
+
+    url(
+        r'^filtar/tissues-autocomplete/$',
+        TissuesAutocomplete.as_view(model=Tissues),
+        name='tissues-autocomplete'
     ),
 
 ]
