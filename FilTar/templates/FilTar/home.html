@@ -7,9 +7,9 @@
 	<form action="" method="post">
 		{% csrf_token %}
 
-		{{ form_auto.as_p }}
+		{{ form_auto.as_p }} <br>
 
-        {{ form_TPM }} <br>
+        {{ form_TPM }} <br> <br>
         {{ form_algorithm }}
 
 		<input type="submit" />

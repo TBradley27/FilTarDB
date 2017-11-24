@@ -126,9 +126,9 @@ class DjangoSession(models.Model):
 
 
 class Experiments(models.Model):
-    experiment_name = models.CharField(max_length=20, blank=True, null=False, primary_key=True)
+    experiment_name = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
     species = models.ForeignKey('Species', max_length=30, blank=True, null=True) # Field name made lowercase.
-    tissue = models.ForeignKey('Tissues', max_length=30, blank=True, null=True)
+    tissue = models.ForeignKey('Tissues', max_length=30, blank=True, null=True, to_field="name")
 
     class Meta:
         managed = True
@@ -211,7 +211,7 @@ class Species(models.Model):
 
 
 class Tissues(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20,
                                      blank=True, null=True)
 

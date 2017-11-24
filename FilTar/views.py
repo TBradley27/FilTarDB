@@ -127,7 +127,7 @@ def results(request):
     form_tissue = request.session.get('tissues')
 
     species_dict = {'Mouse': '10090', 'Human' : '9606'} # Translate form input
-    form_species = species_dict[form_species]
+    # form_species = species_dict[form_species]
 
     experiments = Experiments.objects.filter(species=form_species).filter(tissue=form_tissue).values()
     # experiment_ID = experiments[0]['experiment_name']
@@ -193,6 +193,7 @@ def results(request):
     elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm
 
         template += ".html"
+
         rows = query_database(form_algorithm[0], form_species, experiment_ID, form_TPM, form_Mirnas=form_Mirnas,
                               form_genes=False)
 
@@ -299,32 +300,24 @@ def home(request):
 
     if request.method == 'POST':
 
-        # form_genes = GeneForm(request.POST)
-        # form_TPM = TPMForm(request.POST)
-        # form_algorithm = AlgorithmForm(request.POST)
-        # form_location = LocationForm(request.POST)
+        form_TPM = TPMForm(request.POST)
+        form_algorithm = AlgorithmForm(request.POST)
         form_auto = ExampleFKForm(request.POST)
 
-        # return HttpResponseRedirect('/filtar/results')
+        if form_auto.is_valid() and form_algorithm.is_valid() and form_TPM.is_valid():
 
-        if form_auto.is_valid():
-                # form_algorithm.is_valid() and form_genes.is_valid() and form_location.is_valid() and form_auto.is_valid():
-             # form_genes = form_genes.cleaned_data['gene']
-             # form_TPM =  form_TPM.cleaned_data['TPM_threshold']
-             # form_algorithm = form_algorithm.cleaned_data['Algorithm']
+             form_TPM =  form_TPM.cleaned_data['TPM_threshold']
+             form_algorithm = form_algorithm.cleaned_data['Algorithm']
 
-             # form_tissue = form_location.cleaned_data['tissue']
-             # form_species = form_location.cleaned_data['species']
-             # form_Mirnas = form_location.cleaned_data['miRNA']
              form_mirna = form_auto.cleaned_data['test']
              form_tissues = form_auto.cleaned_data['tissues']
+             form_gene = form_auto.cleaned_data['gene']
+             form_species = form_auto.cleaned_data['continent']
 
-             # request.session['mirna'] = str(form_Mirnas)
-             # request.session['gene'] = str(form_genes)
-             # request.session['tpm'] = form_TPM
-             # request.session['algorithm'] = form_algorithm
-             # request.session['tissue'] = str(form_tissue)
-             # request.session['species'] = str(form_species)
+             request.session['gene'] = str(form_gene)
+             request.session['tpm'] = str(form_TPM)
+             request.session['algorithm'] = form_algorithm
+             request.session['species'] = str(form_species)
              request.session['mirna'] = str(form_mirna)
              request.session['tissues'] = str(form_tissues)
 
@@ -333,18 +326,13 @@ def home(request):
     elif request.method == 'GET':
 
         form_auto = ExampleFKForm()
-        # form_tissues = TissuesFKForm()
-        # form_TPM = TPMForm()
-        # form_location = LocationForm()
-        # form_genes = GeneForm()
-        # form_algorithm = AlgorithmForm()
+        form_TPM = TPMForm()
+        form_algorithm = AlgorithmForm()
 
-    return render(request, 'filtar/home.html',{'form_auto': form_auto} )
+    return render(request, 'filtar/home.html',{'form_auto': form_auto,
+                                               'form_algorithm': form_algorithm,
+                                               'form_TPM': form_TPM} )
 
-
-                                               # 'form_algorithm': form_algorithm,
-                                               # 'form_genes': form_genes,'form_location': form_location,
-                                               # 'form_auto': form_auto})
 
 class CountryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
