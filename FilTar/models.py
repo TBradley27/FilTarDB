@@ -297,9 +297,25 @@ class Location(models.Model):
 
 class Gene(models.Model):
     name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20,
+                                     blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+    test = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='related_test_models'
+    )
+
+    for_inline = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='inline_test_models'
+    )
 
     class Meta:
         managed = False

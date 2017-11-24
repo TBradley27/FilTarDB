@@ -346,38 +346,6 @@ def home(request):
                                                # 'form_genes': form_genes,'form_location': form_location,
                                                # 'form_auto': form_auto})
 
-# class UpdateView(generic.FormView):
-#     model = ExampleFK
-#     form_class = ExampleFKForm
-#     template_name = 'filtar/home.html'
-#     success_url = 'results/'
-#
-#     # def get_object(self):
-#     #     x
-#     #     return ExampleFK.objects.first()
-#
-#     def form_valid(self, form):
-#         y = form.cleaned_data['test']
-#         return (y)
-#         # return super(UpdateView, self).form_valid(form)
-
-# def new(request):
-#
-#     if request.method == 'POST':
-#         form_auto = ExampleFKForm(request.POST)
-#
-#         if form_auto.is_valid():
-#             form_auto = form_auto.cleaned_data['test']
-#
-#             request.session['auto'] = str(form_auto)
-#
-#             return HttpResponseRedirect('/filtar/results')
-#
-#     elif request.method  == 'GET':
-#
-#         form_auto = ExampleFKForm()
-#         return render(request, 'filtar/home.html',{'form_auto': form_auto})
-
 class CountryAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
 
@@ -409,3 +377,51 @@ class TissuesAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(name__icontains=self.q)
 
         return (qs)
+
+class GeneAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+
+        qs = Gene.objects.all()
+
+
+        continent = self.forwarded.get('continent', None)
+
+        if continent:
+            qs = qs.filter(taxonomic_ID=continent)
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return (qs)
+
+# class UpdateView(generic.FormView):
+#     model = ExampleFK
+#     form_class = ExampleFKForm
+#     template_name = 'filtar/home.html'
+#     success_url = 'results/'
+#
+#     # def get_object(self):
+#     #     x
+#     #     return ExampleFK.objects.first()
+#
+#     def form_valid(self, form):
+#         y = form.cleaned_data['test']
+#         return (y)
+#         # return super(UpdateView, self).form_valid(form)
+
+# def new(request):
+#
+#     if request.method == 'POST':
+#         form_auto = ExampleFKForm(request.POST)
+#
+#         if form_auto.is_valid():
+#             form_auto = form_auto.cleaned_data['test']
+#
+#             request.session['auto'] = str(form_auto)
+#
+#             return HttpResponseRedirect('/filtar/results')
+#
+#     elif request.method  == 'GET':
+#
+#         form_auto = ExampleFKForm()
+#         return render(request, 'filtar/home.html',{'form_auto': form_auto})

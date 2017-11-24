@@ -126,9 +126,15 @@ class ExampleFKForm(forms.ModelForm):
                                                                       },
                                                                       forward=['continent']))
 
+    gene = forms.ModelChoiceField(queryset=Gene.objects.all(), required=False, empty_label=None,
+                                     widget=autocomplete.ModelSelect2(url='filtar/gene-autocomplete',
+                                                                      attrs={
+                                                                          'data-placeholder': 'Type a gene name',
+                                                                      },
+                                                                      forward=['continent']))
     class Meta:
         model = ExampleFK
-        fields = ('continent','test','tissues')
+        fields = ('continent','test','tissues','gene')
         widgets = {
             'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete',
             attrs = {
