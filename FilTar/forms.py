@@ -17,6 +17,7 @@ class TPMForm(forms.Form):
 
 
 class GeneForm(forms.Form):
+    # gene = forms.ModelChoiceField(queryset=Gene.objects.all(), to_field_name="name"
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), to_field_name="name"
                                     , empty_label="Choose your gene (optional)", required=False, widget=forms.TextInput)
 
@@ -74,10 +75,10 @@ class ExampleFKForm(forms.ModelForm):
             ,forward=['continent']),
         }
 
-    class Media:
-        js = (
-            'linked_data.js',
-        )
+    # class Media:
+    #     js = (
+    #         'linked_data.js',
+    #     )
 
 # class TissuesFKForm(forms.ModelForm):
 #
