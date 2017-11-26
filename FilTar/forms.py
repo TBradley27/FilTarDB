@@ -37,14 +37,15 @@ class AlgorithmForm(forms.Form):
                ('miRanda','miRanda'),
                ('PITA', 'PITA'))
     Algorithm = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple,
-                                          label="Select one or multiple algorithms")
+                                          label="Select one or multiple miRNA target prediction algorithms",
+                                          error_messages={'required': 'Please select at least one algorithm'})
 
 CHOICES = (('9606', 'Human'),
            ('10090', 'Mouse'))
 
 class ExampleFKForm(forms.ModelForm):
 
-    continent = forms.ChoiceField(choices=CHOICES, label="Select a species",)
+    continent = forms.ChoiceField(choices=CHOICES, label="Select a species")
 
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), required=True, empty_label=None,
                                      label = "",
@@ -52,7 +53,8 @@ class ExampleFKForm(forms.ModelForm):
                                                                       attrs={
                                                                           'data-placeholder': 'Type a tissue name (required)',
                                                                       },
-                                                                      forward=['continent']))
+                                                                      forward=['continent']),
+                                     error_messages={'required': 'Please select a tissue or cell line'})
 
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), required=False, empty_label=None,
                                     label="",
@@ -77,7 +79,7 @@ class ExampleFKForm(forms.ModelForm):
 
     def clean(self):
         if not (self.cleaned_data['gene'] or self.cleaned_data['test']):
-            raise ValidationError("You cannot leave both the miRNA and the gene boxes empty")
+            raise ValidationError("You cannot leave both the miRNA and the gene forms empty")
 
     # class Media:
     #     js = (
