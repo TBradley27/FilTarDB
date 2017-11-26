@@ -202,12 +202,13 @@ class Species(models.Model):
     #     id = models.IntegerField(default=11, null=False, primary_key=True)
 
     def __str__(self):
-        return self.common_name
+        return self.taxonomic_id
 
     class Meta:
         managed = True
         db_table = 'species'
         verbose_name_plural = "Species"
+        ordering = ('taxonomic_id',)
 
 
 class Tissues(models.Model):
@@ -297,8 +298,7 @@ class Location(models.Model):
 
 class Gene(models.Model):
     name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
-    taxonomic_ID = models.ForeignKey('Species', to_field="taxonomic_id", db_column="taxonomic_ID", max_length=20,
-                                     blank=True, null=True)
+    species = models.ManyToManyField('Species', through="Gene_species")
 
     def __str__(self):
         return self.name
@@ -321,6 +321,15 @@ class Gene(models.Model):
         managed = False
         db_table = 'Gene'
         verbose_name_plural = ' Genes'
+        ordering = ('name',)
+
+class Gene_species(models.Model):
+    gene_id = models.ForeignKey(Gene, db_column="gene_id")
+    species_id = models.ForeignKey(Species, db_column="species_id")
+
+    class Meta:
+        db_table = "Gene_species"
+
 
 class Contextpp(models.Model): # Target Prediction Output table
     mirna = models.ForeignKey('Mirnas', max_length=20, blank=True, null=True)  # Field name made lowercase.

@@ -369,16 +369,19 @@ class TissuesAutocomplete(autocomplete.Select2QuerySetView):
 class GeneAutocomplete(autocomplete.Select2QuerySetView):  #Controls form information displayed to the user
     def get_queryset(self):
 
-        qs = Gene.objects.filter(name='Uty')
+        qs = Gene.objects.all()
 
+        print(qs)
 
         continent = self.forwarded.get('continent', None)
 
         if continent:
-            qs = qs.filter(taxonomic_ID=continent)
+            qs = Gene.objects.filter(gene_species__gene_id="ARF5")
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
+
+        print(qs)
 
         return (qs)
 
