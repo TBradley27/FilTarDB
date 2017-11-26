@@ -77,7 +77,7 @@ class ExampleFKForm(forms.ModelForm):
 
     def clean(self):
         if not (self.cleaned_data['gene'] or self.cleaned_data['test']):
-            raise ValidationError("You cannot leave both the miRNA and the gene boxes empty")
+            raise ValidationError("You cannot leave both the miRNA and the gene forms empty")
 
     # class Media:
     #     js = (
