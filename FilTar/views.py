@@ -366,10 +366,10 @@ class TissuesAutocomplete(autocomplete.Select2QuerySetView):
 
         return (qs)
 
-class GeneAutocomplete(autocomplete.Select2QuerySetView):
+class GeneAutocomplete(autocomplete.Select2QuerySetView):  #Controls form information displayed to the user
     def get_queryset(self):
 
-        qs = Gene.objects.all()
+        qs = Gene.objects.filter(name='Uty')
 
 
         continent = self.forwarded.get('continent', None)
