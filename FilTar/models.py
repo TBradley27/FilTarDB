@@ -297,7 +297,8 @@ class Location(models.Model):
         managed = False
 
 class Gene(models.Model):
-    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=True)  # Field name made lowercase.
+    name = models.CharField(db_column='name', max_length=10, blank=True, null=False, primary_key=False,
+                            unique=True)  # Field name made lowercase.
     species = models.ManyToManyField('Species', through="Gene_species")
 
     def __str__(self):
@@ -324,7 +325,7 @@ class Gene(models.Model):
         ordering = ('name',)
 
 class Gene_species(models.Model):
-    gene_id = models.ForeignKey(Gene, db_column="gene_id")
+    gene_id = models.ForeignKey(Gene, db_column="gene_id", to_field="name")
     species_id = models.ForeignKey(Species, db_column="species_id")
 
     class Meta:

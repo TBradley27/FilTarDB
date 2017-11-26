@@ -362,7 +362,7 @@ class TissuesAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(taxonomic_ID=continent)
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
+            qs = qs.filter(name__istartswith=self.q)
 
         return (qs)
 
@@ -376,7 +376,7 @@ class GeneAutocomplete(autocomplete.Select2QuerySetView):  #Controls form inform
         continent = self.forwarded.get('continent', None)
 
         if continent:
-            qs = Gene.objects.filter(gene_species__gene_id="ARF5")
+            qs = Gene.objects.filter(gene_species__species_id=continent)
 
         if self.q:
             qs = qs.filter(name__istartswith=self.q)

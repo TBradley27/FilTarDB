@@ -6,12 +6,14 @@ from decimal import Decimal
 # from .models import MirnaForm
 
 class TPMForm(forms.Form):
-    # CHOICES = ((0,'0'),
-    #            (1,'1'),
-    #            (2,'2'),
-    #            (3,'3'),
-    #            (4,'4'),)
-    TPM_threshold = forms.DecimalField(initial=0,min_value=0,max_value=1000,decimal_places=3,max_digits=8) #Variable name html - pretty weird
+    TPM_threshold = forms.DecimalField(initial=0,min_value=0,max_value=1000,decimal_places=3,max_digits=8,
+                                       label= "Select a TPM Threshold")
+
+
+                                       # help_text= "TPM or 'Transcripts Per Million' is a unit of relative transcript abundance. For a given \
+                                       #  sequencing pipeline, it \
+                                       #            represents the number of transcripts of a given type quantified \
+                                       # per million total transcripts.")
 
 
 class GeneForm(forms.Form):
@@ -23,21 +25,6 @@ class TissueForm(forms.Form):
     Tissue = forms.ModelChoiceField(queryset=Tissues.objects.all(), to_field_name="name"
                                     , empty_label="Choose your tissue or cell line")
 
-class LocationForm(forms.ModelForm):
-
-    species = forms.ModelChoiceField(Species.objects.all(), empty_label=None)
-
-    class Meta:
-        model = Location
-        fields = ['species', 'miRNA', 'tissue']
-        widgets = {
-            'miRNA': autocomplete.ModelSelect2(url='filtar:select2_fk',
-                                              attrs={
-                                                  'data-placeholder': 'Type a miRNA name',
-                                                  'data-minimum-input-length': 2
-                                              })
-        }
-
 class SpeciesForm(forms.Form):
     CHOICES = (('9606','Human'),
                ("10090","Mouse"),)
@@ -47,7 +34,8 @@ class AlgorithmForm(forms.Form):
     CHOICES = (('contextpp','TargetScan7'),
                ('miRanda','miRanda'),
                ('PITA', 'PITA'))
-    Algorithm = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple)
+    Algorithm = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple,
+                                          label="Select one or multiple algorithms")
 
 
 CHOICES = (('9606', 'Human'),
@@ -55,25 +43,28 @@ CHOICES = (('9606', 'Human'),
 
 class ExampleFKForm(forms.ModelForm):
 
-    continent = forms.ChoiceField(choices=CHOICES)
+    continent = forms.ChoiceField(choices=CHOICES, label="Select a species",)
 
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), required=True, empty_label=None,
+                                     label = "",
                                      widget=autocomplete.ModelSelect2(url='filtar/tissues-autocomplete',
                                                                       attrs={
-                                                                          'data-placeholder': 'Type a tissue name',
+                                                                          'data-placeholder': 'Type a tissue name (required)',
                                                                       },
                                                                       forward=['continent']))
 
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), required=False, empty_label=None,
+                                    label="",
                                      widget=autocomplete.ModelSelect2(url='filtar/gene-autocomplete',
                                                                       attrs={
                                                                           'data-placeholder': 'Type a gene name',
                                                                       },
-                                                                      forward=['continent']))
+                                                                    forward=['continent']))
     class Meta:
 
         model = ExampleFK
-        fields = ('continent','test','tissues','gene')
+        labels = {"test": "" }
+        fields = ('continent','tissues','test','gene')
         widgets = {
             'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete',
             attrs = {
@@ -87,11 +78,6 @@ class ExampleFKForm(forms.ModelForm):
         js = (
             'linked_data.js',
         )
-
-
-
-
-
 
 # class TissuesFKForm(forms.ModelForm):
 #
@@ -181,3 +167,18 @@ class ExampleFKForm(forms.ModelForm):
 # class MirnaForm(forms.Form):
 #     mirna = forms.ModelChoiceField(queryset=Mirnas.objects.all(), to_field_name="name"
 #                                     , empty_label="Choose your miRNA (optional)", required=False)
+
+# class LocationForm(forms.ModelForm):
+#
+#     species = forms.ModelChoiceField(Species.objects.all(), empty_label=None)
+#
+#     class Meta:
+#         model = Location
+#         fields = ['species', 'miRNA', 'tissue']
+#         widgets = {
+#             'miRNA': autocomplete.ModelSelect2(url='filtar:select2_fk',
+#                                               attrs={
+#                                                   'data-placeholder': 'Type a miRNA name',
+#                                                   'data-minimum-input-length': 2
+#                                               })
+#         }
