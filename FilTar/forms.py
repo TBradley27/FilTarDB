@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from dal import autocomplete
 from decimal import Decimal
+from django.core.exceptions import ValidationError
 
 # from .models import MirnaForm
 
@@ -38,7 +39,6 @@ class AlgorithmForm(forms.Form):
     Algorithm = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple,
                                           label="Select one or multiple algorithms")
 
-
 CHOICES = (('9606', 'Human'),
            ('10090', 'Mouse'))
 
@@ -74,6 +74,10 @@ class ExampleFKForm(forms.ModelForm):
             }
             ,forward=['continent']),
         }
+
+    def clean(self):
+        if not (self.cleaned_data['gene'] or self.cleaned_data['test']):
+            raise ValidationError("You cannot leave both the miRNA and the gene boxes empty")
 
     # class Media:
     #     js = (
