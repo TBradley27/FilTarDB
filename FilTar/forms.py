@@ -7,7 +7,8 @@ from decimal import Decimal
 
 class TPMForm(forms.Form):
     TPM_threshold = forms.DecimalField(initial=0,min_value=0,max_value=1000,decimal_places=3,max_digits=8,
-                                       label= "Select a TPM Threshold")
+                                       label= "Select a TPM Threshold",
+                                       widget = forms.NumberInput(attrs={'step': 1.0}))
 
 
                                        # help_text= "TPM or 'Transcripts Per Million' is a unit of relative transcript abundance. For a given \
