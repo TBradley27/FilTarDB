@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from dal import autocomplete
 from decimal import Decimal
+from django.core.exceptions import ValidationError
 
 # from .models import MirnaForm
 
@@ -18,6 +19,7 @@ class TPMForm(forms.Form):
 
 
 class GeneForm(forms.Form):
+    # gene = forms.ModelChoiceField(queryset=Gene.objects.all(), to_field_name="name"
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), to_field_name="name"
                                     , empty_label="Choose your gene (optional)", required=False, widget=forms.TextInput)
 
@@ -36,15 +38,15 @@ class AlgorithmForm(forms.Form):
                ('miRanda','miRanda'),
                ('PITA', 'PITA'))
     Algorithm = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple,
-                                          label="Select one or multiple algorithms")
-
+                                          label="Select one or multiple miRNA target prediction algorithms",
+                                          error_messages={'required': 'Please select at least one algorithm'})
 
 CHOICES = (('9606', 'Human'),
            ('10090', 'Mouse'))
 
 class ExampleFKForm(forms.ModelForm):
 
-    continent = forms.ChoiceField(choices=CHOICES, label="Select a species",)
+    continent = forms.ChoiceField(choices=CHOICES, label="Select a species")
 
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), required=True, empty_label=None,
                                      label = "",
@@ -52,7 +54,8 @@ class ExampleFKForm(forms.ModelForm):
                                                                       attrs={
                                                                           'data-placeholder': 'Type a tissue name (required)',
                                                                       },
-                                                                      forward=['continent']))
+                                                                      forward=['continent']),
+                                     error_messages={'required': 'Please select a tissue or cell line'})
 
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), required=False, empty_label=None,
                                     label="",
@@ -75,10 +78,14 @@ class ExampleFKForm(forms.ModelForm):
             ,forward=['continent']),
         }
 
-    class Media:
-        js = (
-            'linked_data.js',
-        )
+    def clean(self):
+        if not (self.cleaned_data['gene'] or self.cleaned_data['test']):
+            raise ValidationError("You cannot leave both the miRNA and the gene forms empty")
+
+    # class Media:
+    #     js = (
+    #         'linked_data.js',
+    #     )
 
 # class TissuesFKForm(forms.ModelForm):
 #

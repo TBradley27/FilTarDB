@@ -12,6 +12,12 @@ $(document).ready(function(){
 </script>
 
 <style>
+.errorlist
+    {
+        color: red;
+    }
+</style>
+<style>
     .center {
     width:200px;
     margin:0 auto;
@@ -26,7 +32,7 @@ $(document).ready(function(){
 
 		{{ form_auto.as_p }}
 
-        {{ form_TPM }} <a href="#" data-toggle="popover" title="TPM" data-content="TPM or 'Transcripts Per Million' is a unit of relative transcript abundance. For a given sequencing pipeline, it represents the number of transcripts of a given type quantified per million total transcripts.")">?</a> <br> <br>
+        {{ form_TPM }} <button type="button" href="#" data-toggle="popover" title="TPM" data-content="TPM or 'Transcripts Per Million' is a unit of relative transcript abundance. For a given sequencing pipeline, it represents the number of transcripts of a given type quantified per million total transcripts.")">?</button> <br> <br>
 
         <!--<div class="container">-->
         <!--</div>-->
