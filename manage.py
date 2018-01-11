@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env DYLD_FALLBACK_LIBRARY_PATH=/Users/bradleyt/anaconda3/lib/ python
 import os
 import sys
 
