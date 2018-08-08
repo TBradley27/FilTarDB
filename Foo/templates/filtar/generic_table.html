@@ -1,0 +1,44 @@
+{% extends 'FilTar/base.html' %}
+
+{% block body %}
+
+miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b>
+Cell line/Tissue: <b>{{ sample }}</b><br/>
+RNA-Seq replicates: <b>{{ num_replicates }}</b> -
+
+    {% for replicate in replicates %}
+        <b> <a href="http://www.ebi.ac.uk/ena/data/view/{{ replicate }}"
+                 target="_blank">{{ replicate }}</a></b>
+    {% endfor %}
+
+<table class="my-listing", id="myTable", data-page-length='25'>
+    <thead>
+        <tr>
+            <th>Transcript_ID</th>
+            <th>Gene Name</th>
+            <th>UTR_Start</th>
+            <th>UTR_End</th>
+            <th>Normalised_Score</th>
+            <th>TPM</th>
+            <th>Algorithm</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for row in rows %}
+
+        <tr>
+            <td>{{ row.0.0.mrna_id }}</td>
+            <td><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ row.0.0.Gene_Name }}" target="_blank">{{ row.0.0.Gene_Name }}</a></td>
+            <td>{{ row.0.0.UTR_START }}</td>
+            <td>{{ row.0.0.UTR_END }}</td>
+            <td>{{ row.0.1 }}</td>
+            <td>{{ row.0.0.TPM }}</td>
+            <td>{{ row.0.0.name }}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

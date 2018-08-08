@@ -1,9 +1,8 @@
-#!/usr/bin/env DYLD_FALLBACK_LIBRARY_PATH=/Users/bradleyt/anaconda3/lib/ python
 import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testing.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "filtar.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

@@ -1,0 +1,33 @@
+{% extends 'filtar/table_gene_meta.html' %}
+
+{% block table_info %}
+
+<table class="my-listing", id="myTable", data-page-length='10'>
+    <thead>
+        <tr>
+            <th>mRNA</th>
+            <th>miRNA</th>
+            <th>UTR_Start</th>
+            <th>UTR_End</th>
+            <th>Score</th>
+            <th>Average TPM</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for row in rows %}
+
+        <tr>
+            <td>{{ row.0.mrna_id }}</td>
+            <td><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ row.0.mirna_id }}&submit=Search" target="_blank">{{ row.0.mirna_id }}</a</td>
+            <td>{{ row.0.UTR_START }}</td>
+            <td>{{ row.0.UTR_END }}</td>
+            <td>{{ row.0.score }}</td>
+            <td>{{ row.1 }}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
