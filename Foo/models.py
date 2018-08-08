@@ -125,14 +125,32 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class Experiments(models.Model):
-    experiment_name = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
+class Samples(models.Model):
+    name = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
     species = models.ForeignKey('Species', max_length=30, blank=True, null=True) # Field name made lowercase.
     tissue = models.ForeignKey('Tissues', max_length=30, blank=True, null=True, to_field="name")
 
     class Meta:
         managed = True
-        db_table = 'experiments'
+        db_table = 'Samples'
+
+class Runs(models.Model):
+    name = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
+    sample = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
+
+    class Meta:
+        managed = True
+        db_table = 'Runs'
+
+
+class Utr_length(models.Model):
+    mrna_id = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
+    tissue_id = models.CharField(max_length=20, blank=True, null=False, primary_key=False)
+    utr_length = models.IntegerField(blank=True, null=False, primary_key=False)
+
+    class Meta:
+        managed = True
+        db_table = 'utr_length'
 
 class Mirnas(models.Model):
     name = models.CharField(db_column='miRNA_name', max_length=20, blank=True, null=False, primary_key=True)  # Field name made lowercase.
@@ -169,8 +187,8 @@ class Mrnas(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'mRNAs'
-        verbose_name_plural = 'mRNAs'
+        db_table = 'mRNA'
+        verbose_name_plural = 'mRNA'
 
 class GenomeAssembly(models.Model):
     genome_assembly = models.CharField(max_length=30, blank=True, null=False, primary_key=True)
