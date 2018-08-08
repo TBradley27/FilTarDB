@@ -236,7 +236,7 @@ class Tissues(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'tissuek'
+        db_table = 'Tissues'
         verbose_name_plural = "Tissues"
 
 class ExampleFK(models.Model):
