@@ -11,6 +11,9 @@
     {% for replicate in replicates %}
         <b> <a href="http://www.ebi.ac.uk/ena/data/view/{{ replicate }}"
                  target="_blank">{{ replicate }}</a></b>
+       ({% for run in runs %}
+		{{ run }}
+       {% endfor %})
     {% endfor %}
 
     <br></br>
