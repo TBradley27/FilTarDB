@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'filtar.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'filtar_with_apa',
+        'NAME': 'filtar_after_preprint',
         'USER': 'root',
         'PASSWORD': '***REMOVED***',
         'HOST': 'localhost',
