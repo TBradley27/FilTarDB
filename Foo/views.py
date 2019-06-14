@@ -52,14 +52,14 @@ def query_database(form_algorithm, form_species, form_tissue, form_TPM, form_gen
         gene_column = ""
         mirna_filter = "AND c.mirna_id = %s "
         gene_filter = " AND r.Gene_ID = %s"
-        param = [form_Mirnas, form_species, sample_ID[0], form_TPM, form_genes]
+        param = [form_Mirnas, form_species, form_tissue, form_TPM, form_genes]
 
     elif bool(form_genes) == False and bool(form_Mirnas) == True:
         mirna_column = ""
         gene_column = "r.Gene_ID, "
         mirna_filter = "AND c.mirna_id = %s "
         gene_filter = ""
-        param = [form_Mirnas, form_species, sample_ID[0], form_TPM]
+        param = [form_Mirnas, form_species, form_tissue, form_TPM] # the sample ID refers to the experiment ID
 
     else:       # if gene form is selected but the mirna form isn't
         mirna_column = "c.mirna_id, "
@@ -100,15 +100,15 @@ def query_genes(form_genes):
 
     return rows
 
-def query_expression(transcripts, sample_ID):
+def query_expression(transcripts, form_tissue):
     cursor = connection.cursor()
     tx_list = []
     tpm_list= []
     tpm_mean = []
     for tx in range(0, len(transcripts)):
         tx_list.append(transcripts[tx]) # Index for labelled tuple element 'mRNA_ID'
-        query = "SELECT TPM FROM expression_profiles WHERE mrnas_id IN %s AND experiments_id IN %s" #For some reason the AVG function does not work here
-        cursor.execute(query, [tx_list, sample_ID])
+        query = "SELECT TPM FROM expression_profiles WHERE mrnas_id IN %s AND experiments_id = %s" #For some reason the AVG function does not work here
+        cursor.execute(query, [tx_list, form_tissue])
         rows = namedtuplefetchall(cursor)
         for i in range(0, len(rows)):
             tpm_list.append(rows[i][0])
@@ -138,7 +138,8 @@ def results(request):
     for i in range(0, len(samples) ):
         sample_ID.append ( samples[i]['name'] )  # Get the first experiment_name returned from many
         runs = Runs.objects.filter(sample=samples[i]['name']).values()
-        run_ID.append(runs[i]['name'])
+        for j in range(0, len(runs) ):
+              run_ID.append (runs[j]['name'])
 
     if form_algorithm[0] == "contextpp":
         template = 'filtar/contextpptable'
@@ -150,7 +151,7 @@ def results(request):
     if form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) == 1:
 
         template += "_mirna_gene.html"
-        rows = query_database(form_algorithm[0], form_species, sample_ID, form_TPM,
+        rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM,
                               form_Mirnas=form_Mirnas, form_genes=form_genes)
 
         result_transcripts = []        # This is specific to whether gene or form is selected
@@ -162,10 +163,10 @@ def results(request):
         else:
             species = "Mus_musculus"
 
-        rows = get_avg_tpms(result_transcripts, sample_ID, rows)
-
+        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
+        #print(yyyy)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
-                                          'algorithm': form_algorithm[0], 'num_replicates': len(sample_ID),
+                                          'algorithm': form_algorithm[0], 'num_replicates': len(runs),
                                           'replicates': sample_ID, 'sample': form_tissue, 'species': species})
 
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
@@ -181,7 +182,7 @@ def results(request):
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[0][2])
-        rows = get_avg_tpms(result_transcripts, sample_ID, rows)
+        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         if form_species == "9606":
             species = "Homo_sapiens"
@@ -193,23 +194,22 @@ def results(request):
                                                                         'replicates': sample_ID,'sample': form_tissue,
                                                                         'species': species})
 
-    elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm
+    elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm - miRNA
 
         template += ".html"
-
-        rows = query_database(form_algorithm[0], form_species, sample_ID, form_TPM, form_Mirnas=form_Mirnas,
+        #print(yyy) 
+        rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,  # query_database(form_algorithm, form_species, form_tissue, form_TPM, form_genes, form_Mirnas):
                               form_genes=False)
-
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[2])
-
-        rows = get_avg_tpms(result_transcripts, sample_ID, rows)
-
+        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
+        
         if form_species == "9606":
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
+
 
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
                                           'num_replicates': len(sample_ID),'replicates': sample_ID,
@@ -230,7 +230,7 @@ def results(request):
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[0][2])
-        rows = get_avg_tpms(result_transcripts, sample_ID, rows)
+        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         if form_species == "9606":
             species = "Homo_sapiens"
@@ -269,7 +269,7 @@ def results(request):
         else:
             species = "Mus_musculus"
 
-        return render(request, template, {'rows': new_rows, 'gene': form_genes, 'num_replicates': len(sample_ID),
+        return render(request, template, {'rows': new_rows, 'gene': form_genes, 'num_replicates': len(runs),
                                           'replicates' : sample_ID, 'runs' : run_ID,  'sample': form_tissue, 'species': species})
 
     else:
@@ -286,7 +286,7 @@ def results(request):
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[0][3])
-        rows = get_avg_tpms(result_transcripts, sample_ID, rows)
+        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         if form_species == "9606":
             species = "Homo_sapiens"
@@ -298,12 +298,12 @@ def results(request):
                                                                   'replicates' : sample_ID, 'sample': form_tissue,
                                                                   'species': species})
 
-def get_avg_tpms(result_transcripts, sample_ID, rows):
+def get_avg_tpms(result_transcripts, form_tissue, rows):
 
     transcripts = set(result_transcripts)  # Removes duplicate entries
     transcripts = list(transcripts)  # Because set objects cannot be easily indexed
 
-    tpm_means = query_expression(transcripts, sample_ID)
+    tpm_means = query_expression(transcripts, form_tissue)
 
     avg_tpms = map_avg_tpms(result_transcripts, transcripts, tpm_means)
     rows = zip(rows, avg_tpms)

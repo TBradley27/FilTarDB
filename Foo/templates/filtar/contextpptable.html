@@ -19,13 +19,13 @@
     {% for row in rows %}
 
         <tr>
-            <td>{{ row.0.mrna_id }}</td>
-            <td><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ row.0.Gene_Name }}" target="_blank">{{ row.0.Gene_Name }}</a></td>
-            <td>{{ row.0.UTR_START }}</td>
-            <td>{{ row.0.UTR_END }}</td>
-            <td>{{ row.0.Site_Type }}</td>
-            <td>{{ row.0.score }}</td>
-            <td>{{ row.0.TPM}}</td>
+            <td>{{ row.mrna_id }}</td>
+            <td><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ row.Gene_ID }}" target="_blank">{{ row.Gene_ID }}</a></td>
+            <td>{{ row.UTR_START }}</td>
+            <td>{{ row.UTR_END }}</td>
+            <td>{{ row.Site_Type }}</td>
+            <td>{{ row.score }}</td>
+            <td>{{ row.TPM}}</td>
         </tr>
 
     {% endfor %}
