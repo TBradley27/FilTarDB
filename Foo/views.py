@@ -154,16 +154,16 @@ def results(request):
         rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM,
                               form_Mirnas=form_Mirnas, form_genes=form_genes)
 
-        result_transcripts = []        # This is specific to whether gene or form is selected
-        for result in rows:
-            result_transcripts.append(result[2])
+        #result_transcripts = []        # This is specific to whether gene or form is selected
+        #for result in rows:
+        #    result_transcripts.append(result[2])
 
         if form_species == "9606":
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
 
-        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
+        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
         #print(yyyy)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                           'algorithm': form_algorithm[0], 'num_replicates': len(runs),
@@ -188,7 +188,6 @@ def results(request):
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
-
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                         'gene': form_genes,'num_replicates': len(sample_ID),
                                                                         'replicates': sample_ID,'sample': form_tissue,
@@ -209,7 +208,6 @@ def results(request):
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
-
 
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
                                           'num_replicates': len(sample_ID),'replicates': sample_ID,
@@ -236,7 +234,6 @@ def results(request):
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
-
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                                              'num_replicates': len(sample_ID),
                                                              'replicates': sample_ID, 'sample': form_tissue,
@@ -255,7 +252,7 @@ def results(request):
         new_rows = []
 
         for result in rows:
-              x = Utr_length.objects.filter(tissue_id=form_tissue).filter(mrna_id=result[3]).values()
+              x = Utr_length.objects.filter(tissue_id=form_tissue).filter(mrna_id=result.mrna_id).values()
               utr_length = x[0]['utr_length']
               z = type(result)
               if utr_length > result[6]:
