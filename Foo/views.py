@@ -170,19 +170,19 @@ def results(request):
                                           'replicates': sample_ID, 'sample': form_tissue, 'species': species})
 
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
-        row_one = query_database(form_algorithm[0], form_species, sample_ID, form_TPM, form_Mirnas=form_Mirnas,
+        row_one = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
         row_one = get_normalised_scores(row_one, mean[form_algorithm[0]], sd[form_algorithm[0]])    #TargetScan7
-        row_two = query_database(form_algorithm[1], form_species, sample_ID, form_TPM, form_Mirnas=form_Mirnas,
+        row_two = query_database(form_algorithm[1], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=form_genes)
-        row_two = get_normalised_scores(row_two, mean[form_algorithm[0]], sd[form_algorithm[0]])
+        row_two = get_normalised_scores(row_two, mean[form_algorithm[1]], sd[form_algorithm[1]])
 
         rows = list(row_one) + list(row_two)
 
-        result_transcripts = []        # This is specific to whether gene or form is selected
-        for result in rows:
-            result_transcripts.append(result[0][2])
-        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
+        #result_transcripts = []        # This is specific to whether gene or form is selected
+        #for result in rows:
+        #    result_transcripts.append(result[0][2])
+        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         if form_species == "9606":
             species = "Homo_sapiens"
@@ -208,32 +208,32 @@ def results(request):
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
-
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
                                           'num_replicates': len(sample_ID),'replicates': sample_ID,
                                           'sample': form_tissue, 'species': species})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
 
-        row_one = query_database(form_algorithm[0], form_species, sample_ID, form_TPM, form_Mirnas=form_Mirnas,
+        row_one = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=False)
         row_one = get_normalised_scores(row_one, mean[form_algorithm[0]], sd[form_algorithm[0]])
 
-        row_two = query_database(form_algorithm[1], form_species, sample_ID, form_TPM, form_Mirnas=form_Mirnas,
+        row_two = query_database(form_algorithm[1], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,
                                  form_genes=False)
         row_two = get_normalised_scores(row_two, mean[form_algorithm[1]], sd[form_algorithm[1]])
 
         rows = list(row_one) + list(row_two)
 
-        result_transcripts = []        # This is specific to whether gene or form is selected
-        for result in rows:
-            result_transcripts.append(result[0][2])
-        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
+        #result_transcripts = []        # This is specific to whether gene or form is selected
+        #for result in rows:
+        #    result_transcripts.append(result[0][2])
+        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         if form_species == "9606":
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
+
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                                              'num_replicates': len(sample_ID),
                                                              'replicates': sample_ID, 'sample': form_tissue,
@@ -269,27 +269,26 @@ def results(request):
         return render(request, template, {'rows': new_rows, 'gene': form_genes, 'num_replicates': len(runs),
                                           'replicates' : sample_ID, 'runs' : run_ID,  'sample': form_tissue, 'species': species})
 
-    else:
-        row_one = query_database(form_algorithm[0], form_species, sample_ID, form_TPM, form_Mirnas=False,
+    elif form_genes != "None" and len(form_algorithm) != 1:
+        row_one = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=False,
                                  form_genes=form_genes)
         row_one = get_normalised_scores(row_one, mean[form_algorithm[0]], sd[form_algorithm[0]])
 
-        row_two = query_database(form_algorithm[1], form_species, sample_ID, form_TPM, form_Mirnas=False,
+        row_two = query_database(form_algorithm[1], form_species, form_tissue, form_TPM, form_Mirnas=False,
                                  form_genes=form_genes)
-        row_two = get_normalised_scores(row_two, mean[form_algorithm[0]], sd[form_algorithm[0]])
+        row_two = get_normalised_scores(row_two, mean[form_algorithm[1]], sd[form_algorithm[1]])
 
         rows = list(row_one) + list(row_two)
 
-        result_transcripts = []        # This is specific to whether gene or form is selected
-        for result in rows:
-            result_transcripts.append(result[0][3])
-        rows = get_avg_tpms(result_transcripts, form_tissue, rows)
+        #result_transcripts = []        # This is specific to whether gene or form is selected
+        #for result in rows:
+        #    result_transcripts.append(result[0][3])
+        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         if form_species == "9606":
             species = "Homo_sapiens"
         else:
             species = "Mus_musculus"
-
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes, 'num_replicates': len(sample_ID),
                                                                   'replicates' : sample_ID, 'sample': form_tissue,

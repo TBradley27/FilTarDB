@@ -1,4 +1,4 @@
-{% extends 'FilTar/base.html' %}
+{% extends 'filtar/base.html' %}
 
 {% block body %}
 
@@ -29,12 +29,12 @@ RNA-Seq replicates: <b>{{ num_replicates }}</b> -
     {% for row in rows %}
 
         <tr>
-            <td>{{ row.0.0.mrna_id }}</td>
-            <td>{{ row.0.0.UTR_START }}</td>
-            <td>{{ row.0.0.UTR_END }}</td>
-            <td>{{ row.0.1 }}</td>
-            <td>{{ row.0.0.name }}</td>
+            <td>{{ row.0.mrna_id }}</td>
+            <td>{{ row.0.UTR_START }}</td>
+            <td>{{ row.0.UTR_END }}</td>
             <td>{{ row.1 }}</td>
+            <td>{{ row.0.name }}</td>
+            <td>{{ row.0.TPM }}</td>
         </tr>
 
     {% endfor %}
