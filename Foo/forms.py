@@ -3,6 +3,7 @@ from .models import *
 from dal import autocomplete
 from decimal import Decimal
 from django.core.exceptions import ValidationError
+from django.forms import ModelChoiceField
 
 # from .models import MirnaForm
 
@@ -44,9 +45,13 @@ class AlgorithmForm(forms.Form):
 CHOICES = (('9606', 'Human'),
            ('10090', 'Mouse'))
 
+class MyModelChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.common_name
+
 class ExampleFKForm(forms.ModelForm):
 
-    continent = forms.ChoiceField(choices=CHOICES, label="Select a species")
+    continent = MyModelChoiceField(queryset=Species.objects.all(), empty_label="Select a species", label="")
 
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), required=True, empty_label=None,
                                      label = "",
