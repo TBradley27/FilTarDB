@@ -36,8 +36,7 @@ class SpeciesForm(forms.Form):
 
 class AlgorithmForm(forms.Form):
     CHOICES = (('contextpp','TargetScan7'),
-               ('miRanda','miRanda'),
-               ('PITA', 'PITA'))
+               ('miRanda','miRanda'))
     Algorithm = forms.MultipleChoiceField(choices=CHOICES, widget=forms.CheckboxSelectMultiple,
                                           label="Select one or multiple miRNA target prediction algorithms",
                                           error_messages={'required': 'Please select at least one algorithm'})

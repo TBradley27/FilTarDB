@@ -16,8 +16,8 @@ except ImportError:
     from django.core.urlresolvers import reverse_lazy
 
 
-mean = {'contextpp': decimal.Decimal(-0.6111913) ,'miRanda': decimal.Decimal(148.96),'PITA': decimal.Decimal(-2.610218) }
-sd = {'contextpp': decimal.Decimal(-0.4527227),'miRanda': decimal.Decimal(7.192304) ,'PITA': decimal.Decimal(-4.836237)} #Sign reflects whether more positive score is a good or bad thing
+mean = {'contextpp': decimal.Decimal(-0.6111913) ,'miRanda': decimal.Decimal(148.96)}
+sd = {'contextpp': decimal.Decimal(-0.4527227),'miRanda': decimal.Decimal(7.192304)} #Sign reflects whether more positive score is a good or bad thing
 
 
 def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of query results = 1 named tuple
@@ -142,8 +142,6 @@ def results(request):
         template = 'filtar/contextpptable'
     elif form_algorithm[0] == "miRanda":
         template = 'filtar/miRandatable'
-    else:
-        template = "filtar/pitatable"
 
     if form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) == 1:
 
