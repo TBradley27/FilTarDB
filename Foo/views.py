@@ -156,7 +156,7 @@ def results(request):
         #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
         #print(yyyy)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
-                                          'algorithm': form_algorithm[0], 'num_replicates': len(runs),
+                                          'algorithm': form_algorithm[0], 'num_replicates': len(sample_ID),
                                           'replicates': sample_ID, 'sample': form_tissue})
 
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
@@ -235,7 +235,7 @@ def results(request):
               else:
                    pass
 
-        return render(request, template, {'rows': new_rows, 'gene': form_genes, 'num_replicates': len(runs),
+        return render(request, template, {'rows': new_rows, 'gene': form_genes, 'num_replicates': len(sample_ID),
                                           'replicates' : sample_ID, 'runs' : run_ID,  'sample': form_tissue})
 
     elif form_genes != "None" and len(form_algorithm) != 1:

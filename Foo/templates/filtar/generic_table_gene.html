@@ -1,7 +1,5 @@
 {% extends 'filtar/base.html' %}
-
 {% block body %}
-
 Gene: <b> <a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ rows.0.0.mrna_id }}"
                  target="_blank">{{ gene }}</a></b> <br/>
 Cell line/Tissue: <b>{{ sample }}</b><br/>
@@ -11,7 +9,7 @@ RNA-Seq replicates: <b>{{ num_replicates }}</b> -
         <b> <a href="http://www.ebi.ac.uk/ena/data/view/{{ replicate }}"
                  target="_blank">{{ replicate }}</a></b>
     {% endfor %}
-
+<br><br/>
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
         <tr>
