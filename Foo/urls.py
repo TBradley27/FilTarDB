@@ -6,6 +6,7 @@ from smart_selects import urls as smart_selects_urls
 from dal import autocomplete
 from .models import *
 from .views import *
+from django.views.generic import TemplateView
 
 app_name = 'foo'
 
@@ -16,6 +17,8 @@ urlpatterns = [
     # url(r'^$', views.home, name='home'),
 
     url(r'^results/$', views.results, name='results'),
+    url('^information/$', TemplateView.as_view(template_name='filtar/about.html')),
+    url('^acknowledgements/$', TemplateView.as_view(template_name='filtar/acknowledgements.html')),
     url(r'^chaining/', include('smart_selects.urls')),
     # url(
     #     r'^$',
@@ -23,50 +26,67 @@ urlpatterns = [
     #     name='filtar',
     # ),
     url(r'^$', views.home, name='home'),
-    url(
-        'test-autocomplete/$',
-        autocomplete.Select2QuerySetView.as_view(
-            model=ExampleFK,
-            create_field='name',
-        ),
-        name='select2_fk',
-    ),
+#    url(
+#        'test-autocomplete/$',
+#        autocomplete.Select2QuerySetView.as_view(
+#            model=ExampleFK,
+#            create_field='name',
+#        ),
+#        name='select2_fk',
+#    ),
+
+#    url(
+#        'test2-autocomplete/$',
+#        autocomplete.Select2QuerySetView.as_view(
+#            model=Tissues,
+#            create_field='name',
+#        ),
+#        name='select2_fk',
+#    ),
+
+#    url(
+#        'test3-autocomplete/$',
+#        autocomplete.Select2QuerySetView.as_view(
+#            model=Gene,
+#            create_field='name',
+#        ),
+#        name='select2_fk',
+#
+#    ),
+
+#   url(
+#        r'^filtar/country-autocomplete/$',
+#        CountryAutocomplete.as_view(model=ExampleFK),
+#        name='country-autocomplete'
+#    ),
 
     url(
-        'test2-autocomplete/$',
-        autocomplete.Select2QuerySetView.as_view(
-            model=Tissues,
-            create_field='name',
-        ),
-        name='select2_fk',
-    ),
-
-    url(
-        'test3-autocomplete/$',
-        autocomplete.Select2QuerySetView.as_view(
-            model=Gene,
-            create_field='name',
-        ),
-        name='select2_fk',
-
-    ),
-
-    url(
-        r'^filtar/country-autocomplete/$',
+        r'^mirna-autocomplete/$',
         CountryAutocomplete.as_view(model=ExampleFK),
         name='country-autocomplete'
     ),
 
+#    url(
+#        r'^filtar/tissues-autocomplete/$',
+#        TissuesAutocomplete.as_view(model=Tissues),
+#        name='tissues-autocomplete'
+#    ),
+
     url(
-        r'^filtar/tissues-autocomplete/$',
+        r'^tissues-autocomplete/$',
         TissuesAutocomplete.as_view(model=Tissues),
         name='tissues-autocomplete'
     ),
 
+#    url(
+#        r'^filtar/gene-autocomplete/$',
+#        GeneAutocomplete.as_view(model=Gene),
+#        name='gene-autocomplete'
+#    ),
+
     url(
-        r'^filtar/gene-autocomplete/$',
+        r'^gene-autocomplete/$',
         GeneAutocomplete.as_view(model=Gene),
         name='gene-autocomplete'
-    ),
-
+    )
 ]

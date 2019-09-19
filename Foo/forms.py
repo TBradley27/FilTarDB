@@ -54,7 +54,7 @@ class ExampleFKForm(forms.ModelForm):
 
     tissues = forms.ModelChoiceField(queryset=Tissues.objects.all(), required=True, empty_label=None,
                                      label = "",
-                                     widget=autocomplete.ModelSelect2(url='filtar/tissues-autocomplete',
+                                     widget=autocomplete.ModelSelect2(url='/tissues-autocomplete',
                                                                       attrs={
                                                                           'data-placeholder': 'Type a tissue name (required)',
                                                                       },
@@ -63,7 +63,7 @@ class ExampleFKForm(forms.ModelForm):
 
     gene = forms.ModelChoiceField(queryset=Gene.objects.all(), required=False, empty_label=None,
                                     label="",
-                                     widget=autocomplete.ModelSelect2(url='filtar/gene-autocomplete',
+                                     widget=autocomplete.ModelSelect2(url='/gene-autocomplete',
                                                                       attrs={
                                                                           'data-placeholder': 'Type a gene name',
                                                                       },
@@ -74,10 +74,10 @@ class ExampleFKForm(forms.ModelForm):
         labels = {"test": "" }
         fields = ('continent','tissues','test','gene')
         widgets = {
-            'test': autocomplete.ModelSelect2(url='filtar/country-autocomplete',
+            'test': autocomplete.ModelSelect2(url='/mirna-autocomplete',
             attrs = {
-                'data-placeholder': 'Type a miRNA name',
-                'data-minimum-input-length': 2
+                'data-placeholder': 'Type a miRNA name'
+#                'data-minimum-input-length': 2
             }
             ,forward=['continent']),
         }
