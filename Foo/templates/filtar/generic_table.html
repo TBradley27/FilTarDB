@@ -2,7 +2,7 @@
 
 {% block body %}
 
-miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b><br/>
+miRNA: <b><a href="http://www.mirbase.org/textsearch.shtml?q={{ mirna }}&submit=submit" target="_blank">{{ mirna }}</a></b><br/>
 Cell line/Tissue: <b>{{ sample }}</b><br/>
 BioSamples Used: <b>{{ num_replicates }}</b> -
 
@@ -14,11 +14,11 @@ BioSamples Used: <b>{{ num_replicates }}</b> -
 <table class="my-listing", id="myTable", data-page-length='25'>
     <thead>
         <tr>
-            <th>Transcript_ID</th>
+            <th>Transcript ID</th>
             <th>Gene Name</th>
-            <th>UTR_Start</th>
-            <th>UTR_End</th>
-            <th>Normalised_Score</th>
+            <th>3'UTR Start</th>
+            <th>3'UTR End</th>
+            <th>Normalised Score</th>
             <th>TPM</th>
             <th>Algorithm</th>
         </tr>
