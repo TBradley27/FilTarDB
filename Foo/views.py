@@ -16,9 +16,9 @@ except ImportError:
     from django.core.urlresolvers import reverse_lazy
 
 
-mean = {'contextpp': decimal.Decimal(-0.6111913) ,'miRanda': decimal.Decimal(148.96)}
-sd = {'contextpp': decimal.Decimal(-0.4527227),'miRanda': decimal.Decimal(7.192304)} #Sign reflects whether more positive score is a good or bad thing
-
+mean = {'contextpp': decimal.Decimal(-0.0578464) ,'miRanda': decimal.Decimal(147.081730)}
+sd = {'contextpp': decimal.Decimal(-0.275078),'miRanda': decimal.Decimal(6.672571)} #Sign reflects whether more positive score is a good or bad thing
+# the sample standard deviation is used here - though pop and sample sd is virtually identical
 
 def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of query results = 1 named tuple
     desc = cursor.description       # TODO: Consider working with a list of lists instead
@@ -117,7 +117,6 @@ def query_expression(transcripts, form_tissue):
     return tpm_mean
 
 def results(request):
-
     # form_auto = request.session.get('auto')
     form_Mirnas = request.session.get('mirna')
     form_genes = request.session.get('gene')
@@ -157,7 +156,7 @@ def results(request):
         #print(yyyy)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                           'algorithm': form_algorithm[0], 'num_replicates': len(sample_ID),
-                                          'replicates': sample_ID, 'sample': form_tissue})
+                                          'replicates': sample_ID, 'sample': form_tissue, 'species': form_species})
 
     elif form_genes != 'None' and form_Mirnas != 'None' and len(form_algorithm) != 1:
         row_one = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,
@@ -176,7 +175,7 @@ def results(request):
 
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                         'gene': form_genes,'num_replicates': len(sample_ID),
-                                                                        'replicates': sample_ID,'sample': form_tissue})
+                                                                        'replicates': sample_ID,'sample': form_tissue, 'species':form_species})
 
     elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm - miRNA
 
@@ -191,7 +190,7 @@ def results(request):
         
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
                                           'num_replicates': len(sample_ID),'replicates': sample_ID,
-                                          'sample': form_tissue})
+                                          'sample': form_tissue, 'species': form_species})
 
     elif form_Mirnas != "None" and len(form_algorithm) != 1:  # Multiple algorithms
 
@@ -212,7 +211,7 @@ def results(request):
 
         return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                                              'num_replicates': len(sample_ID),
-                                                             'replicates': sample_ID, 'sample': form_tissue})
+                                                             'replicates': sample_ID, 'sample': form_tissue, 'species': form_species})
 
     elif form_genes != "None" and len(form_algorithm) == 1:  # Just genes, one algorithm
         template += "_gene.html"
@@ -236,7 +235,7 @@ def results(request):
                    pass
 
         return render(request, template, {'rows': new_rows, 'gene': form_genes, 'num_replicates': len(sample_ID),
-                                          'replicates' : sample_ID, 'runs' : run_ID,  'sample': form_tissue})
+                                          'replicates' : sample_ID, 'runs' : run_ID,  'sample': form_tissue, 'species': form_species})
 
     elif form_genes != "None" and len(form_algorithm) != 1:
         row_one = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=False,
@@ -256,7 +255,7 @@ def results(request):
 
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes, 'num_replicates': len(sample_ID),
-                                                                  'replicates' : sample_ID, 'sample': form_tissue})
+                                                                  'replicates' : sample_ID, 'sample': form_tissue, 'species': form_species})
 
 def get_avg_tpms(result_transcripts, form_tissue, rows):
 
@@ -296,7 +295,7 @@ def home(request):
              request.session['mirna'] = str(form_mirna)
              request.session['tissues'] = str(form_tissues)
 
-             return HttpResponseRedirect('/filtar/results')
+             return HttpResponseRedirect('/results/')
 
     elif request.method == 'GET':
 
