@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b> <br/>
+    miRNA: <b><a href="http://www.mirbase.org/textsearch.shtml?q={{ mirna }}&submit=submit" target="_blank">{{ mirna }}</a></b> <br/>
     Algorithm: <b>{{ rows.0.name }}</b><br/>
     Cell line/Tissue: <b>{{ sample }}</b><br/>
     BioSamples used: <b>{{ num_replicates }}</b> -

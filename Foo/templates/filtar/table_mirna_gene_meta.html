@@ -2,8 +2,8 @@
 
 {% block body %}
 
-    miRNA: <b><a href="http://www.mirbase.org/cgi-bin/query.pl?terms={{ mirna }}&submit=Search" target="_blank">{{ mirna }}</a></b> <br/>
-    Gene: <b><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ rows.0.0.mrna_id }}"
+    miRNA: <b><a href="http://www.mirbase.org/textsearch.shtml?q={{ mirna }}&submit=submit" target="_blank">{{ mirna }}</a></b> <br/>
+    Gene: <b><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ rows.0.mrna_id }}"
                  target="_blank">{{ gene }}</a></b> <br/>
     Algorithm: <b>{{ algorithm }}</b><br/>
     Cell line/Tissue: <b>{{ sample }}</b><br/>
