@@ -20,12 +20,7 @@ from django.conf import settings
 from smart_selects import urls as smart_selects_urls
 
 urlpatterns = [
-#    url(r'^admin/', admin.site.urls),
-#    url(r'^filtar/', include('Foo.urls')),
     url(r'^', include('Foo.urls')),
     url(r'^chaining/', include('smart_selects.urls'),
         )
 ]
-
-# The carat symbol specifies that the string must begin with 'filtar/' string
-# The $ symbol specifies that the string must end with the 'filtar/' string

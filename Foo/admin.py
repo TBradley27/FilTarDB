@@ -8,8 +8,5 @@ from .models import Mrnas
 admin.site.register(Species)
 admin.site.register(Tissues)
 admin.site.register(Mrnas)
-# admin.site.register(Mirnas)
-# admin.site.register(TModel)
-
 
 # Register your models here.

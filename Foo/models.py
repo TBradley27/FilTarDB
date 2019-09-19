@@ -169,7 +169,6 @@ class ExpressionProfiles(models.Model):
      mrnas = models.ForeignKey('Mrnas', max_length=20, blank=True, null=False)  # Field name made lowercase.
      tpm = models.DecimalField(db_column='TPM', max_digits=10, decimal_places=2, blank=True, null=True)
      experiments = models.ForeignKey('Experiments', null=True, on_delete=models.CASCADE)
-        # models.CharField(db_column='experiment_name', max_length=20, blank=True, null=True)# Field name made lowercase.
 
      class Meta:
         managed = True
@@ -216,8 +215,6 @@ class Species(models.Model):
     species_name = models.CharField(max_length=20, blank=True, null=True)
     genome_build = models.CharField(max_length=20, blank=True, null=True)
     common_name = models.CharField(max_length=50, blank=True, null=True)
-
-    #     id = models.IntegerField(default=11, null=False, primary_key=True)
 
     def __str__(self):
         return self.taxonomic_id

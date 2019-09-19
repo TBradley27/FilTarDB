@@ -21,7 +21,7 @@ sd = {'contextpp': decimal.Decimal(-0.275078),'miRanda': decimal.Decimal(6.67257
 # the sample standard deviation is used here - though pop and sample sd is virtually identical
 
 def namedtuplefetchall(cursor):     # Create a list of named tuples - 1 row of query results = 1 named tuple
-    desc = cursor.description       # TODO: Consider working with a list of lists instead
+    desc = cursor.description       
     nt_result = namedtuple('Result', [col[0] for col in desc])
     return [nt_result(*row) for row in cursor.fetchall()]
 
@@ -117,7 +117,6 @@ def query_expression(transcripts, form_tissue):
     return tpm_mean
 
 def results(request):
-    # form_auto = request.session.get('auto')
     form_Mirnas = request.session.get('mirna')
     form_genes = request.session.get('gene')
     form_species = request.session.get('species')
@@ -126,7 +125,6 @@ def results(request):
     form_tissue = request.session.get('tissues')
 
     samples = Samples.objects.filter(species=form_species).filter(tissue=form_tissue).values()
-    # sample_ID = experiments[0]['experiment_name']
 
     sample_ID = [] # Initialise list
     run_ID = []
@@ -148,12 +146,6 @@ def results(request):
         rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM,
                               form_Mirnas=form_Mirnas, form_genes=form_genes)
 
-        #result_transcripts = []        # This is specific to whether gene or form is selected
-        #for result in rows:
-        #    result_transcripts.append(result[2])
-
-        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
-        #print(yyyy)
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                           'algorithm': form_algorithm[0], 'num_replicates': len(sample_ID),
                                           'replicates': sample_ID, 'sample': form_tissue, 'species': form_species})
@@ -168,11 +160,6 @@ def results(request):
 
         rows = list(row_one) + list(row_two)
 
-        #result_transcripts = []        # This is specific to whether gene or form is selected
-        #for result in rows:
-        #    result_transcripts.append(result[0][2])
-        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
-
         return render(request, 'filtar/generic_table_mirna_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                         'gene': form_genes,'num_replicates': len(sample_ID),
                                                                         'replicates': sample_ID,'sample': form_tissue, 'species':form_species})
@@ -180,13 +167,11 @@ def results(request):
     elif form_Mirnas != "None" and len(form_algorithm) == 1:   # Single algorithm - miRNA
 
         template += ".html"
-        #print(yyy) 
-        rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,  # query_database(form_algorithm, form_species, form_tissue, form_TPM, form_genes, form_Mirnas):
+        rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=form_Mirnas,
                               form_genes=False)
         result_transcripts = []        # This is specific to whether gene or form is selected
         for result in rows:
             result_transcripts.append(result[2])
-        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
         
         return render(request, template, {'rows': rows, 'mirna': form_Mirnas, 'algorithm': form_algorithm[0],
                                           'num_replicates': len(sample_ID),'replicates': sample_ID,
@@ -204,12 +189,7 @@ def results(request):
 
         rows = list(row_one) + list(row_two)
 
-        #result_transcripts = []        # This is specific to whether gene or form is selected
-        #for result in rows:
-        #    result_transcripts.append(result[0][2])
-        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
-
-        return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
+               return render(request, 'filtar/generic_table.html', {'rows': rows, 'mirna': form_Mirnas, 'gene': form_genes,
                                                              'num_replicates': len(sample_ID),
                                                              'replicates': sample_ID, 'sample': form_tissue, 'species': form_species})
 
@@ -217,11 +197,6 @@ def results(request):
         template += "_gene.html"
         rows = query_database(form_algorithm[0], form_species, form_tissue, form_TPM, form_Mirnas=False,
                               form_genes=form_genes)
-
-        #result_transcripts = []        # This is specific to whether gene or form is selected
-        #for result in rows:
-        #    result_transcripts.append(result[3])
-        #rows = get_avg_tpms(result_transcripts, sample_ID, rows)
 
         new_rows = []
 
@@ -247,11 +222,6 @@ def results(request):
         row_two = get_normalised_scores(row_two, mean[form_algorithm[1]], sd[form_algorithm[1]])
 
         rows = list(row_one) + list(row_two)
-
-        #result_transcripts = []        # This is specific to whether gene or form is selected
-        #for result in rows:
-        #    result_transcripts.append(result[0][3])
-        #rows = get_avg_tpms(result_transcripts, form_tissue, rows)
 
         return render(request, 'filtar/generic_table_gene.html', {'rows': rows, 'mirna': form_Mirnas,
                                                                   'gene': form_genes, 'num_replicates': len(sample_ID),
@@ -359,34 +329,3 @@ class GeneAutocomplete(autocomplete.Select2QuerySetView):  #Controls form inform
 
         return (qs)
 
-# class UpdateView(generic.FormView):
-#     model = ExampleFK
-#     form_class = ExampleFKForm
-#     template_name = 'filtar/home.html'
-#     success_url = 'results/'
-#
-#     # def get_object(self):
-#     #     x
-#     #     return ExampleFK.objects.first()
-#
-#     def form_valid(self, form):
-#         y = form.cleaned_data['test']
-#         return (y)
-#         # return super(UpdateView, self).form_valid(form)
-
-# def new(request):
-#
-#     if request.method == 'POST':
-#         form_auto = ExampleFKForm(request.POST)
-#
-#         if form_auto.is_valid():
-#             form_auto = form_auto.cleaned_data['test']
-#
-#             request.session['auto'] = str(form_auto)
-#
-#             return HttpResponseRedirect('/filtar/results')
-#
-#     elif request.method  == 'GET':
-#
-#         form_auto = ExampleFKForm()
-#         return render(request, 'filtar/home.html',{'form_auto': form_auto})
