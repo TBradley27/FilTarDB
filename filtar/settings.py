@@ -23,10 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '***REMOVED***'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.filtar.com','www.google.com','fonts.gstatic.com','tiles.services.mozilla.com','ajax.googleapis.com','cdn.datatables.net','fonts.googleapis.com',
-'cdnjs.cloudflare.com','149.155.193.80']
+'cdnjs.cloudflare.com','10.0.154.54', 'filtardb.earlham.ac.uk']
 
 
 # Application definition
@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'filtar.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'filtar_after_preprint',
+        'NAME': 'filtar_hpc2',
         'USER': 'root',
         'PASSWORD': '***REMOVED***',
         'HOST': 'localhost',
