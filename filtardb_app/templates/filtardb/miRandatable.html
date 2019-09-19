@@ -1,0 +1,36 @@
+{% extends 'filtardb/table_mirna_meta.html' %}
+
+{% block table_info %}
+
+<table class="my-listing", id="myTable", data-page-length='10'>
+    <thead>
+        <tr>
+            <th>Transcript ID</th>
+            <th>Gene Name</th>
+            <th>3'UTR Start</th>
+            <th>3'UTR End</th>
+            <th>Score</th>
+            <th>TPM</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for row in rows %}
+
+        <tr>
+            <td>{{ row.mrna_id }}</a></td>
+            <td><a href="http://www.ensembl.org/{{ species }}/Gene/Summary?t={{ row.Gene_ID }}" target="_blank">{{ row.Gene_ID }}</td>
+            <td>{{ row.UTR_START }}</td>
+            <td>{{ row.UTR_END }}</td>
+            <td>{{ row.score }}</td>
+            <td>{{ row.TPM }}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+<br>
+<br>
+
+{% endblock %}
